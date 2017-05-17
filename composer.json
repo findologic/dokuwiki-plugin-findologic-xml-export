@@ -1,0 +1,10 @@
+{
+    "name": "dominik/dominik",
+    "authors": [
+        {
+            "name": "TheKeyMaster",
+            "email": "d.brader@findologic.com"
+        }
+    ],
+    "require": {}
+}
