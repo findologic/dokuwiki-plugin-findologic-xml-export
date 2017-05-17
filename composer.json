@@ -6,5 +6,13 @@
             "email": "d.brader@findologic.com"
         }
     ],
-    "require": {}
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/howard/libflexport"
+        }
+    ],
+    "require": {
+    	"findologic/export": "dev-master"
+    }
 }
