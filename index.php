@@ -47,14 +47,14 @@ function getDirContents($dir, &$results = array()){
         $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
 
         if(!is_dir($path)) {
-        		$results[] = $path;
+                $results[] = $path;
 
-        	} 
+            } 
         else if($value != "." && $value != "..") { // Ignore the . and .. directories.
-        	getDirContents($path, $results);
+            getDirContents($path, $results);
 
-        	if (matching_ends($path, $fileend) === "true"){ // Ignore all directories.
-            	$results[] = $path;
+            if (matching_ends($path, $fileend) === "true"){ // Ignore all directories.
+                $results[] = $path;
 
             }
         }
@@ -71,17 +71,17 @@ function getDirContents($dir, &$results = array()){
  */
 
 if (!isset($_GET['count'])){
-	$count = 20;
+    $count = 20;
 }
 else {
-	$count = htmlspecialchars($_GET["count"]);
+    $count = htmlspecialchars($_GET["count"]);
 }
 
 if (!isset($_GET['start'])){
-	$start = 0;
+    $start = 0;
 }
 else {
-	$start = htmlspecialchars($_GET["start"]);
+    $start = htmlspecialchars($_GET["start"]);
 }
 // Get the total of all dokuwiki pages.
 $total = 0;
@@ -104,7 +104,7 @@ if ($start+$count>$total){
 }
 
 
-// NOTE: FOREACH Loops zusammenfassen für schnelleren Export.
+// TODO: Only make one foreach for a faster export of the articledata..
 
 // Create a xml with simplexmlelement.
 $xml = new SimpleXMLExtended('<?xml version="1.0"?><findologic version="1.0"/>');
@@ -170,7 +170,7 @@ for ($i = 0; $i < $count; $i++) {
 
     // Prices
     $prices = $item->addChild('prices');
-    $price = $prices->addChild('price', "0.0");
+    $price = $prices->addChild('price', "0.00");
 
     // URLs
     $urls = $item->addChild('urls');
