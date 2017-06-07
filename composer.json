@@ -9,7 +9,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/howard/libflexport"
+            "url": "https://github.com/findologic/libflexport"
         }
     ],
     "require": {

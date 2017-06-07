@@ -29,6 +29,7 @@ use FINDOLOGIC\Export\Data\Keyword;
 // use FINDOLOGIC\Export\Data\Attribute;
 
 class DokuwikiXMLExport {
+
     /**
      * Generate the entire XML Export based on the Dokuwiki data.
      *
@@ -36,30 +37,34 @@ class DokuwikiXMLExport {
      * @param $count integer Determines the interval size / number of items to be exported.
      * @return string Returns the XML.
      */
+    public function generateXMLExport($start, $count)
+    {
 
-    public function generateXMLExport($start, $count){
         $config = parse_ini_file("config.ini");
-        $pages = $this->getDirContents($config["dataDir"]);
+        $pages = $this->getFilesAndDirectories($config["dataDir"]);
         $exporter = Exporter::create(Exporter::TYPE_XML, $count);
 
-        $total = $this->getTotal($pages);
-        if ($count > $total){$count = $total;}
-        if ($start+$count>$total){$count = 1;}
+        $total = count($pages);
+
+        // Prevent count being higher then total to prevent an exception when this happens.
+        if ($count > $total) {
+            $count = $total;
+        }
 
         $items = array();
         for ($i = $start; $i < $start + $count; $i++) {
             $item = $exporter->createItem($i);
 
             $name = new Name();
-            $name->setValue($this->getDokuwikiDataName($pages, $i));
+            $name->setValue($this->getName($pages, $i));
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getDokuwikiDataSummaryAndDescription($pages, $i));
+            $summary->setValue($this->getSummaryAndDescription($pages, $i));
             $item->setSummary($summary);
 
             $description = new Description();
-            $description->setValue($this->getDokuwikiDataSummaryAndDescription($pages, $i));
+            $description->setValue($this->getSummaryAndDescription($pages, $i));
             $item->setDescription($description);
 
             $price = new Price();
@@ -67,7 +72,7 @@ class DokuwikiXMLExport {
             $item->setPrice($price);
 
             $Url = new Url();
-            $Url->setValue($this->getDokuwikiDataUrl($pages, $i));
+            $Url->setValue($this->getUrl($pages, $i));
             $item->setUrl($Url);
             // Do not use those values, because we don't need them.
             $item->setBonus(new Bonus("0"));
@@ -75,27 +80,10 @@ class DokuwikiXMLExport {
             $item->setDateAdded(new DateAdded("0"));
             $item->setSort(new Sort("0"));
 
-            $item->addImage(new Image("https://test.info/"));
-            $item->addOrdernumber(new Ordernumber($this->getDokuwikiDataOrdernumber($pages, $i)));
-            $item->addKeyword(new Keyword("0"));
+            $item->addOrdernumber(new Ordernumber($this->getOrdernumber($pages, $i)));
             $items[] = $item;
         }
         return $exporter->serializeItems($items, $start, $total);
-    }
-
-    /**
-     * Takes the array $pages and counts them. Returns the total value.
-     *
-     * @param $pages array An array that contains all directories to each Dokuwiki page.
-     * @return integer Returns the total value.
-     */
-    public function getTotal($pages) {
-        // Check the total amount of all pages
-        $total = 0;
-        foreach ($pages as $key => $value) {
-            $total++;
-        }
-        return $total;
     }
 
     /**
@@ -105,26 +93,27 @@ class DokuwikiXMLExport {
      * @param array $results Ignore this parameter. It is just used for the function itself.
      * @return array $results All files that end with .txt (for the dokuwiki).
      */
-    public function getDirContents($dir, & $results = array()){
+    public function getFilesAndDirectories($dir, & $results = array()){
         $files = scandir($dir);
-        $fileend = ".txt";
+        $fileEnd = ".txt";
 
         foreach($files as $key => $value){
             $path = realpath($dir.DIRECTORY_SEPARATOR.$value);
 
             if(!is_dir($path)) {
-                $results[] = $path;
 
-            }
-            else if($value != "." && $value != "..") { // Ignore the . and .. directories.
-                $this->getDirContents($path, $results);
-
-                if ($this->matching_ends($path, $fileend) === "true"){
+                if ($this->fileEndsWith($path, $fileEnd)){
                     $results[] = $path;
 
                 }
+
             }
 
+            // Ignore the . and .. directories.
+            else if(!in_array($value, array('.', '..'))){
+                $this->getFilesAndDirectories($path, $results);
+
+            }
         }
         return $results;
     }
@@ -136,8 +125,8 @@ class DokuwikiXMLExport {
      * @param string $string2 Another string.
      * @return boolean Returns true if the first string ends with the second string.
      */
-    public function matching_ends($string1, $string2){
-        return substr($string1, -strlen($string2)) == $string2 ? "true" : "false";
+    public function fileEndsWith($string1, $string2){
+        return substr($string1, -strlen($string2)) == $string2 ? true : false;
     }
 
     /**
@@ -147,7 +136,7 @@ class DokuwikiXMLExport {
      * @param integer $key The number of the loop.
      * @return string Returns the ordernumber.
      */
-    public function getDokuwikiDataOrdernumber($pages, $key){
+    public function getOrdernumber($pages, $key){
 
         $ordernumber = str_replace(($_SERVER["DOCUMENT_ROOT"]), "", $pages[$key]);
         $ordernumber = str_replace("/", ":", $ordernumber);
@@ -166,14 +155,14 @@ class DokuwikiXMLExport {
      * @param integer $key The number of the loop.
      * @return string Returns the Name/Title of the page.
      */
-    public function getDokuwikiDataName($pages, $key){
+    public function getName($pages, $key){
         $page = file_get_contents($pages[$key]);
         $match = array();
         if (preg_match("/={2,6}(.*?)={2,6}/", $page, $match)){
             preg_match("/={2,6}(.*?)={2,6}/", $page, $match);
         }
         else{
-            $match[1] = $this->getDokuwikiDataOrdernumber($pages, $key);
+            $match[1] = $this->getOrdernumber($pages, $key);
         }
         return $match[1];
     }
@@ -185,15 +174,15 @@ class DokuwikiXMLExport {
      * @param integer $key The number of the loop.
      * @return string Returns the Summary of the page.
      */
-    public function getDokuwikiDataSummaryAndDescription($pages, $key){
+    public function getSummaryAndDescription($pages, $key){
         $page = file_get_contents($pages[$key]);
         $summaryAndDescription = $page;
         return $summaryAndDescription;
     }
 
-    public function getDokuwikiDataUrl($pages, $key){
+    public function getUrl($pages, $key){
         $config = parse_ini_file("config.ini");
-        $url = $config["url"] . "/doku.php?id=" . $this->getDokuwikiDataOrdernumber($pages, $key);
+        $url = $config["url"] . "/doku.php?id=" . $this->getOrdernumber($pages, $key);
         return $url;
     }
 }
