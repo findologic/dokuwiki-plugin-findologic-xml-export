@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="735809c0-2c3e-49b1-bf16-378786ee5ff7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/dokuwiki_export/getFilesAndDirectories.php" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dokuwiki_export/DokuwikiXMLExport.php" afterPath="$PROJECT_DIR$/src/dokuwiki_export/DokuwikiXMLExport.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php" afterPath="$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,11 +34,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DokuwikiXMLExportTest.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DokuwikiXMLExportTest.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="43" lean-forward="false" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
+            <state relative-caret-position="108">
+              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding>
                 <element signature="e#53#84#0#PHP" expanded="true" />
               </folding>
@@ -69,11 +68,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="filesAndDirectories.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="filesAndDirectories.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/dokuwiki_export/filesAndDirectories.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-316">
-              <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+            <state relative-caret-position="792">
+              <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -116,10 +115,10 @@
         <option value="$PROJECT_DIR$/src/dokuwiki_export/index.php" />
         <option value="$PROJECT_DIR$/phpunit.xml" />
         <option value="$PROJECT_DIR$/.travis.yml" />
-        <option value="$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php" />
         <option value="$PROJECT_DIR$/src/dokuwiki_export/getFilesAndDirectories.php" />
         <option value="$PROJECT_DIR$/src/dokuwiki_export/filesAndDirectories.php" />
         <option value="$PROJECT_DIR$/src/dokuwiki_export/DokuwikiXMLExport.php" />
+        <option value="$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php" />
       </list>
     </option>
   </component>
@@ -249,12 +248,12 @@
       <workItem from="1496997240789" duration="3103000" />
       <workItem from="1497013657511" duration="2750000" />
       <workItem from="1497252554409" duration="11296000" />
-      <workItem from="1497341540852" duration="8692000" />
+      <workItem from="1497341540852" duration="8843000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="117065000" />
+    <option name="totallyTimeSpent" value="117216000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -498,16 +497,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="43" lean-forward="false" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
-          <folding>
-            <element signature="e#53#84#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -528,9 +517,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/dokuwiki_export/filesAndDirectories.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-316">
-          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+        <state relative-caret-position="792">
+          <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/DokuwikiXMLExportTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="e#53#84#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
