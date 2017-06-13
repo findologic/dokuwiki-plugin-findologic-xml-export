@@ -1,6 +1,6 @@
 # phpdokuwiki2findologic
 
-![Travis](https://api.travis-ci.org/TheKeymaster/phpdokuwiki2findologic.svg)
+[![Travis](https://api.travis-ci.org/TheKeymaster/phpdokuwiki2findologic.svg)](https://travis-ci.org/TheKeymaster/phpdokuwiki2findologic)
 
 This repository creates a XML export based on the dokuwiki data with the FINDOLOGIC XML scheme.\
 It uses the library [libflexport](https://github.com/findologic/libflexport) to create the XML.\
