@@ -7,7 +7,7 @@
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-class getFilesAndDirectories {
+class filesAndDirectories {
 
     /**
      * This function gets all dokuwiki pages without directories. Just .txt files.

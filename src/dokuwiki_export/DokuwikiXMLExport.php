@@ -6,7 +6,7 @@
  */
 
 require __DIR__ . '/../../vendor/autoload.php';
-require_once ('getFilesAndDirectories.php');
+require_once ('filesAndDirectories.php');
 
 use FINDOLOGIC\Export\Exporter;
 use FINDOLOGIC\Export\Data\Name;
@@ -29,7 +29,7 @@ class DokuwikiXMLExport
      */
     public function generateXMLExport($start, $count, $config)
     {
-        $getFilesAndDirectories = new getFilesAndDirectories($config["dataDir"]);
+        $getFilesAndDirectories = new filesAndDirectories($config["dataDir"]);
         $pages = $getFilesAndDirectories->getFilesAndDirectories($config["dataDir"]);
 
         $exporter = Exporter::create(Exporter::TYPE_XML, $count);
