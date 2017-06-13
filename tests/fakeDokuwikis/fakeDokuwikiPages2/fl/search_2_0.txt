@@ -1,3 +1,0 @@
-<note tip>Wir haben unsere Dokumentation für Sie überarbeitet!\\
-Alle Informationen zur Schnittstellen-Implementation finden Sie [[fl:integration:eigenes_sonstiges|hier]].
-</note>

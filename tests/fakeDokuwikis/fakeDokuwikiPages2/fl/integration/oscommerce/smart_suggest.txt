@@ -1,6 +1,0 @@
-====== Integration der Smart Suggest bei osCommerce ======
-
-Zur Integration der Smart Suggest in Ihren osCommerce Shop führen Sie bitte folgende Schritte durch:
-
-  - Im FINDOLOGIC Kundenaccount finden Sie bei der Konfiguration der Smart Suggest ein Code-Schnipsel, der in Ihrem Shop einzufügen ist
-  - Fügen Sie diesen im Shop in die Datei ''catalog/includes/header.php'' ein

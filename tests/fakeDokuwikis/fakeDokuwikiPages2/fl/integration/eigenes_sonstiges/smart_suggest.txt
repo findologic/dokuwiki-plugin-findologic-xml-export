@@ -1,6 +1,0 @@
-====== Integration der Smart Suggest bei eigenen / sonstigen Systemen ======
-
-  - Laden Sie im Kundenaccount den Smart Suggest-Proxy herunter
-  - Laden Sie die Datei (z.B. per FTP) ins Hauptverzeichnis Ihres Shops hoch
-  - Stellen Sie sicher, dass die Datei von außen erreichbar ist, indem Sie diese im Browser aufrufen. Liegt Ihr Shop z.B. unter http://www.mein-shop.de/ rufen Sie die Datei http://www.mein-shop.de/autocomplete.php auf
-  - Binden Sie den Code-Schnipsel aus dem Kundenaccount zwischen den Elementen ''<head>'' und ''</head>'' Ihrer Seite ein.((Vorraussetzung zur Nutzung der Smart Suggest ist ein Suchfeld als HTML <form>, an das ein Skript binden kann))

@@ -1,7 +1,0 @@
-====== Integration der Smart Suggest bei CosmoShop ======
-
-Bei CosmoShop Shops ist die Smart Suggest bereits im Shop integriert, Sie müssen die Smart Suggest lediglich einmal im FINDOLOGIC-Kundenaccount konfigurieren.
-
-Gehen Sie bitte hierzu im FINDOLOGIC-Kundenaccount auf den Menüpunkt ''Einstellungen -> Smart Suggest'' und speichern zumindest einmal Ihre gewünschte Konfiguration.
-
-Die Einstellungen sind mit sofortiger Wirkung aktiv. Um dies zu prüfen kann es vorkommen, dass Sie zunächst Ihren Browser Cache leeren müssen.

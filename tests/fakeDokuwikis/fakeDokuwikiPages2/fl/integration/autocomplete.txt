@@ -1,3 +1,0 @@
-<note tip>Die **Autocomplete** heißt jetzt **Smart Suggest**\\
-Alle Informationen zur Einbindung und den neuen Funktionen finden Sie [[fl:integration:Smart Suggest|hier]].
-</note>

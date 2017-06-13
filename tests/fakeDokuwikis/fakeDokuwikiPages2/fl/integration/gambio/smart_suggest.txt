@@ -1,7 +1,0 @@
-====== Integration der Smart Suggest bei Gambio ======
-
-Zur Integration der Smart Suggest in Ihren Gambio Shop führen Sie bitte folgende Schritte durch:
-
-  - Im FINDOLOGIC Kundenaccount finden Sie bei der Konfiguration der Smart Suggest ein Code-Schnipsel, der in Ihrem Shop einzufügen ist
-  - **Beachten Sie:** Entfernen Sie unbedingt die erste ''<script>'' und die letzte ''</script>'' Zeile vor dem Einfügen
-  - Fügen Sie diesen im Shop in die Datei ''templates/EyeCandy/usermod/javascript/Global/findologic.js'' ein
