@@ -1,0 +1,13 @@
+====== FINDOLOGIC-Smart Suggest Integration für plentymarkets ======
+
+Zur Integration der Smart Suggest in Ihren plentymarkets Shop führen Sie bitte folgende Schritte durch:
+
+  * Im FINDOLOGIC Kundenaccount finden Sie unter [[https://secure.findologic.com/login.symfony/web/app.php/shop/autocomplete_configuration|Einstellungen » Smart Suggest ]] unter Smart Suggest Einbindung einen Code-Schnipsel, der in Ihrem Shop einzufügen ist
+  * Öffnen Sie den Code unter CMS » Webdesign » Layout » PageDesign » PageDesignContent im Tab ''PageDesignContentMainFrame'' und fügen Sie dort zwischen die Platzhalter ''$FormOpenSearch'' und ''$FormCloseSearch'' den Code-Schnipsel hinzu.
+  * Das Input-Feld (Suchfeld) muss die ID ''flAutocompleteInputText'' haben.
+
+{{:fl:integration:plentymarkets:autocomplete:1.png|}}
+
+<note important>
+Bitte beachten Sie, dass die Smart Suggest an die URL Ihres gebuchten Services gebunden ist und daher **nicht** in Multishops eingesetzt werden kann
+</note>

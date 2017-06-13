@@ -1,0 +1,253 @@
+====== Smart Suggest ======
+
+===== Grundsätzliche Einbindung =====
+
+Folgen Sie bitte [[fl:integration:eigenes_sonstiges:Smart Suggest|dieser Dokumentation]].
+
+===== Smart Suggest Script-Tag erzeugen =====
+
+Der Smart Suggest Script-Tag muss dynamisch erzeugt werden um den korrekten gehashten Shopkey zu verwenden.
+
+<code>
+  <script>
+    (function() {
+        var flDataMain = "https://cdn.findologic.com/autocomplete/<MD5-HASH-VOM-SHOPKEY>/autocomplete.js";
+        var flAutocomplete = document.createElement('script'); 
+        flAutocomplete.type = 'text/javascript'; 
+        flAutocomplete.async = true;
+        flAutocomplete.src = "https://cdn.findologic.com/autocomplete/require.js";
+        var s = document.getElementsByTagName('script')[0];
+        flAutocomplete.setAttribute('data-main', flDataMain);
+        s.parentNode.insertBefore(flAutocomplete, s);
+    })();
+    </script>
+</code>
+
+Dabei ist zu beachten dass der gehashte Shopkey dem Shopkey der aktuellen Sprache und des aktuellen Subshops entspricht.
+
+===== Benutzergruppe festlegen =====
+
+Suchergebnisse der Smart Suggest können benutzergruppenspezifisch ausgegeben werden. Hierfür fügen Sie folgenden Eintrag an das verwendete Suchformular an und befüllen den Wert mit der entsprechenden Benutzergruppenkennung des Benutzers:
+
+<code type=html>
+<input type="hidden" name="group[]" value="BENUTZERGRUPPE">
+</code>
+
+===== Smart Suggest Proxy anpassen =====
+
+Der Smart Suggest Proxy der von FINDOLOGIC bereitgestellt wird, bezieht sich nur auf einen einzelnen Shopkey, da die Implementation vom Shopsystem abhängig ist.
+Bitte beachten Sie bei der Adaption, dass der an FINDOLOGIC übertragene Shopkey immer der aktuellen Sprache und des aktuellen Subshops entspricht.
+
+===== Eigene Anpassungen =====
+
+Die FINDOLOGIC-Smart Suggest ermöglicht es Ihnen, beliebige Anpassungen umzusetzen. Dafür gibt es drei Methoden, die als Hookpoints funktionieren und mit eigener Funktionalität überschrieben werden können.
+
+<note important>Verwenden Sie keinesfalls direkt die Rückgabe der FINDOLOGIC Service Schnittstelle (autocomplete.php). Dies ist keine dokumentierte Schnittstelle und wird nicht rückwärtskompatibel weiterentwickelt. Grundsätzlich kann die Schnittstelle sich zukünftig ändern.
+</note>
+Verändern Sie die Funktion der Smart Suggest jeweils nur über die bereitgestellten Hookpoints. Die FINDOLOGIC Smart Suggest Skripte sind 
+   * cross-browser getestet und unterstützt
+   * auf Usability optimiert
+
+
+
+==== Boilerplate ====
+
+Um die drei Methoden ansprechen zu können, muss der folgende Boilerplate-Code in ihren Shop integriert werden. Über diesen kann die eigene Funktionalität integriert werden.
+
+<note important>Der Code muss **vor** der eigentlichen Einbindung der Smart Suggest eingebaut werden.</note>
+
+<code javascript>
+<script type="text/javascript">
+(function() {
+    /**
+    * This function will be called as soon as the FINDOLOGIC autocomplete has been initialized
+    * Use this function to adapt and overwrite methods of the FINDOLOGIC autocomplete script
+    * (The event will be triggered in the FlAutocomplete.triggerAutocompleteReady() method)
+    *
+    * event.detail : {
+    *   flAutocomplete : {Object} FlAutocomplete The findologic autocomplete object
+    *   flAutocompleteUiWidget : {Object} The extend jQuery-ui autocomplete object
+    *   autocompleteUlElement : {jQuery-Object} The UL elment
+    *   fljQuery : {Object} jQuery FINDOLOGIC's version of jQuery
+    * }
+    *
+    * @param {Object} event The event object, which contains a useful property 'detail'
+    */
+    var flAutocompleteReadyHandler = function(event) {
+
+        var flAutocompleteObject = event.detail.flAutocomplete,
+            fljQuery = event.detail.fljQuery,
+            flAutocompleteUiWidget = event.detail.flAutocompleteUiWidget,
+            autocompleteUlElement = event.detail.autocompleteUlElement;
+
+        // Example: overwrites the method which returns the result item
+        /*
+        flAutocompleteUiWidget.renderResultItem = function(item) {
+            // your code here ..
+        };
+        */
+
+        // Example: triggers as soon as the result has been rendered
+        /*
+        flAutocompleteObject.afterRendering = function(event) {
+            // your code here ...
+        };
+        */
+
+        // Example: overwrite the onClick item event
+        /*
+        flAutocompleteObject.selectItem = function(event, ui) {
+            // your code here ...
+        };
+        */
+    };
+
+    /*
+        Listen for the 'flAutocompleteReady' event
+
+        IE < 9 does not support the 'addEventListener' method, but the 'attachEvent' method
+        (see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener#Compatibility)
+    */
+    var readyEventName = 'flAutocompleteReady';
+
+    if (document.addEventListener) {
+        document.addEventListener(readyEventName, flAutocompleteReadyHandler, false);
+    } else if (document.attachEvent)  {
+        document.attachEvent(readyEventName, flAutocompleteReadyHandler);
+    }
+
+})();
+</script>
+</code>
+
+==== Verfügbare Methoden ====
+
+Innerhalb des Boilerplate-Codes können Sie die nun folgenden Methoden überschreiben.
+
+=== renderResultItem ===
+
+Überschreiben Sie diese Methode, wenn Sie das Rendering der Smart Suggest-Items vollständig selbst kontrollieren wollen.
+
+== Beispiel ==
+
+Sie wollen einen "Zum Warenkorb hinzufügen"-Button neben den Smart Suggest-Items anzeigen
+
+<code javascript>
+var testTemplateId = 'my-own-shoppingcart-handlebar-template';
+var addToCartButtonClass = 'add-to-cart-button';
+var expectedCartButtonText = 'Add to cart';
+
+// Custom handlebar template
+var tpl = '';
+tpl += '<script id="' + testTemplateId + '" type="text/x-handlebars-template">';
+tpl += '<li class="fl-item-{{ item.block }} {{#if item.isEven}}fl-item-even{{else}}fl-item-odd{{/if}}">';
+tpl += '<a>';
+tpl += '{{{ labelHighlighted }}}';
+tpl += '<button class="' + addToCartButtonClass + '">' + expectedCartButtonText + '</button>';
+tpl += '</a>';
+tpl += '</li>';
+
+jQuery('body').append(jQuery(tpl));
+
+/*
+ * renderResultItem method.
+ * Instead of compiling the usual template, we use 'my-own-shoppingcart-handlebar-template' as template id
+ */
+flAutocompleteUiWidget.renderResultItem = function(item) {
+
+    var data = {};
+    data.item = item;
+
+    data.labelHighlighted = this.buildLabel(item);
+    data.config = this.options.shopConfig;
+
+    var templateId = testTemplateId;
+
+    // itemObj is a jQuery object which holds the compiled Handlebar template
+    var itemObj = this._renderItem.call(this, data, templateId);
+
+    // Add data-attr value (jquery-ui NEEDS this!!)
+    itemObj.data("ui-autocomplete-item", item);
+
+    return itemObj;
+};
+</code>
+
+=== afterRendering ===
+
+Überschreiben Sie diesen Methode, wenn Sie die Darstellung des gesamten Smart Suggest-Wrappers anpassen wollen.
+
+== Beispiel ==
+
+Sie wollen die Positionierung des Smart Suggest-Wrappers anpassen
+
+<code javascript>
+var expectedPositionLeft = 143;
+var expectedPositionTop = 28;
+
+/* Overwrite the afterRender method -> wrapper gets new position */
+flAutocompleteObject.afterRendering = function(event) {
+
+    // Change the result-wrappers position
+    autocompleteUlElement.css({ position : 'absolute', left : expectedPositionLeft, top: expectedPositionTop });
+
+};
+</code>
+
+=== selectItem ===
+
+Überschreiben Sie diese Methode, wenn Sie anpassen wollen, was bei einem Klick auf ein Smart Suggest-Item passiert.
+
+== Beispiel ==
+
+Sie wollen, dass bei jedem Klick auf ein Smart Suggest-Item der Vorschlag ausgegeben wird:
+
+<code javascript>
+flAutocompleteObject.selectItem = function(event, ui) {
+
+    var self = this,
+        item = ui.item,
+        searchTerm = event.target.value,
+        shopSystem = this.shopSystem;
+
+    alert(item.label);
+};
+</code>
+
+==== Smart Suggest Proxy überschreiben ====
+
+<code javascript>
+(function() {
+    var flAutocompleteReadyHandler = function(event) {
+        event.detail.flAutocomplete.shopConfig.autocompleteProxy = 'http://test.shop.de/.../autocomplete.php';
+    };
+    
+    var readyEventName = 'flAutocompleteReady';
+ 
+    if (document.addEventListener) {
+        document.addEventListener(readyEventName, flAutocompleteReadyHandler, false);
+    } else if (document.attachEvent)  {
+        document.attachEvent(readyEventName, flAutocompleteReadyHandler);
+    }
+ 
+})();
+</code>
+
+====== Weiterführende Dokumentation ======
+
+  * Allgemeines
+    * [[fl:integration:eigenes_sonstiges|Übersicht]]
+    * [[fl:integration:checklist_modul|Checklist]]
+  * Export
+    * [[fl:integration:export|Export Dokumentation]]
+    * [[fl:csv_format_2_0|CSV Formatbeschreibung]]
+  * Request
+    * [[fl:integration:request|Dokumentation des Requests]]
+  * Rückgabe
+    * [[fl:integration:response:xml|Beschreibung des XML Formats]]
+    * [[fl:integration:response:html|Dokumentation der HTML Rückgabe]]
+    * [[fl:template_manager_2_0|Beschreibung der Templates]]
+  * Smart Suggest
+    * [[fl:integration:smart_suggest|Einbindung der Smart Suggest]]
+  * Navigation
+    * [[fl:navigation|Implementierungsanleitung der Navigation]]

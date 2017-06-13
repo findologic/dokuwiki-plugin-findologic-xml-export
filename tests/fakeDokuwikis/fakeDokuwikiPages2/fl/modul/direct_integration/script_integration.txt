@@ -1,0 +1,33 @@
+====== Script Integration ======
+
+To integrate FINDOLOGIC into the frontend of the shop, the following code has to be integrated into the ''<head>''((as far up as possible)) of the page:
+
+<code javascript>
+    <script type="text/javascript">
+    (function() {
+        var flDataMain = "https://cdn.findologic.com/autocomplete/PLACEHOLDER_1/autocomplete.js?usergrouphash=PLACEHOLDER_2";
+        var flAutocomplete = document.createElement('script'); 
+        flAutocomplete.type = 'text/javascript'; 
+        flAutocomplete.async = true;
+        flAutocomplete.src = "https://cdn.findologic.com/autocomplete/require.js";
+        var s = document.getElementsByTagName('script')[0];
+        flAutocomplete.setAttribute('data-main', flDataMain);
+        s.parentNode.insertBefore(flAutocomplete, s);
+    })();
+    </script>
+</code>
+
+If the parameter ''&findologic=off'' is transmitted in the URL, the code must **not** be shown((to enable testing without a staging-system)).
+
+  * **PLACEHOLDER_1**: this has to be the upper case md5-encoded shopkey.
+  * **PLACEHOLDER_2**: this has to be the [[fl:modul:direct_integration:xml_schema#calculating_the_usergroup-hash_usergroup|usergroup-hash]] of the specific user.
+
+===== Overview =====
+
+  - [[:fl:modul:direct_integration:shop_backend_configuration|Shop Backend Configuration]]
+  - ** Export **
+    - [[:fl:modul:direct_integration:Export|Export]]
+    - [[:fl:modul:direct_integration:xml_schema|XML-Schema]]
+  - Script Integration
+  - [[:fl:modul:direct_integration:tracking_integration|Tracking-Integration]]
+  - [[:fl:modul:direct_integration:checklist|Checklist]]

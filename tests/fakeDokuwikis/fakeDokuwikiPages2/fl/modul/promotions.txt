@@ -1,0 +1,63 @@
+====== Promotions ======
+
+Mit diesem Modul haben Sie die Möglichkeit bei definierten Keywords ein Banner-Bild mit einem Link auf eine (externe) Seite anzeigen zu lassen. Damit können Sie Produkte, Produktgruppen und Sonderaktionen gezielt bewerben, wenn der entsprechende Suchbegriff eingegeben wird.
+
+===== Parameter =====
+
+  * Name: beliebiger Name für Ihre Promotion, der Name dient nur zur Übersicht
+  * Link: (Externe) Seite auf die verlinkt werden soll
+  * Bild-URL: Adresse des Banner Bildes
+  * Promotion aktiv: Gibt an, ob die Promotion aktiv ist oder nicht
+  * Keywords: Beliebig viele Keywords bei deren Eingabe die Promotion angezeigt werden soll
+
+===== Funktionsweise =====
+
+{{:fl:modul:promotions_screenshot_final.jpg|}}
+
+===== Verwendung in Shops mit HTML-Ausgabe =====
+<note important>Dieser Hinweis betrifft nur Kunden, die HTML Ausgabe nutzen (xtCommerce, osCommerce, Gambio, plentyMarkets)</note>
+
+Zur Aktivierung muss das Template geringfügig modifiziert werden. Sie brauchen hierzu lediglich im FINDOLOGIC Template-Manager in Ihrem Suchtemplate an entsprechender Stelle das promotion-Plugin einzubauen:<code>{promotion}</code>
+
+Sucht ein Kunde nun nach einem der von Ihnen angelegten Promotion-Keywords, wird anstelle von ''{promotion}'' der entsprechende Banner mit Verlinkung ausgegeben.
+
+<note tip>Sie können die Darstellung und Ausrichtung über die CSS-Klasse ''flPromotion'' beeinflussen.</note>
+
+==== Beispiele ====
+
+Um die Banner oberhalb der Suchfilter auszugeben, fügen Sie die Zeile einfach ganz oben im Template ein:
+<code>{promotion}
+
+<div id="flOuterContainer">
+        <div id="flHeaderContainer">
+                <table id="flSearchHeader">
+                        <tr>
+...</code>
+
+So können Sie die Banner unterhalb der Filter, aber über den Ergebnissen darstellen:
+<code>...
+
+{promotion}
+
+<div id="flResults">
+  {not_found message="Es wurden keine Produkte gefunden"}
+  {results items="Artikelnummer: %ORDERNUMBER%|%TITLE%|%IMAGE%|<span class='preis'>%PRICE%&euro;</span>|inkl. %TAX_RATE%% Ust." cols="4" price_from="ab" show_overridden_price="1" img_width="100" img_height="100"}
+  ...</code>
+
+
+===== Verwendung in Shops mit XML-Ausgabe =====
+
+Sollte das Modul die Verwendung der Promotions nicht ohnehin unterstützen (oder kein Modul zur Verfügung stehen), so muss die Funktion selbst implementiert werden. 
+
+In der XML-Rückgabe findet sich - sofern eine Promotion definiert wurde - folgender Tag:
+
+<code>
+<promotion link="LINK" image="IMAGE"/>
+</code>
+
+Diese Promotion kann dann an beliebiger Stelle im Shop z.B. in dieser Form ausgegeben werden: 
+
+<code>
+<a href="LINK"><img src="IMAGE"/></a>
+</code>
+

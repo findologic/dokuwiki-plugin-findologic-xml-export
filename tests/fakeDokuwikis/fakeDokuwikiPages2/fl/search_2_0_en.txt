@@ -1,0 +1,168 @@
+====== FINDOLOGIC search service V2.0 ======
+
+The FINDOLOGIC service consists of the following parts:
+  * the product import in order to index the product inventory of the shop periodically,
+  * the search service interface, which receives the actual search queries and answers,
+  * a safety mechanism to redirect the query in the case of a service failure,
+  * an optional autocomplete interface, which supplies meaningful suggests for searches while typing.
+
+===== Import Interface =====
+The product Importer downloads a by the shop generated CSV file. The format description can be found here: [[csv_format_2_0|Format Description]]
+
+The generation of the Export-CSV can be triggered from our side via a provided URL, or be carried out periodically by the shop system (e.g. via //cronjob//).
+
+<note important>If the Export-CSV is generated automatically by the shop system, this should be done at least every 5 days, even if no product data changed. Thus, our monitoring system is able to determine automatically whether the export is up to date. </note>
+
+==== Automatic notification ====
+Optionally, at the end of an import a notification URL can be called wich is deposited at the backend. This is to inform the server that the import was successful. Here, the SHA1 checksum of the current imported CSV data will be transmitted.
+Currently the notification URL can be entered by FINDOLOGIC only. If you need this, please contact our support.
+
+===== Search Service =====
+The search service is a'' http'' service with appropriate ''GET'' parameters.
+The service responds either in formatted ''html'' or pure ''xml''.
+  * In ''html'' the service provides formatted results and filters that can be integrated directly on the search results page of the shop. This is the fastest way of integration, since there is no post implementation to display is required.
+  * In'' xml'' the service provides, only the raw information about the found products and applicable filters. The results and filter representation has to be done from the shop itself. The ''xml'' variant allows a seamless integration into the shop, because the display of the search results can be implemented identically to the existing display of the regular shop search.
+
+
+==== html ====
+The description for the call of the service can be found here: [[q: search_request_2_0 | Call Description]]
+
+In order to still achieve seamless integration results for the ''html'' version, the possibility exists to configure that produced ''html'' with a template system. The shop gets access to the Template Manager to access the live used templates.
+The documentation for the Template Manager can be found here: [[q: template_manager_2_0 | Template Manager]]
+
+==== html with product IDs ====
+The ''html with product IDs'' variant is nearly the same as the ''html'' variant. The difference is that the complete html rendering for the products is not performed in the Template Manager. Filters, paginator, etc. are generated as a complete HTML, but the products are returned just as structured product IDs. Before the HTML will be displayed, the product IDs have to be embedded to the presentation of the products from the shop.
+
+The advantage is that based on the product IDs, the existing product-display on shop site can be used as well as current data such as delivery status can be read directly from the shop.
+
+The product IDs in the Template Manager, are returned as follows:
+<code>
+
+<SEARCHRESULTS>
+{section name="i" loop=$RESULT}
+<PRODUCT_ID>{$RESULT[i].ID}</PRODUCT_ID>
+{/section}
+</SEARCHRESULTS>
+
+
+==== xml ====
+The description of the service call can be found here: [[q: search_request_2_0 | Call Description]]
+
+  <searchResult>
+
+    <query>
+      <limit first="0" count="10"/>
+      <queryString>Test</queryString>
+      <searchedWordCount>1</searchedWordCount>
+      <foundWordCount>1</foundWordCount>
+    </query>  <searchResult>
+
+    <query>
+      <limit first="0" count="10"/>
+      <queryString>Test</queryString>
+      <searchedWordCount>1</searchedWordCount>
+      <foundWordCount>1</foundWordCount>
+    </query>
+
+The **''<query/>''** element describes the current search request. **''<limit/>''** describes which range of the results was obtained; **''first''** is the first product element to be displayed ((0-based, i.e. if the first argument appears, the value is 0)) and **''count''** the total number of specified items to display. **''<searchedWordCount/>''** And **''<foundWordCount/>''** be sought and found the number of words in the search. Could could not be found for the complete search results, so **''<foundWordCount/>''** reduced according to the number of words that are found for the results ((''found'' word count is currently without function)).
+
+    <landingPage link="http://www.example.com/imprint"/>
+
+Specifies that a landing page was found for the search (e.g. for GTC or imprint). The module then should forward to the page provided by ''link''. Was a landing page found, the ''results'' and ''products'' element must be empty.
+
+    <promotion image="http://www.example.com/special-offer.jpg" link="http://www.example.com/special-offer"/>
+
+Specifies that the search term found a promotion (e.g. for special seasonal promotions or special sales). The module should then provide a way to incorporate the linked image within the search template.
+
+    <results>
+      <count> 2 </count>
+    </results>
+
+**''<results/>''**  Indicates the number of results to the current query.
+
+    <products>
+      <product id="666" direct="1"/>
+        <properties>
+          <property name="propertyName">propertyValue1</property>
+        </properties>
+      <product id="123" direct="2"/>
+        <properties>
+          <property name="propertyName">propertyValue2</property>
+        </properties>
+    </products>
+
+In **''<products/>''** the IDs (from the export) of the results are displayed. According to the ''<first/>'' - and ''<count/>'' -values, this is possibly only a fraction of total income amount. Via the [: search_request_2_0 | call parameters]] on the ''properties[]'', if desired, the contents of [[f: csv_format_2_0 | export additional optional columns]] will be put out.
+
+The attribute ''direct'' indicates whether the result was found directly:
+
+  - All search words were found in the result only indirectly (e.g. fault tolerance, letter permutation, phonetics)
+  - Partial direct and partial indirect matches
+  - All search words are found directly (the word or its components have been found)
+
+    <filters>
+      <filter>
+        <name>cat</name>
+        <select>multiple</select>
+        <items>
+          <item>
+            <name>Untergruppe</name>
+            <weight>0.863121</weight>
+            <frequency>5</frequency>
+            <image>http://www.example.com/images/Untergruppe.jpg</image>
+            <items>
+              <item>
+                <name>Unteruntergruppe</name>
+                <weight>0.985228</weight>
+                <frequency>4</frequency>
+                  <items>
+                     ...
+      </filter>
+      <filter>
+        <name>vendor</name>
+        <select>multiple</select>
+        <items>
+          <item>
+            <name>Firma Müller</name>
+            <weight>0.863121</weight>
+            <frequency>2</frequency>
+            <image>http://www.example.com/vendor/firma_muller.jpg</image>
+          </item>
+      </filter>
+      <filter>
+        <select>single</select>
+        <name>price</name>
+        <items>
+          <item>
+            <name>1.23 - 6.66</name>
+            <weight>0.863121</weight>
+            <frequency>2</frequency>
+            <parameters>
+              <min>1.23</min>
+              <max>6.66</min>
+            </parameters>
+          </item>
+          <item>
+            <name>6.66 - 8</name>
+            <weight>0.591673</weight>
+            <frequency>1</frequency>
+            <parameters>
+              <min>6.66</min>
+              <max>8</min>
+            </parameters>
+          </item>
+        </items>
+      </filter>
+    </filters>
+
+**''<filters/>''** returns reasonable filters based on the found products. The filters are grouped by category in the **''<filter/>''** elements. A ''<filter/>'' contains in **''<items/>''**  the different values for the filter category. The ''<item/>'' element contains additional information about this particular filter: **''<name/>'' ** specifies a title for this filter, which can be put out directly,'' ** <weight/> **'' the relevance of the filter ((between 0 and 1, with 0, no further filtering, as the filter is true for all the latest results, 1 is the maximum relevance, this filter applies to 50% of the results to )), **''<frequency/>''** the number of results for this filter ((If as per'' <count/>'' at least 32,767 results were found, this value approximated only)). **''<select/>''** specifies whether multiple values can be selected simultanously from a filter category (''multiple'') or if only one value of this filter may be active (''single'') . Depending on the configuration, an image URL for each filter element can be returned (**''<image/>''**), this can be displayed in the results instead of the filter name. The specification of the Image URL does not mean necessarily that the image also exists!
+
+At certain filters **''<parameters/>''** will specify optional values which has to be transmitted to the search service. Please see also [[fl:search_request_2_0#Request Parameter]].
+''<item/>'' elements may contain other ''<items/>''. This is the case with hierarchical categories where a category contains more categories.
+
+  </searchResult>
+
+
+===== Autocomplete =====
+With AutoComplete for each entered character an AJAX request is sent to Findologic Autocomplete service. There are already fabricated implementations for the major JavaScript libraries:
+  * [[F: autocomplete_integration_jquery | Autocomplete integration of the jQuery JavaScript Library]]
+  * [[F: autocomplete_integration_prototype | integration of AutoComplete for the Prototype JavaScript Library]]

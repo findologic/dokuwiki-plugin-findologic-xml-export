@@ -1,0 +1,16 @@
+==== Pushen von Produkten ====
+
+Mit diesem Modul haben Sie die Möglichkeit Attributs-Kombinationen festzulegen und damit Produkte in den Suchergebnissen vorzureihen, auf die die Kombination zutrifft. 
+Etwa alle "Schuhe" von "Adidas" (siehe Beispiel weiter unten). 
+
+=== Parameter ===
+  * Name: beliebiger Name für Ihre Regel
+  * Regel aktiv: Gibt an, ob die Regel aktiv ist oder nicht
+
+<note important>Die Änderungen wirken sich jeweils erst mit dem nächsten Datenexport im Frontend aus.</note>
+
+<note important>Die Bedingungen werden per UND verknüpft, d.h. es müssen alle Bedingungen gleichzeitig zutreffen, damit ein Artikel gepusht wird</note>
+
+=== Funktionsweise ===
+
+{{:fl:modul:bonus_screenshot_final.jpg|}}

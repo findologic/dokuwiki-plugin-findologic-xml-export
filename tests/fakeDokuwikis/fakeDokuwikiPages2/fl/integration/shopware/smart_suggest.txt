@@ -1,0 +1,22 @@
+====== Integration der FINDOLOGIC-Smart Suggest bei Shopware ======
+
+Sollten Sie eine Pluginversion kleiner als 4.01.17 verwenden führen Sie bitte folgende Schritte zur Integration der neuen Smart Suggest durch:
+
+  - Im FINDOLOGIC-Kundenaccount finden Sie bei der Konfiguration der Smart Suggest ein Code-Schnipsel, der in Ihrem Shop einzufügen ist
+  - Fügen Sie diesen im Shop in die Datei '' /SHOPROOT/engine/Shopware/Plugins/Community/Frontend/SwpFindologic/Views/includeAll.tpl'' ein
+
+Entfernen Sie aus dieser Datei folgende Zeilen:
+
+<code>
+[...]
+			autocompleteField = jQuery('#searchfield');
+[...]
+
+		var baseUrl = '{$swpfindologic.baseUrl}';
+[...]
+
+<script type="text/javascript" src="{$swpfindologic.js_ac1}"></script> 
+<script type="text/javascript" src="{$swpfindologic.js_ac2}"></script> 
+<script type="text/javascript" src="{$swpfindologic.js_ac3}"></script> 
+<link type="text/css" rel="stylesheet" href="{$swpfindologic.css_ac}"> 
+</code>

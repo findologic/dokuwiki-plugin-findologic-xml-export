@@ -1,0 +1,87 @@
+====== FINDOLOGIC-Integration für CosmoShop ======
+
+
+
+===== Installation des Moduls=====
+
+====Schritt 1: Anlegen eines Preisportalexports ====
+
+Wählen Sie in Ihrem CosmoShop Backend den Menüpunkt "Promotion-Tools -> Schnittstellen". Wählen Sie hier unter "Vorlage" die Option "FINDOLOGIC" aus und klicken auf "Export erstellen".
+
+{{:fl:integration:cosmo_export.png|}}
+
+Entfernen Sie hier den Haken bei "Export aktiv" da der Export direkt von FINDOLOGIC angestoßen wird.
+
+{{:fl:integration:cosmo_export_2.png|}}
+
+Unter dem Reiter "Eigenschaften der Export-Datei" finden Sie die "Ref-ID" welche Sie in einem späteren Schritt benötigen.
+Optional können Sie diese auch ändern.
+
+{{:fl:integration:cosmo_export_3.png|}}
+
+====Schritt 3: Einstellungen im FINDOLOGIC Kundenaccount ====
+
+Melden Sie sich im FINDOLOGIC Kundenaccount mit den Zugangsdaten die Sie in Ihrer Bestellbestätigung erhalten haben an.
+Gehen Sie nun auf den Menüpunkt "Einstellungen -> Export" und tragen Sie hier Ihre Export-URL ein.
+
+=== Export-URL ===
+Die ''Export-URL'' setzt sich sich folgendermaßen zusammen:
+
+  http://<SHOP-DOMAIN>/cgi-bin/standard/admin/export_trigger.cgi?type=<REF-ID>&ls=de
+
+Ersetzen Sie hier bitte <SHOP-DOMAIN> durch die URL Ihres Shops und <REF-ID> durch die oben erwähnte Ref-ID.
+
+Zum Beispiel:
+
+  http://www.mein-shop.de/cgi-bin/standard/admin/export_trigger.cgi?type=findologic&ls=de
+
+=== CSV-URL ===
+
+Eine CSV URL muss nicht eingetragen werden, Sie können dieses Feld leer lassen.
+
+====Schritt 4: Aktivierung====
+
+  * Sobald, das Modul eingerichtet wurde, geben Sie kurz unserem Support Bescheid, damit wir Ihre Artikeldaten das erste Mal indizieren können.
+  * Sobald wir Ihre Daten fertig indiziert haben, ist die FINDOLOGIC Suche in Ihrem Shop vollständig einsatzbereit.
+
+==== Schritt 5: Finden statt Suchen ====
+
+Die FINDOLOGIC Suche bietet viele Möglichkeiten Ihre Produktsuche zu verbessern. Nutzen Sie diese Möglichkeiten jetzt!
+
+  * [[https://secure.findologic.com/login.symfony/web/app.php/synonym/new|Einrichten von Synonymen]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/shop/filter|Konfiguration der Filter]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/shop/logos|Einrichten von Herstellerlogos]]
+
+=== Ab FINDOLOGIC Advanced ===
+  * [[fl:integration:cosmoshop:smart_suggest|Integration der Smart Suggest bei CosmoShop]]
+
+=== Ab FINDOLOGIC Professional ===
+  * [[https://secure.findologic.com/login.symfony/web/app.php/landingpage/new|Einrichten von Landingpages]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/promotion/new|Einrichten von Promotions]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/bonusrule/new|Pushen von Produkten]]
+
+===== Hinweise und weiterführende Dokumentation =====
+
+
+
+==== Hilfe bei der Integration ====
+
+=== STRAIGHT2SUCCESS ===
+
+Professionelle Integration mit der Unterstützung von FINDOLOGIC? Nutzen Sie jetzt das STRAIGHT2SUCCESS Paket von FINDOLOGIC!
+
+www.findologic.com/straight2success
+
+==== Mehr herausholen! ====
+
+Noch mehr aus Ihrer FINDOLOGIC-Suche herausholen? Kein Problem, wir helfen Ihnen - mit FINETUNING! 
+
+www.findologic.com/finetuning
+
+Kennen Sie schon FINDOLOGIC-Professional? Erstellen Sie zielgerichtete Promotions, eigene Landingpages zu Suchbegriffen oder pushen Sie bestimmte Artikel, wie etwa Eigenmarken!
+
+www.findologic.com/findologic-professional
+
+==== Weitere Fragen ====
+
+Sollte Ihre Frage nicht in unseren [[https://findologic.zendesk.com/forums|FAQ]] enthalten sein, melden Sie sich jeder Zeit bei <support@findologic.com>.

@@ -1,0 +1,42 @@
+====== Zusätzliche Spalten exportieren ======
+
+<note important>Hier handelt es sich um fortgeschrittene Anpassungen. Entsprechende Datenbank- und Shopsystemkenntnisse sind Voraussetzung.</note>
+
+<note tip>Um die zusätzlichen Spalten anzuzeigen, beachten Sie bitte die Hinweise zum [[fl:template_manager#results.tpl_variablen|Template Manager]] (''RESULT[i].PROPERTY'')</note>
+
+===== Spaltenname hinzufügen =====
+Den Namen der neuen Spalte in der Funktion ''get_columns'' hinzufügen, so wie er in der CSV erscheinen soll.
+<file>
+	function get_columns() {
+		return array(
+			'id',
+			...
+			'keywords',
+			'feldname'
+		);
+	);
+</file>
+
+===== Spaltenwert aus Datenbank auslesen =====
+In der ''SELECT'' Abfrage der Artikeldetails in der Funktion ''select_product'', den Spaltenwert aus der Daten auslesen:
+<file>
+			"SELECT
+				pr.products_id,
+				...
+				dbTabelle.dbFeldname,
+				...
+</file>
+  * Auf eventuelle ''JOIN''s bitte Rücksicht nehmen.
+
+===== Ausgelesenen Spaltenwert schreiben =====
+In Assignment ''$product = array'' der Funktion ''select_product'' den ausgelesenen Wert eintragen.
+<file>
+			$product = array(
+				'id' => $row['products_id'],
+				...
+				'feldname' => $row['dbFeldname'],
+				...
+</file>
+  * ''feldname'' muss mit dem zu Beginn eingetragenen Namen übereinstimmen.
+  * ''dbFeldname'' muss mit dem Namen in dem ''SELECT'' Statement übereinstimmen.
+  * Auf die Eindeutigkeit des ''dbFeldnamen'' ist zu achten, eventuel ist der Tabellenname auch mit anzugeben.

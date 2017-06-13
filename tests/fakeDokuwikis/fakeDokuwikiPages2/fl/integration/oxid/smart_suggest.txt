@@ -1,0 +1,40 @@
+====== Integration der Smart Suggest bei OXID ======
+
+  - Laden Sie im FINDOLOGIC-Kundenaccount unter ''Einstellungen -> Smart Suggest'' den Smart Suggest-Proxy herunter
+  - Laden Sie die Datei (z.B. per FTP) ins Hauptverzeichnis Ihres Shops hoch
+  - Stellen Sie sicher, dass die Datei von außen erreichbar ist, indem Sie diese im Browser aufrufen. Liegt Ihr Shop z.B. unter http://www.mein-shop.de/ rufen Sie die Datei http://www.mein-shop.de/autocomplete.php auf.
+
+===== Für OXID < 4.7. (4.3, 4.4., ...) =====
+
+Im FINDOLOGIC-Kundenaccount finden Sie bei der Konfiguration der Smart Suggest ein Code-Schnipsel, der in Ihrem Shop einzufügen ist. Wo genau dieser einzufügen ist, hängt von der bei Ihnen eingesetzten OXID-Version ab.
+
+Der Script-Tag ist einzufügen unter ''out/MYTPL/tpl/layout/base.tpl'':
+
+<code javascript>
+    [{block name="base_js"}]
+        [{oxscript include="js/libs/jquery.min.js" priority=1}]
+        [{oxscript include="js/libs/jquery-ui.min.js" priority=1}]
+        [{oxscript include='js/libs/superfish/hoverIntent.js'}]
+        [{oxscript include='js/libs/superfish/supersubs.js'}]
+        [{oxscript include='js/libs/superfish/superfish.js'}]
+
+        <!-- hier einfügen -->
+        <script>
+        (function() {
+            var flDataMain = "https://cdn.findologic.com/autocomplete/MYAUTOCOMPLETECODE/autocomplete.js";
+            var flAutocomplete = document.createElement('script'); 
+            flAutocomplete.type = 'text/javascript'; 
+            flAutocomplete.async = true;
+            flAutocomplete.src = "https://cdn.findologic.com/autocomplete/require.js";
+            var s = document.getElementsByTagName('script')[0];
+            flAutocomplete.setAttribute('data-main', flDataMain);
+            s.parentNode.insertBefore(flAutocomplete, s);
+        })();
+        </script>
+
+    [{/block}]
+</code>
+
+===== Für OXID 4.7. =====
+
+Das neueste Modul unterstützt die Smart Suggest bereits von Haus aus, hier ist nichts mehr zu tun.

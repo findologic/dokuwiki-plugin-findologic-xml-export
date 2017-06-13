@@ -1,0 +1,145 @@
+=====plenty2.tpl=====
+
+<note important>Under Construction</note>
+
+Mit dem neuen plenty2.tpl benötigen Sie kaum Kenntnisse von Smarty oder PHP um die Suchergebnisse wunschgerecht anzupassen.
+
+FINDOLOGIC ermöglicht Ihnen dies durch Einsatz von Smartyfunktionen die mit wenigen Parametern zu den gewünschten Ergebnissen führen.
+
+Sie können weiterhin wie gewohnt auch direkt auf die Smartyvariablen zugreifen, wie weiter unten beschrieben.
+
+Die Neuerung ist nun die Verwendung folgender derzeit implementierter Funktionen:
+
+^ Name ^ Beschreibung ^
+|logo | Bindet das FINDOLOGIC-Logo im gewünschten Farbschema ein |
+|chosen_filters | Fügt die derzeit vom Benutzer ausgewählten Filter an |
+|filter | Fügt den Parametern entsprechende die Filtermöglichkeiten ein |
+|not_found | Gibt die gewünschte Rückmeldung aus, wenn keine Produkte gefunden wurden |
+|paginator | Gibt Links zur Navigation aus |
+|relevance | Gibt eine Warnung für zu geringe Relevanz aus |
+|results | Zeigt die gefunden Produkte an |
+|sort | Ermöglicht die Sortierung der Ergebnisse |
+
+===Syntax===
+
+Der Zugriff auf Smarty erfolgt immer durch die Verwendung von geschwungenen klammern "{ }".
+
+Zugriff auf **Variablen**: ''{$VARIABLENNAME}'' bzw. ''{$ARRAYNAME.ELEMENTNAME}''\\
+Aufruf von **Funktionen**: ''{funktionsname parameter_1="wert" parameter_2="wert"}''\\
+
+
+====Die Funktionen im Detail====
+
+Alle Parameter sind optional, jedoch für sinnvolle Ergebisse teilweise notwendig (zum Beispiel für die Funktion "filter").
+
+===logo===
+
+Beispiel:
+<code>
+{logo color="red-grey-transparent"}
+</code>
+^ Parameter ^ Wert ^ Output ^
+| "parameterlos" | |{{:fl:findologic_claimer_german.png}} |
+| color | red-grey | {{:fl:findologic_claimer_german_rot_grau.png}} |
+| color | grey | {{:fl:findologic_claimer_german_grau.png}} |
+| color | transparent| {{:fl:findologic_claimer_german_transparent.png}} |
+| color | red-grey-transparent| {{:fl:findologic_claimer_german_rot_grau_transparent.png}} |
+| color | grey-transparent| {{:fl:findologic_claimer_german_grau_transparent.png}} |
+| color | english| {{:fl:findologic_banner_search_powered_by.png}} |
+
+===chosen_filters===
+
+Beispiele:
+
+<code>
+{chosen_filters}
+{chosen_filters name="Farbe" remove_label="kick it"}
+{chosen_filters remove_all_only="1" remove_all_label="Macht doch bitte wieder die Filter weg"}
+</code>
+^ Parameter ^ Wert ^ Beschreibung ^ Default ^
+| "parameterlos" | | Liefert alle gewählten Filter als Link zur Entfernung jener | |
+| name | cat | Liefert alle gewählten Kategorie-Filter als Link zur Entfernung jener | |
+| name | vendor | Liefert alle gewählten Hersteller-Filter als Link zur Entfernung jener | |
+| name | price | Liefert alle gewählten Preis-Filter als Link zur Entfernung jener | |
+| name | //Attributsname// | Liefert alle gewählten Attributs-Filter als Link zur Entfernung jener | |
+| removeable | 0 | Liefert die gewählten Filter als Text nicht als Link zur Entfernung |1|
+| remove_label | //String// | Der übergebene Wert wird dem Link als //title// übergeben (erscheint bei onMouseOver) |"Filter entfernen"|
+| remove_all | 0 | Wird verwendet um den Link "Alle Filter entfernen" nicht anzuzeigen |1|
+| remove_all_label | //String// | Der übergebene Wert wird als Text für den "Alle Filter entfernen"-Link übernommen |"Alle Filter entfernen"|
+| remove_all_only | 1 | Es wird nur der Link zur Entfernung aller Filter angezeigt |0|
+
+===filter===
+
+Beispiele:
+
+<code>
+{filter name="cat"}
+{filter name="Farbe" type="color-picker"}
+{filter name="Grösse" type="label-image" img_url="http://www.hierstehtmeineshopurl.at/findologic/filter-images" img_filetype="png" img_width="10px" img_height="10px"}
+</code>
+
+^ Parameter ^ Wert ^ Beschreibung ^ Default ^
+| "parameterlos" | | Liefert eine leere Box, zumindest der Parameter "name" ist notwendig um eine sinnvolle Anzeige zu ermöglichen | |
+| name | cat | Liefert alle wählbaren Kategorie-Filter | |
+| name | vendor | Liefert alle wählbaren Hersteller-Filter| |
+| name | price | Liefert alle wählbaren Preis-Filter| |
+| name | //Attributsname// | Liefert alle wählbaren Attributs-Filter| |
+| type | color-picker | Setzt vor den Namen der auswählbaren Farben symbolisch die auswählbare Farbe ([[farbfilter|erfahren Sie mehr]])| Filternamenanzeige |
+| type | label-image | Setzt beliebige Bilder vor die auswählbaren Filter (Achtung abhängige Parameter!)| Filternamenanzeige |
+| type | select | Zeigt die Filter in einem Drop-Down Feld an | Filternamenanzeige |
+| img_url | //String// | Setzt den Pfad zu den Filter-Bildern | - |
+| img_filetype | //String// | Definiert den Dateityp der Filter-Bilder | - |
+| img_width | //Integer// | Definiert die Breite der Filter-Bilder | - |
+| img_height | //Integer// | Definiert die Höhe der Filter-Bilder | - |
+| limit | //Integer// | Setzt die Maximalanzahl der anzuzeigenden Filter | "Endlos" |
+| offset | //Integer// | Setzt die Position des ersten anzuzeigenden Filters | 0 |
+| show_frequency | 0 | Die Anzahl der zugehörigen Treffer wird nicht angezeigt | 1 |
+| not_found | //String// | Der übergebene Wert wird angezeigt wenn keine weiteren Filter gefunden wurden| Keine weiteren Filter vorhanden |
+
+==Tipps und Tricks==
+
+Sollte Ihnen die ehemalige Darstellung des Templates schon ans Herz gewachsen sein, können Sie diese beispielsweise wie folgt nachbauen:
+
+<code>
+{filter name="vendor" limit="5"}
+{filter name="vendor" offset="5" type="select" not_found=""}
+</code>
+
+==Verwendung der label-images:==
+
+Beachten Sie, dass bei der Wahl der label-images die Bezeichnungen der Bilder exakt den der Attributen entsprechen!\\
+Achten Sie bei der URL darauf am Ende **keinen** "/" mehr anzuhängen!
+
+
+===not_found===
+
+Beispiele:
+
+<code>
+{not_found}
+{not_found message="nix gefunden"}
+</code>
+
+^ Parameter ^ Wert ^ Beschreibung ^ Default ^
+| "parameterlos" | | Liefert die Rückmeldung "Es wurden keine Produkte gefunden" | |
+| message | //String// | Der übergebene Wert wird angezeigt wenn keine Produkte gefunden wurden | Es wurden keine Produkte gefunden |
+
+
+
+===paginator===
+
+Beispiele:
+
+<code>
+{paginator}
+{paginator type="pageSize" sizes="10|20|50|100"}
+</code>
+
+^ Parameter ^ Wert ^ Beschreibung ^ Default ^
+| "parameterlos" | | Zeigt den Paginator mit den voreingestellten Produktanzahlen an. | |
+| type | pageSize | Forciert den Paginator mit den **mitübergebenen** Produktanzahlen anzuzeigen. | |
+| sizes | //Int//<nowiki>|</nowiki>//Int//<nowiki>|</nowiki>//Int//<nowiki>|</nowiki>//Int// | Die eingefügten Zahlen werden zur Auswahl gestellt | |
+| label | //String// | Dient der Beschreibung des Auswahl-Selects | <nowiki>''</nowiki> |
+
+Wenn Sie type="pageSize" verwenden ist die Angabe der entsprechenden "sizes" notwendig!\\
+Beachten Sie, dass das label nur bei der Angabe type="pageSize" berücksichtigt wird.

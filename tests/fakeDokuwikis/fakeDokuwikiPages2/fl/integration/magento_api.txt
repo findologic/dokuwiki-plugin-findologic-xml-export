@@ -1,0 +1,219 @@
+====== FINDOLOGIC-Integration für Magento-Shops ======
+
+===== Wichtige Hinweise =====
+
+==== Kompatibilität ====
+
+Bitte prüfen Sie ob Ihre Shopsystemversion mit der aktuellen Modulversion bei Magento Connect kompatibel ist.
+
+Unter Umständen werden auch ältere Shopsystemversionen unterstützt. Wenden Sie sich in diesem Fall bitte direkt an support@findologic.com.
+
+==== Vorbereitung ====
+
+Bitte **entfernen** (eine Deaktivierung ist nicht ausreichend) Sie folgende Extensions / Themes, da diese zu einem Konflikt mit dem Modul führen können
+
+  * Flagbit FACT-Finder (evtl auch Market Ready Germany)
+  * BoomBoom / Shopppage
+
+===== Installation des Moduls=====
+
+
+
+====Schritt 1: Download des Moduls====
+
+Über Magento-Connect erhalten Sie einen gültigen Extension Key um das FINDOLOGIC Modul in Ihrem Magento Shop zu installieren:
+[[http://www.magentocommerce.com/magento-connect/catalog/product/view/id/14604/s/dixeno-findologic-6870/|FINDOLOGIC-Modul für Magento]]
+
+Gehen Sie anschließend zu dem Menüpunkt "System -> Magento Connect -> Magento Connect Manager".
+
+{{:fl:internal:integration:magento_connect.png|}}
+
+Hier fügen Sie den erhaltenen Extension Key unter "Install New Extensions" unter Punkt 2 ein und klicken auf ''Install''.
+
+{{:fl:internal:integration:connect_key.png|}}
+
+====Schritt 2: Einstellungen im FINDOLOGIC Kundenaccount ====
+
+Tragen Sie im [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Kundenaccount]] unter dem Menüpunkt "Einstellungen -> Export" Ihre Exportdaten ein:
+
+  * ''Export-URL''
+  * ''CSV-URL'' und
+  * ''Export-Passwort''
+
+Hierfür benötigen Sie Ihren ''Store-Code''. Diesen finden Sie in Ihrem Magento Backend unter dem Menüpunkt "System -> Stores verwalten".
+
+{{:fl:integration:storecode.png}}
+
+=== Export-URL ===
+Die ''Export-URL'' setzt sich sich folgendermaßen zusammen:
+
+  http://<SHOP-URL>/index.php/findologic/csv/create/part/1/limit/100/store_code/<STORE-CODE>
+
+Zum Beispiel:
+
+  http://www.mein-shop.de/index.php/findologic/csv/create/part/1/limit/100/store_code/default
+
+=== CSV-URL ===
+
+Die ''CSV-URL'' setzt sich sich folgendermaßen zusammen:
+
+  http://<SHOP-URL>/export/findologic_<STORE-CODE>.csv
+
+Zum Beispiel:
+
+  http://www.mein-shop.de/export/findologic_default.csv
+
+=== Export-Passwort ===
+
+Bitte wählen Sie hier ein Passwort ohne Sonderzeichen.
+
+=== Export-Username ===
+
+Das Feld "Export-Username" kann leer bleiben.
+
+====Schritt 3: Einstellungen im Shop-Backend ====
+
+Gehen Sie im Menü unter ''System'' -> ''Configuration'' -> ''Services'' -> ''FINDOLOGIC Search''.
+
+{{:fl:integration:magento_moduleinstellungen_1.png|}}
+
+Tragen Sie hier Ihren Shopkey und Ihre Service URL ein und wählen ggf. persönliche Einstellungen. Shopkey und Service URL finden Sie im FINDOLOGIC Kundenaccount unter dem Menüpunkt ''Account -> Stammdaten''.
+
+Tragen Sie hier im Bereich ''"Export Settings"'' das zuvor gewählte Export-Passwort ein.
+
+==== Schritt 4: Aktivierung ====
+
+  * Sobald, das Modul eingerichtet wurde, schreiben Sie ein diesbezügliches Email an support@findologic.com, damit wir Ihre Artikeldaten das erste Mal indizieren können.
+  * Der Status kann erst auf **"enabled"** wechseln, wenn Ihre Artikeldaten indiziert wurden.
+
+==== Schritt 5: Finden statt Suchen =====
+
+Die FINDOLOGIC Suche bietet viele Möglichkeiten Ihre Produktsuche zu verbessern. Nutzen Sie diese Möglichkeiten jetzt!
+
+  * [[https://secure.findologic.com/login.symfony/web/app.php/synonym/new|Einrichten von Synonymen]]
+
+=== Ab FINDOLOGIC Basic ===
+  * [[fl:integration:magento:smart_suggest|Integration der Smart Suggest bei Magento]]
+
+=== Ab FINDOLOGIC Professional ===
+  * [[https://secure.findologic.com/login.symfony/web/app.php/bonusrule/new|Pushen von Produkten]]
+
+
+
+===== Hinweise und weiterführende Dokumentation =====
+
+==== Hilfe bei der Integration ====
+
+=== STRAIGHT2SUCCESS ===
+
+Professionelle Integration mit der Unterstützung von FINDOLOGIC? Nutzen Sie jetzt das STRAIGHT2SUCCESS Paket von FINDOLOGIC!
+
+www.findologic.com/straight2success
+
+
+==== Mehr herausholen! ====
+
+Noch mehr aus Ihrer FINDOLOGIC-Suche herausholen? Kein Problem, wir helfen Ihnen - mit FINETUNING! 
+
+www.findologic.com/finetuning
+
+Kennen Sie schon FINDOLOGIC-Professional? Erstellen Sie zielgerichtete Promotions, eigene Landingpages zu Suchbegriffen oder pushen Sie bestimmte Artikel, wie etwa Eigenmarken!
+
+www.findologic.com/findologic-professional
+
+==== Troubleshooting ====
+
+=== Export ===
+
+  * Falls nicht alle Produkte exportiert werden, müssen ggf. die Indizes im Shop neu erstellt / aktualisiert werden
+    * Sollte dies nicht helfen, kann es auch daran liegen, dass ein Importer für die Indizierung des Datenbestandes verwendet wurde. Dieser füllt die Short-Description in der Magento Datenbank nicht richtig und daher werden die Produkte nicht exportiert.
+  * Falls nur der CSV-Header ausgegeben wird kann es helfen wenn in der Datei ''code/community/flagbit/Findologic/Block/Export/ProductList'' in Zeile 63 <code>addAttributeToSelect(array('name','short_description','price','image'), 'inner'); </code> statt 'short_description' 'description' verwendet wird.
+  * Falls trotz korrekter Konfiguration die Suche nicht aktiv ist, stellen Sie bitte sicher dass unter System -> Configuration -> Advanced -> Advanced -> Disable Modules Output FINDOLOGIC **nicht** deaktiviert ist
+  * Es gibt bekannte Inkompatibilitäten mit anderen Such- und Navigationsmodulen
+    * Falls das "FACT-Finder Modul", "Amasty_Shopby Modul" oder "Bubble_Elasticsearch Modul" installiert ist, muss dies entfernt werden. Ein deaktivieren reicht nicht aus.
+      * Falls sich das FACT-Finder Modul nicht desinstallieren lässt, kann dies an der Abhängigkeit vom Modul "Market Ready Germany" liegen. Eine Alternative zu diesem Modul ist eventuell "firegento". 
+    * Es gibt bekannte Inkompatibilitäten zu folgenden Modulen:
+      * GoMage Advanced Navigation Extension Modul
+      * Improved Layeredv Navigation for Magento
+    * Falls Module des Herstellers "Mana" (Mana Dev) eingesetzt werden, muss in der Datei app\code\local\Mana\Core\Helper\Layer.php:77 in der Methode getMode() die Anfrage URL des FINDOLOGIC Moduls ergänzt werden, da sonst beim Aufruf von getLayer() in der gleichen Klasse der Klassenidentifier catalog/layer statt catalogsearch/layer zurückgegeben wird. Dadurch kann das FINDOLOGIC Modul nicht von Catalogsearch_Layer erben und die Suche wird nicht ausgeführt. Zur Behebung des Problems muss der FINDOLOGIC URL Teil ergänzt werden. 
+{{:fl:mana_core_layer_helper_get_mode.png|}}
+
+=== Neuindizierung des Artikelbestandes ===
+Sollten - nach Änderungen am Artikelbestand (z.B. an den Kategorien) nicht mehr alle Produkte gefunden werden, hilft es eventuell die Indizes im Shop neu zu erstellen/zu aktualisieren. Informieren Sie im Anschluss daran bitte den FINDOLOGIC-Support, damit die Daten neu importiert werden. 
+
+=== Unterstützung der Professional-Features ===
+Je nach verwendeter Modul-Version kann es sein, dass die Professional-Features vom Modul nicht (vollständig) unterstützt werden. Die [[https://secure.findologic.com/dokuwiki/doku.php?id=fl:modul:landingpages|Landingpages]] und [[https://secure.findologic.com/dokuwiki/doku.php?id=fl:modul:promotions|Promotions]] müssten somit gegebenenfalls selbst umgesetzt werden. 
+
+=== Filter werden nicht angezeigt ===
+== Mehrere StoreViews ==
+
+Da es bei Magento keine Unterscheidung zwischen Multishops und unterschiedlichen Sprachen gibt, ist hier pro Shop ein einzelner Service nötig.
+
+== Eigenes Theme ==
+
+Wurde ein eigenes Theme als eigenständiges Package angelegt, müssen die Dateien aus dem Standardordner in das Package verschoben werden. 
+
+Die betroffenen Dateien liegen unter ''/app/design/frontend/default/default/template/findologic/'' und ''/app/design/frontend/default/default/layout/findologic.xml''. Kopieren Sie diese in den entsprechenden Ordner in Ihrem eigenen Theme.
+
+== Große Ergebnismenge ==
+
+Bei einer großen Ergebnismenge zeigt Magento (unabhängig von FINDOLOGIC) keine Filter an. Standardmäßig liegt dieser Wert bei 2.000 Ergebnissen. Die Grenze kann im Backend unter folgender Einstellung angepasst werden:
+
+  - System
+  - Konfiguration
+  - Katalog / Katalog 
+  - Katalogsuche
+  - Filternavigation nur auf Suchanfragen anwenden mit weniger Egebnissen als
+
+==== Magento Elemente die Überschrieben werden ====
+
+Das Modul überschreibt folgende Elemente:
+
+  * **blocks**
+    * catalog/block/product/list/toolbar - Mage_Catalog_Block_Product_List_Toolbar
+    * catalog/block/product/list - Mage_Catalog_Block_Product_List
+    * catalogsearch/block/autocomplete - Mage_CatalogSearch_Block_Autocomplete
+    * catalogsearch/block/layer - Mage_CatalogSearch_Block_Layer
+  * **Models**
+    * /catalogsearch/models/layer - Mage_CatalogSearch_Model_Layer
+
+==== Plugin überträgt nicht die korrekte IP-Adresse ====
+
+Falls ausschließlich nur eine IP-Adresse übergeben wird, ist vermutlich ein Reverse-Proxy im Einsatz. Hierfür kann folgender Patch auf die Datei ''app/code/community/Dixeno/Findologic/Helper/Data.php'' angewandt werden:
+<code>
+*** Data.php	2013-03-15 15:08:30.000000000 +0100
+--- Data new.php	2013-06-27 11:00:02.381481212 +0200
+***************
+*** 168,174 ****
+              }
+          }
+      	//echo "<pre>";var_dump($params);echo "</pre>";exit;
+! 		$params['userip'] = $_SERVER['REMOTE_ADDR'];
+      	$client->setParameterGet($params);
+      	
+      	$xmlDom = null;
+--- 168,178 ----
+              }
+          }
+      	//echo "<pre>";var_dump($params);echo "</pre>";exit;
+
+!       if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) && ($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+!           $params['userip'] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+!       } else{
+!           $params['userip'] = $_SERVER["REMOTE_ADDR"];
+!       }
+      	$client->setParameterGet($params);
+      	
+      	$xmlDom = null;
+</code>
+
+==== Weitere Fragen ====
+
+Sollte Ihre Frage nicht in unseren [[https://findologic.zendesk.com/forums|FAQ]] enthalten sein, melden Sie sich jeder Zeit bei <support@findologic.com>.
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+==== DOKUWIKI ====
+
+====== Variables for the search result ======
+
+The RESULT array contains all products based on the searched query.
+
+^ Variable ^ Type ^ Brief description ^
+| ''REMOVE_ALL_FILTERS'' | string | URL to the search results with all previous filters removed. |
+| ''QUERY'' | string | Search query text. | 
+| ''TOTAL_RESULTS'' | integer | Total number of results found. |
+
+=== Items of the RESULT array ===
+
+
+^ Variable ^ Type ^ Brief description ^
+| ''RESULT'' | array | Array of the search results |
+
+^ Variable ^ Type ^ Brief description ^
+| ''ITEM.ID'' | string | unique item ID as submitted in the [[csv_format_2_0|csv]] |
+| ''ITEM.ORDERNUMBER'' | string | item number as submitted in the [[csv_format_2_0|csv]] |
+| ''ITEM.TITLE'' | string | item name with emphasis of terms found ''flemphasis''((If search term highlighting is activated)) |
+| ''ITEM.TITLE_WITHOUT_HIGHLIGHTING'' | string | item name without emphasis of terms found |
+| ''ITEM.SUMMARY'' | string | short description with emphasis of terms found |
+| ''ITEM.PRICE'' | number | currently applicable gross price of the item, e.g. offer price |
+| ''ITEM.OVERRIDDEN_PRICE'' | number | Normal price, RRP, etc. |
+| ''ITEM.IMAGE'' | string | URL of the item thumbnail image |
+| ''ITEM.URL'' | string | URL of the item detail page |
+| ''ITEM.TAX_RATE'' | number | Tax rate of the item |
+| ''ITEM.PROPERTIES'' | struct | Structure with the contents of the optional columns of the CSV ((E.G.: If an additional detail column is defined in the CSV for each item, ITEM.PROPERTIES.detail contains the respective value; the content of the vendor attribute remains set in ITEM.PROPERTIES .vendor)) |
+
+<color green>IIIT WOORKS</color>
+

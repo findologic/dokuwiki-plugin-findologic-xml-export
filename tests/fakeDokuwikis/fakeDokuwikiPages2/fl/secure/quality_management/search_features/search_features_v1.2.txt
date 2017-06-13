@@ -1,0 +1,214 @@
+<note important>Version in Planung! (Q2/2011)</note>
+
+====== Features 1.2 ======
+Folgende Features sind durch die FINDOLOGIC Suche zumindest in Deutsch bereits gelöst und müssen bei Weiterentwicklungen ebenfalls unterstützt werden.
+In den Anmerkungen sind oft die Einschränkungen der aktuellen Features erläutert und sind natürlich als verbesserungswürdig zu erachten.
+
+===== Artikelnummernsuche =====
+
+** Exakte Suche ** \\
+Artikelnummern werden exakt gesucht. \\ 
+Beispiel: Artikelnummer="ab12ce34", Suche="ab12ce34" => Anzeige von genau diesem Artikel. Andere Artikel mit ab, 12, ce, 34 werden nicht angezeigt.
+
+** Teilnummernsuche / Trennzeichen ** \\
+Artikelnummern können Trennzeichen wie "-", "/" oder "." enthalten. Diese werden bei der Suche speziell berücksichtigt. \\
+Beispiel: Artikelnummer="123-45/ab.cd". Folgende Suchbegriffe matchen: "123-45/ab.cd", "123 45 ab cd", "12345abcd" aber auch "123/45 ab-cd"
+
+** Teilnummernsuche / Likesuche ** \\
+Obsolet nach Besprechung mit Felix und Georg --- //[[b.schulz@findologic.com|Bernhard Schulz]] 2011/07/08 14:34//
+
+Vorschlag: Derzeit gibt es die Möglichkeit in der Datenbank durch ein zweites Eingabefeld die Suche speziell für Artikelnummern durchzuführen, womit obiger Fall abgedeckt werden kann. Ein zweites Eingabefeld erweißt sich aber in der Praxis als wenig Praktikabel. Eine bessere Möglichkeit wäre durch ein Patternmatching bestimmen zu lassen, ob die Eingabe einer Artikelnummer entsprechen könnte. z.B. In einem Shop sind nur Artikelnummern aus Zahlen vorhanden, so ist eine einzelne Zahl als Suchwort mit hoher Wahrscheinlichkeit als eine Artikelnummer gemeint.
+
+===== Gutes Ranking von kompletten Worten =====
+
+Trotz aller fehlertoleranten Algorithmen muss sichergestellt sein, dass komplette Treffer höher gerankt werden als durch Wortzerlegung, Wildcard, Levenshtein o.ä. gefundene.
+
+Beispiel: Suche nach "Handschuh" rankt "Handschuh aus Leder" höher als "Lederhandschuh"
+ 
+
+===== Stammformreduktion =====
+Suchbegriffe in einer abgeleiteten Form oder in der Stammform müssen zu den gleichen Ergebnissen führen. Es muss auch egal sein, in welcher Form ein Begriff in der Artikelbeschreibung vorkommt. \\
+Beispiele: „handschuhe“ findet „Handschuh“, „handschuh“ findet „Handschuhe“, „bitten“ findet „gebeten“
+
+Anmerkung: Singular & Plural ist notwendig, starke Abwandlungen wie „bitten“ und „gebeten“ nicht unbedingt, wenn kein Dictionary verwendet werden kann.
+
+Anmerkung: Über ein Dictionary lässt sich natürlich die Bedeutung von Worten in wichtigen Fällen gut zuordnen.
+Beispiel: „müssen“ findet „muss“ zuerst, dann „musen“ obwohl es die Levenshtein-Distanz anders vorsehen würde.
+
+
+===== Umlaut-Umschreibung =====
+Die Suchergebnisse für umschriebene Umlaute müssen identisch sein mit jenen, in denen Umlaute nicht umschrieben werden. \\
+Beispiel: „aepfel“ findet „äpfel“ genau gleich wie die Suche nach „äpfel“, „strasse“ findet „straße“, "µ" findet "mü", "mue", "mueh", etc.
+
+Anmerkung: Wenn es Unterschiede in der Bedeutung gibt, dürfen diese ausschließlich im Ranking sichtbar sein. \\
+Beispiel: „strass“ findet „Strass“ zuerst, dann „Straße“, „straß“ findet „Straße“ zuerst, dann „Strass“.
+
+
+===== Geringere Levenshtein-Distanz von ähnlichen Buchstaben =====
+Beispiel: „Doge“ findet „Dogge“ vor „Dose“ obwohl die Levenshtein-Distanz gleich ist. (//nice-to-have//) \\
+
+
+
+===== Teilworterkennung =====
+** Teilworterkennung aus Wörterbuch ** \\
+Teile von zusammengesetzten Worten müssen auch individuell gefunden werden. Die zusammengesetzte Form ist vorzuziehen, wenn danach gesucht wird. \\
+Beispiel: „tasche für damen“ findet „Damenhandtasche“, „kreuzkümmel“ findet zuerst „Kreuzkümmel“ dann aber auch „Kümmel“ \\
+
+Anmerkung: Unsinnige Auftrennungen sollten vermieden werden (//Handschuh, Gabelstapler//). \\
+Obsolet nach Besprechung Felix/Georg  --- //[[b.schulz@findologic.com|Bernhard Schulz]] 2011/07/08 14:51//
+
+** Teilworterkennung von Eigennamen ** \\
+Beispiel: „north face“ findet „TheNorthFace“, „the-north-face“ und “thenorthface”.  --- //[[b.schulz@findologic.com|Bernhard Schulz]] 2011/07/08 14:51//
+
+
+
+
+===== Bedeutungsveränderung bei Zusammensetzung =====
+Ändert ein Wort die Bedeutung in der Zusammensetzung soll es später geranked gefunden werden.
+Beispiel: „schuh“ soll „Handschuh“ nicht oder erst am Schluss finden.
+
+
+===== Ähnliche Worte =====
+Mittels Levenshtein-Distanz und Phonetik sollen ähnliche oder ähnlich lautende Worte auch gefunden werden - je ähnlicher, desto höher im Ranking. \\
+Beispiel: „carbon“ findet zuerst „carbon“ dann aber auch „karbon“; „karbon“ findet zuerst „karbon“ dann auch „carbon“. „schimano“ findet „Shimano“.
+
+Mundart wird großteils über die Phonetik abgedeckt. \\
+Beispiel: "gamülendee" findet "Kamillentee"; "tischört" findet T-Shirt \\
+Spezielle Wörter wie "Paradeiser" vs. "Tomate" können derzeit nur über eine Synonymtabelle berücksichtigt werden.
+
+Anmerkung: Gerade bei Marken oder Eigennamen ist oft nicht klar, wie die genaue Schreibweise lautet. \\
+Beispiel: „umkalobo“ findet „Umkaloabo“, „Aspirien“ findet „Aspirin“,  …
+
+Anmerkung: Eine Levenshtein-Distanz von mehr als 3 macht normalerweise keinen Sinn mehr, aber bei ähnlich lautenden Buchstaben soll auch mehr toleriert werden. \\
+Beispiel: „speck“ findet „seesack“ nicht mehr, aber „schiemahno“ soll „Shimano“ problemlos finden.
+
+
+
+===== Suche nach mehreren Begriffen =====
+Sucht man nach mehr als einem Begriff, wird versucht Artikel mit allen Begriffen zu finden. Gibt es davon keine, werden Artikel mit möglichst großen Teilmengen angezeigt. Dabei sinkt die Relevanz mit steigender Wortanzahl. \\ Beispiel: "Aspirin Plus Magen Darm" --> Fundmengen für "Aspirin Plus" und "Magen Darm" --> "Aspirin Plus" wird für die Suche verwendet, da diese Wörter als erstes eingegeben wurden.
+
+Werden nicht alle Begriffe für die Suche verwendet muss der suchende darüber informiert werden können. \\ 
+Beispiel: Es gibt keine Artikel die alle der Begriffe „diamantbohrer für holz“ enthalten.
+Die Suche ergibt: Es gibt keine Artikel, die alle Suchbegriffe enthalten, es folgen Ergebnisse mit Teilen…
+
+
+===== Ranking =====
+**Berechnung absolut** \\
+Das Ranking berücksichtigt, in welchem Textfeld ein Match vorkommt. Ein Match im Titel ist etwa wichtiger als ein Match in der Beschreibung; \\ 
+Reihenfolge der Wichtigkeit: Titel->Kategorie->Hersteller->Summary->Description. \\
+Berücksichtigt wird auch wie oft ein Wort in einem bestimmten Artikel vorkommt und wie oft das Wort in anderen Artikel vorkommt, um entscheiden zu können, wie gut das Wort einen bestimmten Artikel beschreibt. \\
+Wird nach mehreren Worten gesucht, sind jene Matches zu bevorzugen, in denen die Worte einen geringeren Abstand zueinander haben. \\
+Beispiel: „damenhandtasche“ soll zuerst „Handtasche für Damen“ finden und dann erst „Sporttasche, die gut in der Hand liegt, ... speziell für Damen“
+
+Anmerkung:
+Die Bewertung der Entfernung der Wörter kann derzeit nur über die Textfelder bzw. den zusammengesetzten Wörtern erfolgen. Später soll eine echte Cover Density eingebaut werden. \\
+Beispiel: Artikel 1: "Damen Handtasche Leder", Artikel 2: "Damen Leder Handtasche", Suche: "Damen Leder Handtasche" => Ranking: Artikel 2, dann Artikel 1.
+
+**Berechnung relativ** \\
+Da die Anzahl der gefunden Wörter für die Relevanz berücksichtigt wird, werden natürlich jene Produkte bevorzugt, die öfters im Shop vertreten sind. Um dem entgegen zu wirken und auch Produkte im Blickwinkel des Suchenden zu bekommen, die weniger häufig im Shop vertreten sind, wird auch die Anzahl der Produkte in der Produktgruppe für die Relevanz herangezogen. \\
+Beispiel: "Tisch rot" findet "Tischset rot" vor "Tischgrill schwarz" obwohl der Shop über 100 "Tischgrills" hat und nur 5 "Tischsets".
+
+**Puschen** \\
+Der Kunde hat derzeit die Möglichkeit bestimmte Produkte in der Relevanz zu puschen um diese weiter oben in der Ergebnisliste zu haben. \\
+Später soll der Kunde diese Möglichkeit auch für Produktgruppen, Kundengruppen, etc. haben.
+
+===== Autocomplete =====
+2 Varianten:
+  * Suchvorschläge: Ähnlich wie bei Google
+    * Hersteller und Kategorien sollen als ganzer Begriff angezeigt werden. Beispiel: "lag" zeigt "karl lagerfed" an.
+  * Strukturierte Autocomplete: Anzeige von Produkttiteln, Kategorienamen und Hersteller als ganze Texte
+    * Derzeit wie folgt: 10 Artikel: 2 Artikel Ordernumber, 2 Artikel Hersteller, 3 Artikel: Kategorie, 3 Artikel: Titel (entsprechende Aufteilung, sollten z.B. keine zwei Ordernumber gefunden werden).
+
+
+===== Filter =====
+Welcher Filter an erster Stelle kommt, wird durch 2 Faktoren bestimmt:
+  * Dem Rankingwert der gefundenen Produkte
+  * Dem Informationsgehalt des Filters
+
+Filter bilden Schnittmengen der Ergebnisse.
+
+Wertefilter (z.B.: Preis) bilden Bereichsmengen. Diese Mengen sollten in einem von Menschen lesbaren Zahlenformat ausgegeben werden. \\
+Bsp: Die Berechnung ergibt einen Filter von 2,93 Euro bis 1132,22 Euro -> Filter von 2,00 bis 1200,00 Euro.
+
+===== Produkt-Gruppierungen bzw. Mandanten =====
+Gruppen bilden Vereinigungen der Ergebnisse.
+
+So kann die Suche zB nur für die Artikel einen Mandant gestartet werden.
+
+===== Dynamische Relevanzschranke =====
+
+Über die dynamische Relevanzschranke wird sichergestellt, dass bei guten Treffern nicht noch viele schlechte zurückgeliefert werden, die die Ergebnisse und Filter dann unbrauchbar machen. Hierzu werden nur Ergebnisse mit einer Relevanz über einem Mindestwert zurückgeliefert, dieser Mindestwert hängt vom besten Ergebnis ab.
+
+Beispiel für eine Relevanzschranke von 0.01 (=10%): Bestes Ergebnis 5.0, es werden nur Ergebnisse mit einer Relevanz >= 0.05 zurückgeliefert
+
+===== Sonstiges =====
+
+Features, die nicht direkt mit der Suche zusammenhängen, aber den Such-Kernel betreffen.
+
+==== Suche funktioniert auch während der Indizierung ====
+
+Auf die Suche kann auch während der Indizierung der Produkte zugegriffen werden, und dies in akzeptabler Zeit (Stichwort: Front- / Back-Datenbank).
+
+==== Inkrementeller Import ====
+
+Es ist möglich, den bestehenden, aktuellen Index zu modifizieren, indem Produkte hinzugefügt, gelöscht und verändert werden können. Der neue Stand wird dann von der Suche berücksichtigt.
+
+==== Mehrere Indizes pro Server ====
+
+Über einen Server können mehrere Indizes / Shops abgewickelt werden.
+
+==== Logging ====
+
+Die Suchanfragen werden geloggt, es können Auswertungen für den Kunden und intern generiert werden.
+
+====== Probleme ======
+Folgende Probleme treten bei unserem Such (Lookup) Ansatz auf.
+
+
+===== Keine Auftrennung für Worte, die nicht im Dictionary sind =====
+Kommt das eingegebene zusammengesetzte Wort im Dictionary nicht vor, oder wird von keiner iSpell Regel aufgetrennt, können Teile davon nicht gefunden werden.
+Beispiel: „skateboardpark“ findet „Boardpark“ nicht.
+
+Anmerkung: Gerade bei Eigennamen kann das Dictionary natürlich oft nicht weiterhelfen.
+Beispiel: „wachs“ findet „Carnaubawachs“ (Arzneimittel) nicht
+
+
+===== Falsche Auftrennung von Worten im Dictionary =====
+Manche Worte kommen im Dictionary zwar vor, werden aber falsch aufgetrennt. Auch die neuesten Updates der iSpell Dictionarys konnten dabei keine Abhilfe schaffen.
+Beispiel: „schuldzuweisung“ wird in „schul-dzuwei-sung“ aufgetrennt (exemplarisch)
+
+
+===== Falschgeschriebene Worte können nicht immer aufgetrennt werden =====
+Wenn die Levenshtein-Distanz mehr als 2 beträgt und das zusammengesetzte Wort nicht im zu durchsuchenden Artikelbestand vorkommt, kann ein falsch geschriebenes Suchwort nicht aufgetrennt werden.
+Beispiel: „damnhantashe“ findet nicht „Damenhandtasche“ da „damnhantashe“ vom Dictionary nicht aufgetrennt werden kann.
+
+
+===== Buchstabenvertauscher zählen mit Distanz 2 =====
+Die Reihenfolge zweier aufeinanderfolgender Buchstaben ist häufig vertauscht. Mit der verwendeten Implementierung der Levenshtein-Distanz weist das Suchwort eine Distanz von 2 richtig geschriebenen Wort auf. Toleriert man allgemein eine Levenshtein-Distanz von 2 kommen jedoch häufig wesentlich sinnfremdere Treffer zuerst.
+Beispiel: „handtashce“ findet „handtasche“ aber genau so „handtasse“. „handtasche“ kann im Ranking nicht bevorzugt werden.
+
+
+===== Unpassende Auftrennung von Worten =====
+Manche Worte haben zusammengesetzt eine ganz andere Bedeutung. Werden sie vom Dictionary trotzdem aufgetrennt, Suchen manchmal wenig Sinn.
+Beispiel: (exemplarisch) „Handschuh“ wird im Artikelbestand in „Hand“ und „Schuh“ aufgetrennt. Die Suche nach „schuhe“ findet dann auch „Handschuhe“.
+
+
+===== iSpell trennt oft in sinnlose Teile auf =====
+Beispiel: „Reifenheber“ wird in „heber“, „reif“, „reife“, „reifen“ und „reifenheber“ aufgetrennt, wobei „reif“ und „reife“ wenig Sinn ergeben.
+
+
+===== Gemischt sprachige Texte schwer zu durchsuchen =====
+Gerade bei Artikel-Titel oder Eigennamen versagt die Herangehensweise mit einem deutschen Dictionary oft.
+Beispiel: „Konsolenspiel God of War“ im Artikelbestand. Die Suche nach „god of war“ verwirft „war“ da es sich um ein deutsches Stopword handelt und findet daher auch viele andere Titel, die nur „god“ enthalten.
+
+Anmerkung: Eigennamen können auch häufig deutsche Stopwords enthalten. Die Verwendung von Stopwords ist daher nicht immer günstig.
+Beispiel: Der Modelleisenbahnhersteller „Solch“
+
+Anmerkung: Zusammengesetzte Eigennamen sind daher auch nicht findbar.
+Beispiel: „nomonmono“ findet nicht „nomon mono“ und umgekehrt. (Tatsächliches Beispiel!)
+
+
+===== Fehlertolerantes Autocomplete noch zu zeitintensiv =====
+Die Autovervollständigung von Suchbegriffen – a la Google – funktioniert noch nicht fehlertolerant mit der gleichen Logik, wie die eigentliche Artikelsuche, da diese Methoden zu zeitintensiv für eine Autocomplete Anfrage sind. Autocomplete Anfragen müssen in etwa 100ms beantwortet sein.
+Beispiel: Die Eingabe von den Buchstaben „asp“ schlägt bereits „aspirin“ und Ähnliches vor.
+Bei der Eingabe von „aps“ kann „aspirin“ jedoch nicht vorgeschlagen werden.

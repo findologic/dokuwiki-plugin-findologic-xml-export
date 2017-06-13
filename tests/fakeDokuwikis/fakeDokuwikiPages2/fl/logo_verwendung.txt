@@ -1,0 +1,77 @@
+====== Suchbanner-Verwendung: FINDOLOGIC mit Branding ======
+==== Ausnahmen ====
+
+Abgeänderte Logos und individuelle Einbindungen sind prinzipiell nicht zulässig.
+
+==== Standardeinblendung ====
+
+Die Suchbanner von FINDOLOGIC sind bei allen Paketen 
+  * **über** den Suchergebnissen, sowohl bei Suchen, als auch bei Navigationsanfragen, welche von FINDOLOGIC stammen
+  * **rechts** 
+  * **in Originalgröße** 
+einzubinden.
+
+Auf Geräten mit hoher Pixels per Inch (PPI) Zahl (Smartphones, Tablets) muss das Logo entsprechend skaliert werden, dass der Text deutlich lesbar ist, und die wahrgenommenen Ausmaße äquivalent zur Darstellung in Originalgröße auf einem 90 PPI Bildschirm sind. In diesem Fall können die jeweiligen SVG Varianten des Logos für [[https://cdn.findologic.com/autocomplete/img/de_powered_by_FINDOLOGIC.svg|reguläre]] und [[https://cdn.findologic.com/autocomplete/img/de_powered_by_FINDOLOGIC_mobile.svg|mobile]] Geräte verwendet werden. Für Browser ohne SVG Unterstützung (z.B. Internet Explorer 8) stehen eine [[https://cdn.findologic.com/autocomplete/img/de_powered_by_FINDOLOGIC.png|reguläre]] PNG Variante zur Verfügung.
+
+**Das Logo muss auf http://www.findologic.com verlinken.**
+
+<note important>Die Suchbanner dürfen nur angezeigt werden, wenn die FINDOLOGIC-Suche aktiv ist (keine Fix-Einbindung, keine Einbindung bei Fallback-Suche).</note>
+
+Dabei kann aus folgenden Bannern gewählt werden:
+
+  * normal
+
+{{:fl:findologic_logo_neg_orange_hg_de.png|}}
+
+  * grau
+
+{{:fl:findologic_logo_neg_grau_hg_de.png|}}
+
+  * schwarz
+
+{{:fl:findologic_logo_neg_schwarz_hg_de.png|}}
+
+
+
+
+
+==== Transparent ====
+
+Transparent bei hellem Hintergrund. Logo bzw. Banner muss deutlich lesbar sein.
+  * normal transparent
+
+{{:fl:findologic_logo_neg_orange_transparent_de.png|}}
+
+  * grau transparent
+
+{{:fl:findologic_logo_neg_grau_transparent_de.png|}}
+
+  * schwarz
+
+{{:fl:findologic_logo_neg_schwarz_transparent_de.png|}}
+
+Für Websiten mit dunklem Hintergrund (ab 50% Graustufen) bieten wir folgende Logos an:
+
+  * weiß auf schwarzem Hntergrund
+
+{{:fl:findologic_logo_neg_weiss_de_darstellung.png|}}
+
+  * weiß mit transparentem Hintergrund
+
+^ {{:fl:findologic_logo_neg_weiss_transparent_de.png|}} ^
+<note important>Es ist nicht erlaubt dieses Logo auf weißem Hintergrund einzuinden.</note>
+
+[[fl:template_manager:plugins#logo|Hier]] sehen Sie, wie Sie das Logo über den Templatemanager im FINDOLOGIC-Kundenaccount abändern können.
+
+<note important>
+Sollte Ihr Shop aus einem anderen Grund farblich nicht zu den von uns vorgegebenne  passen, weisen Sie dem Bereich, in dem sich das Logo befindet, einen hellen oder weissen Hintergrund zu, um die transparenten Logos oder Logos mit weissem Hintergrund passend einbinden zu können.
+
+Hier sehen Sie ein Beispiel:\\
+{{:fl:logoeinbindung.png|}}
+</note>
+
+==== FINDOLOGIC ohne Branding nutzen ====
+
+<note tip> Für einem Aufpreis von 100% auf die Monatspreise (=Gesamtbetrag aller Kosten und Gebühren) kann das Branding (Logo und Verlinkung) in der Darstellung weggelassen werden. 
+FINDOLOGIC muss darüber im Voraus in Kenntnis gesetzt werden.
+</note>

@@ -1,0 +1,88 @@
+====== FINDOLOGIC-Integration für xtc-Veyton ======
+
+===== Kompatibilität =====
+
+^ Versionsnummer ^ Kompatibel ^
+| 4.0. - 4.2 | OK |
+
+Multishops werden unterstützt.
+
+Sollten Sie Fragen zur Kompatibilität zu Ihrer derzeitigen Version der Shopsoftware haben, wenden Sie sich bitte direkt an support@findologic.com.
+Wir prüfen die Kompatibilität gerne auch für Ihre Version.
+
+===== Integration =====
+
+==== Modul downloaden, installieren und konfigurieren ====
+Das Modul kann hier heruntergeladen werden. Der Download ist gratis! Das Modul ist quelloffen.
+
+{{:fl:integration:vt_findologic_4.02.14.zip|Modul Version 4.02.14}}
+
+==== Modul einrichten ====
+
+Nachdem das Modul integriert wurde, gehen Sie bitte im Backend des Shops auf
+
+''Inhalte -> Exporte -> Findologic-Export -> "findologic_de.csv" -> Bearbeiten''.
+
+Dort können Sie mit folgender Maske arbeiten:
+
+{{:fl:integration:veyton-export.png|}}
+
+Die nötigen Daten finden Sie in Ihrem [[https://secure.findologic.com/login/admin/|FINDOLOGIC-Kundenaccount]].
+
+<note important>Die Service-URL muss ''http://service.findologic.com/ps/xml_2.0/'' lauten.</note>
+
+''Export-Benutzer'' und ''Export-Passwort'' können Sie frei wählen. Tragen Sie diese bitte danach im FINDOLOGIC-Kundenaccount unter ''Einstellungen -> Export'' als ''Export-ID'' und ''Export-Passwort'' ein:
+
+{{:fl:integration:plentymarkets.png|}}
+
+Aktivieren Sie danach das Plugin unter 
+
+''Inhalte -> Plugin -> "installierte Plugins" -> "FINDOLOGIC-Suche" -> Bearbeiten''
+
+{{:fl:integration:veyton-plugin.png|}}
+
+
+==== Smart Suggest ====
+
+[[fl:integration:xtc_veyton:smart_suggest|Integration der Smart Suggest bei xtcVeyton]]
+
+==== Aktuelle Version ermitteln ====
+
+Die aktuell installierte Version des Plugins finden Sie unter ''Inhalte'' -> ''Plugins'' -> ''Installierte Plugins''
+
+==== UPDATE ====
+
+Um ein Update für das Modul von xtc-Veyton durchzuführen, arbeiten Sie bitte folgende Punkte in gegebener Reihenfolge ab:
+  - Sichern Sie zuerst ihr bestehendes Template
+  - Löschen Sie das alte Modul
+  - Installieren Sie das neue
+  - Stellen Sie das Template wieder her
+  - Konfigurieren Sie das Modul neu (User und Passwort für den Export setzen, Shopkey und Service-URL eintragen).
+
+==== Normale Suche verwenden ====
+
+<note tip>Dies ist möglich ab Version 1.1.1</note>
+
+Um die Standard-Veyton-Suche zu verwenden (z.B. als Linkziel für Werbeanzeigen), hängen Sie den URL-Parameter ''std_search=1'' an die Such-URL an: http://www.mein-shop.de/index.php?page=search&keywords=t&sdesc=on&desc=on&x=0&y=0&std_search=1
+
+
+
+==== Hinweis: FINDOLOGIC-Logo ====
+Bitte beachten Sie dazu folgende Punkte: [[fl:logo_verwendung]]
+
+===== FAQ =====
+
+==== Artikel werden nicht exportiert ====
+Es muss immer der Master-Artikel im Shop aktiv sein. Slave-Artikel werden mittels der Attribute in einem gemeinsamen Master-Artikel exportiert. Ist dieser im Shop nicht aktiv, wird keine der Varianten exportiert.
+
+==== Das Modul lässt sich nicht aktivieren ====
+
+    * Dies deutet auf einen Lizenzfehler hin
+      * Die Lizenzdatei kann in 2 verschiedenen Ordnern abgelegt werden "//SHOPROOT/lic/" und "//SHOPROOT/plugins/vt_findologic/lic". Hierbei sollte geprüft werden ob in einem der Ordner noch eine alte Lizenzdatei oder eine Demo-Lizenzdatei vorhanden ist und es daher zu Komplikationen kommt
+      * Eventuell ist beim bestellen der Lizenz ein Tippfehler beim eintragen der Shop-Lizenznummer unterlaufen, dann wäre die Modul-Lizenz nicht mit der Shop-Lizenz kompatibel. Abhilfe schafft eine Neu-Bestellung der Lizenz mit dem korrekten Lizenzschlüssel
+
+
+==== Hinweis ab xt:Commerce 4.2 ====
+
+Ab xt:Commerce 4.2 wird neben der aktuellsten Plugin-Version, noch ein Sicherheitsschlüssel benötigt der in der Export-URL angegeben werden muss (Parameter seckey). Dieser ist nicht über den Shop-Admin auslesbar, sondern kann nur in der Datenbank direkt eingesehen werden. In der Datenbank nennt sich der Schlüssel des Wertes _SYSTEM_SECURITY_KEY und besteht aus Kleinbuchstaben und Zahlen.
+

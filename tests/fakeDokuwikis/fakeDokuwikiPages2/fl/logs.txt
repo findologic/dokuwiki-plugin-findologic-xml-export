@@ -1,0 +1,37 @@
+====== Log Dateien ======
+FINDOLOGIC bereitet die Information über das Suchverhalten der Kunden am Shop in drei Log CSV Dateien auf.
+Diese CSV Dateien können bliebig weiterverarbeitet werden, z.B. in Excel.
+
+===== Queries Total =====
+Das Log File ''queriesTotal.csv'' enthält nur eine Zeile mit Gesamtstatistik der bearbeiteten Suchabnfragen in dem betreffenden Zeitraum.
+
+^ Spalte         ^ Bedeutung ^
+| ''frequency''  | Gesamtanzahl der Suchanfragen, inklusive Folgesuchanfragen         |
+| ''filterfreq'' | davon Anzahl der Folgesuchanfragen, wie Weiterblättern oder Filtern |
+| ''firstquery'' | Zeitpunkt der ersten in betracht gezogenen Anfrage, nicht mehr als 30 Tage vor Erstellung des Logs |
+| ''lastquery'' | Zeitpunkt der letzten in betracht gezogenen Anfrage, kurz vor Erstellung des Logs|
+
+===== Queries Overview =====
+Im Weiteren werden die 1000 häufigsten Suchanfragen analysiert und einmal in der Datei ''queriesOverview.csv'' zusammenfassend dargestellt, einmal in der Datei ''queriesDetail.csv'' detailiert aufgeschlüsselt.
+
+Aufbau der ''queriesOverview.csv'':
+^ Spalte         ^ Bedeutung ^
+| ''query''      | Suchanfrage in Worte aufgeschlüsselt. Die Wortposition steht hinter dem Doppelpunkt  |
+| ''frequency''  | Anzahl der Suchanfragen mit dieser Eingabe, inklusive Folgesuchanfragen |
+| ''filterfreq'' | davon Anzahl der Folgesuchanfragen nach dieser Eingabe, wie Weiterblättern oder Filtern |
+
+===== Queries Details =====
+{{:fl:attention_small.png|}}
+Der Inhalt dieses Logs ist komplex um Ihnen möglichst wenig Information vorzuenthalten.
+
+In dieser Datei werden die Folgesuchanfragen, wie Weiterblättern oder Filtern, nach absteigender Häufigkeit in allen vorkommenden Kombinationen aufgeführt. Diese können sehr umfangreich sein.
+
+Aufbau der ''queriesDetails.csv'':
+^ Spalte         ^ Bedeutung ^
+| ''query''      | Suchanfrage in Worte aufgeschlüsselt. Die Wortposition steht hinter dem Doppelpunkt  |
+| ''frequency''  | Anzahl der Suchanfragen nach dieser Eingabe, inklusive Folgesuchanfragen |
+| ''filterfreq'' | davon Anzahl der Anfragen mit der in dieser Zeile aufgeführten Kombination von Einschränkung nach Ergebnisseite bzw. Filter |
+| ''categories'' | eventuelle Kategorieeinschränkung. Der Platz in der Auswahlreihenfolge steht hinter dem Doppelpunkt. Ein leeres Feld bedeutet, dass nicht nach Kategorie eingeschränkt wurde. |
+| ''company''    | eventuelle Herstellereinschränkung. Ein leeres Feld bedeutet, dass nicht nach Hersteller eingeschränkt wurde. |
+| ''page''       | enthält ''=1'' wenn die erste Seite angefordet wurde, ''>1'' bei einer Folgeseite. |
+| ''minresults'' | die geringste gefundene Anzahl an Artikel nach dieser Suchkombination im betreffenden Zeitraum |

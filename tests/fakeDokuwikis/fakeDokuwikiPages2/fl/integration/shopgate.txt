@@ -1,0 +1,15 @@
+====== Integration Shopgate ======
+
+Eine englische Anleitung finden Sie direkt bei Shopgate unter:  [[https://support.shopgate.com/hc/en-us/articles/203059886|Setting up Findologic]] 
+
+  * Navigieren Sie im Shopgate-Backend unter ''Produkte -> Produktsuche''.
+  * Wählen Sie als Anbieter "FINDOLOGIC" aus
+  * Tragen Sie die Daten entsprechend ein
+    * FINDOLOGIC/Service-URL: Diese finden Sie im FINDOLOGIC-Kundenaccount unter ''Account -> Stammdaten''
+    * Shopkey: Diesen finden Sie im FINDOLOGIC-Kundenaccount unter ''Account -> Stammdaten''
+    * Shop URL: Die URL Ihres Shops
+  * Speichern Sie die Einstellungen
+
+===== Zu beachten =====
+
+Bei Shopgate wird die Smart Suggest nicht unterstützt

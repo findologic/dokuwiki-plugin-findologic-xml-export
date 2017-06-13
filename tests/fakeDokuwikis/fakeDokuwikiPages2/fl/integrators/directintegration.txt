@@ -1,0 +1,365 @@
+====== Control Flow ======
+
+{{:fl:integrators:direct_integration.png|}}
+
+====== Workflow ======
+
+  - Integrate the Smart Suggest script snippet.
+  - Enable Direct Integration in the config parameters on the admin side of the customer-login.
+  - Implement at least the //success// callback, so it inserts the search results into the shop.
+  - Check out the recipes below and the [[fl:internal:support:directintegration:faq|FAQ]] for solutions to common problems and situations.
+  - Check out some [[fl:internal:support:directintegration:code2copy|code examples]] that might be re-usable
+
+====== Terminology ======
+
+  * **Callbacks**, as in //init//-, //pre-search//-, //success//-, and //error// callback are code blocks executed in each of these phases.
+  * **Direct Integration module** is the smart suggest module containing all Direct Integration functionality.
+  * **Hash**, as in URL hash, is the part at the end of the URL that starts with a '#' character. Changing it doesn't trigger a page reload, but causes Direct Integration to fetch search results on the fly. The hash contains the full state of the search, including query, filters, and sort method.
+  * **Query string** is the string of URL-encoded query parameters, sent in the URL to the frontend.
+
+====== Shared Scope ======
+
+The **pre-search**, **search success**, **pre-navigation**, **navigation success**, and **error** callback share the scope of the Direct Integration module.
+It contains some useful utility methods.
+
+Note that functions defined in a callback are not visible in other callbacks.
+In order to share functions or data among callbacks, they need to be attached to the  ''%%directIntegration%%'' object like so:
+
+    // This is how we make a number visible in all but the init callback:
+    directIntegration.myNumber = 42;
+    // Similarly to that, here is how to share a function:
+    directIntegration.myFunction = function () {
+        // Do stuff.
+    };
+    // Always use a semicolon in the callbacks. Always.
+
+  *  ''%%jQuery%%'': The jQuery version delivered along with smart suggest. Refer to the [official documentation](http://api.jquery.com/) for the available features.
+  *  ''%%directIntegration%%'': The Direct Integration module, where all the magic happens. The following methods of this object are relevant for integration:
+    *  ''%%showLoadingScreen(containerSelctor:String)%%'': Shows the default loading screen. If a loading screen is desired, call this method in the //pre-search// callback. To hide the loading screen after the search, call  ''%%directIntegration.hideLoadingScreen(containerSelector:String)%%'' in the //success// callback.  ''%%containerSelector%%'' is a jQuery selector specifying which element should be overlaid by the loading screen. Usually, this is the same as the container that will later contain the search results. For shop-specific modifications, the default loading screen is available with the selector  ''%%#flLoadingScreen%%''. The loading status indicator (spinner) is available with the selector  ''%%#flLoadingIndicator%%''.
+
+    *  ''%%hideLoadingScreen(containerSelctor:String)%%'': Hides the default loading screen. This method should be called in the //success// callback, but it only makes sense if the loading screen was shown in the //pre-search// callback before. To hide the loading screen after the search, call  ''%%directIntegration.hideLoadingScreen(containerSelector:String)%%'' in the //search success// callback.  ''%%containerSelector%%'' is a jQuery selector specifying which element contains the loading screen. It must be the same selector as used in  ''%%directIntegration.showLoadingScreen(containerSelector:String)%%''.
+
+    *  ''%%scrollToTop([targetSelector:String])%%'': If the optional argument  ''%%targetSelector%%'' is not specified, this scrolls to the top of the page. Alternatively, the selector for an element can be provided, so it will be scrolled until this element is on top of the visible area of the page.
+
+    *  ''%%updateHash(operationType:String, queryString:String)%%'': Changes the search hash in the URL to the given query string **without** triggering a search. Useful for rewriting the URL for localization. The first parameter indicates the operation, which can be ''%%directIntegration.TYPE_SEARCH%%'' or ''%%directIntegration.TYPE_NAVIGATION%%''. Example for turning a user-friendly hash with "Suche" instead of "query" into the standardized format in the **pre-search** callback:
+
+    // The variable "queryString" is available in the scope of the pre-search callback.
+    var parsedQuery = directIntegration.parseQueryString(queryString);
+    parsedQuery['query'] = parsedQuery['Suche'];
+    delete parsedQuery['Suche'];
+    var newQueryString = jQuery.param(parsedQuery);
+    updateHash(directIntegration.TYPE_SEARCH, newQueryString);
+
+  *  ''%%utils%%'': An object containing utility methods not unique to Direct Integration (e.g. also used for smart suggest). The following method of this object is relevant for integration:
+
+    *  ''%%parseQueryString(queryString:String)%%'': Transforms a URL-encoded query string, as sent to the frontend server, into a JavaScript object. This makes modifications much easier than working directly on the query string. To turn the object back into a query string, use  ''%%jQuery.param(theQueryObject:Object)%%''. Also see this example:
+
+    var queryString = 'query=Hello';
+    var queryObj = utils.parseQueryString(queryString);
+    // queryObj == { query: 'Hello' }
+    queryObj['attrib[cat]'] = 'Foobar';
+    var newQueryString = jQuery.param(queryObj);
+    // newQueryString == 'query=Hello&attrib[cat]=Foobar'
+
+
+====== Callbacks ======
+
+Admin users can use the customer-login for specifying a JavaScript implementation of callback functions, which are executed at certain points in the Direct Integration lifecycle. The callbacks can be set when editing a shop, under the tab "Config-Parameter".
+
+===== Init Callback =====
+
+This callback is executed once //after// page load //before// smart suggest initialization. Use it to prepare the page to work flawlessly with smart suggest and Direct Integration.
+
+The return value is not relevant and is ignored by Direct Integration.
+
+**Please note that ''jQuery'' is not available in this scope! You need to use ''jQueryFl''!**
+
+**If the Init Callback is syntactically or logically incorrect, ie. if it does not compile or throws an error at runtime, all of FINDOLOGIC (Smart Suggest, Direct Integration) will be disabled until the page is reloaded with a fixed callback.**
+
+==== Recipes ====
+
+=== Change an incompatible search field into a compatible one ===
+
+    // Assume this is a recent Magento shop with a search form that is currently not
+    // supported by our smart suggest. Let's change the form to suit our needs.
+    jQuery('#search').attr('name', 'query');
+    jQuery('#search').attr('type', 'text');
+
+=== Access the site's jQuery instance ===
+
+Sometimes it may be neccesarry to access the sites's jQuery instance (''window.$''), eg. to disable its event handlers. jQuery may not be available when the Init Callback is executed, so it needs to be wrapped:
+
+<code javascript>
+jQueryFl(document).ready(function () {
+  window.$('.searchform').off('submit');
+});
+</code>
+
+
+
+===== Pre-Search Callback =====
+
+This callback is executed //after// submitting the filters/query, and //before// the search request is sent to the server. Use it for loading screens and query tweaking.
+
+If you  ''%%return%%'' a String at the end of the implementation, this value will be used as replacement query string.
+Note that the  ''%%return%%'' statement will end the callback, and all following statements will not be executed.
+
+Scope:
+
+  * All methods of the shared scope are available.
+  *  ''%%queryString%%'': The URL-encoded query, including the search query and all selected filters.
+
+==== Recipes ====
+
+=== Add an additional filter to the query string ===
+
+    var newQueryString = queryString + '&attr[cat]=Foobar';
+    return newQueryString;
+
+Or:
+
+    var query = utils.parseQueryString(queryString);
+    query['attr[cat]'] = 'Foobar';
+    var newQueryString = jQuery.param(query);
+    return newQueryString;
+
+=== Turn custom/localized parameter names into the format needed by the frontend ===
+
+Let's assume the customer wants their URL to look like  ''%%#search:Suche=Foo&Kategorie=Bar%%''.
+Since the pre-search callback is executed before the search, and allow query rewriting, we can turn an URL like that into a standardized form.
+
+    var translations = {
+        'Suche': 'query',
+        'Kategorie': 'attrib[cat]'
+    };
+    // Decode the query string and iterate over all keys, replacing relevant ones with their
+    // translation.
+    var query = parseQueryString(queryString);
+    jQuery.each(query, function (key, value) {
+        if (key in translations) {
+            query[translations[key]] = value;
+            delete query[key];
+        }
+    });
+    // Turn the query back into a string.
+    var standardizedQuery = jQuery.params(query);
+    return standardizedQuery;
+
+=== Show the loading screen ===
+
+Showing a loading screen is optional, but a good idea for shops with a slower search.
+For shops with a fast search, a quickly flashing loading screen might be a distraction, though.
+
+    // Let's assume that the content area of the shop where the search results are being
+    // displayed later has the ID 'container'.
+    directIntegration.showLoadingScreen('#container');
+
+It's important that the loading screen is hidden in the //search success// callback later.
+
+===== Search Success Callback =====
+
+This callback is executed //after// search results have been loaded. It is responsible for inserting search results and filters in the appropriate location on the page. Search results won't be visible if they are not inserted by this callback. If an error in the success callback is logged and the success callback is executable without errors, there may be a broken script in the template itself. 
+
+The return value is not relevant and is ignored by Direct Integration.
+
+Scope:
+
+  * All methods of the shared scope are available.
+  *  ''%%response%%'': Filters and search results as a tree of HTML elements, ready for insertion into the page's DOM.
+
+==== Recipes ====
+
+=== Inserting the search result into the DOM ===
+
+    // Let's assume that the content area of the shop where the search results are being
+    // displayed later has the ID 'container'.
+    // The container needs to be emptied, otherwise our search result wouldn't replace
+    // existing elements.
+    jQuery('#container').empty();
+    // Insert the response, which is provided as a tree of HTML elements.
+    jQuery('#container').append(response);
+
+=== Hide the loading screen ===
+
+If the loading screen was shown in the //pre-search// callback, it must absolutely be removed in the //success// callback.
+If not loading screen is visible, this will have no effect, and won't break anything either.
+
+    // Let's assume that the content area of the shop where the search results are being
+    // displayed later has the ID 'container'.
+    directIntegration.hideLoadingScreen('#container');
+
+=== Extracting parts of the result to display them somewhere else ===
+
+A possible use case is that filters should be placed independently from the search results.
+This is possible by removing filters from the response and inserting them separately.
+
+    var filters = jQuery(response.find('#flResults')).detach();
+    // The filters are now no longer part of the response element tree.
+    jQuery('#container').empty().append(response);
+    jQuery('#filterContainer').empty().append(filters);
+    // Also, as visible in the two lines above, you can chain most jQuery functions.
+
+=== Turn standardized parameter names into a custom/localized format ===
+
+Let's assume the customer wants their URL to look like  ''%%#search:Suche=Foo&Kategorie=Bar%%''.
+URLs like that can be converted by the //pre-search// callback into a standardized format.
+The //search success// callback takes care of converting the standardized URL into a localized format once the search finishes and the hash is updated.
+
+    var translations = {
+        'query': 'Suche',
+        'attrib[cat]': 'Kategorie'
+    };
+    // Decode the query string and iterate over all keys, replacing relevant ones with
+    // their translation.
+    var query = utils.parseQueryString(queryString);
+    jQuery.each(query, function (key, value) {
+        if (key in translations) {
+            query[translations[key]] = value;
+            delete query[key];
+        }
+    });
+    // Turn the query back into a string.
+    var localizedQueryString = jQuery.params(query);
+    // Override the hash without causing a new search.
+    directIntegration.updateHash(directIntegration.TYPE_SEARCH, localizedQueryString);
+
+===== Pre-Navigation Callback =====
+
+This callback is executed //after// submitting the filters/query, and //before// the navigation request is sent to the server. Use it for loading screens and query tweaking.
+
+Note that the //pre-navigation// callback is called once on **every** page load, because a query is sent to FINDOLOGIC in order to determine, whether the current page is a category page (this is subject to change in the future). The //pre-navigation// callback being called does **not** guarantee that you are on a category page, or that the //navigation success// callback is going to be called.
+
+If you  ''%%return%%'' a String at the end of the implementation, this value will be used as replacement query string.
+Note that the  ''%%return%%'' statement will end the callback, and all following statements will not be executed.
+
+Scope:
+
+  * All methods of the shared scope are available.
+  *  ''%%queryString%%'': The URL-encoded query, including the navigation query and all selected filters.
+
+==== Recipes ====
+
+The recipes for the //pre-search// callback apply to the //pre-navigation// callback as well.
+
+===== Navigation Success Callback =====
+
+This callback is executed //after// navigation results have been loaded. It is responsible for inserting navigation results and filters in the appropriate location on the page. Navigation results won't be visible if they are not inserted by this callback. If an error in the navigation success callback is logged and the navigation success callback is executable without errors, there may be a broken script in the template itself. 
+
+The return value is not relevant and is ignored by Direct Integration.
+
+Scope:
+
+  * All methods of the shared scope are available.
+  *  ''%%response%%'': Filters as a tree of HTML elements, ready for insertion into the page's DOM.
+  *  ''%%resultsAvailable%%'': Indicates whether navigation results should be displayed by Direct Integration. Will be ''%%false%%'' when navigating to a category page, and ''%%true%%'' for subsequent filtering operations using the navigation filters provided by FINDOLOGIC.
+
+==== Recipes ====
+
+The recipes for the //search success// callback apply to the //navigation success// callback as well, with one key difference: Result items should only be included in the page if ''%%resultsAvailable%%'' is ''%%true%%''!
+
+===== Error Callback =====
+
+This callback is executed in three situations:
+
+  * An exception occurs in the //pre-search// callback.
+  * An exception occurs in the //search success// callback (including script errors in the results).
+  * An exception occurs in the //pre-navigation// callback.
+  * An exception occurs in the //navigation success// callback (including script errors in the results).
+  * The search times out.
+
+These are all situations where Direct Integration falls back to shop search after the //error// callback is executed.
+
+By returning  ''%%false%%'' at the end of the //error// callback, fallback to shop search can be prevented.
+This, however, is the exception.
+By default (when not returning at all, or returning a value other than  ''%%false%%''), shop search is used in case of an error.
+Also note that the return value must be exactly  ''%%false%%'' - falsy values such as  ''%%0%%'',  ''%%''%%'',  ''%%undefined%%'', or  ''%%null%%'' don't prevent the fallback.
+
+Fallback to shop search is only available for search operations. When navigating, no fallback is supported by default. Use the //error// callback to implement behavior appropriate for the shop in question.
+
+Scope:
+
+  * All methods of the shared scope are available.
+  *  ''%%cause%%'' indicates, whether the error was caused by the //pre-search/////success// callback or search timeout. This way, it is possible to handle the error according to the different situations that can occur. Cause is a string consisting of two parts. First, the origin designation with the following possible values:
+    *  ''%%directIntegration.ERROR_PRE_SOMETHING_CALLBACK_FAULTY%%''
+    *  ''%%directIntegration.ERROR_SUCCESS_CALLBACK_FAULTY%%''
+    *  ''%%directIntegration.ERROR_TIMEOUT%%''
+  *  The second part of the ''%%cause%%'' string is the operation that caused the error, which can be either ''%%directIntegration.TYPE_SEARCH%%'' or ''%%directIntegration.TYPE_NAVIGATION%%''.
+  *  ''%%exception%%'' is set in case of an error in a callback, and  ''%%undefined%%'' in case of a search timeout. Its value is the exception that caused the problem.
+
+Example for a ''%%cause%%'' string of a failed navigation success callback:
+
+    cause.indexOf(directIntegration.ERROR_SUCCESS_CALLBACK_FAULTY) == 0; // => true
+    cause.indexOf(directIntegration.TYPE_NAVIGATION) > -1; // => true
+    cause == directIntegration.ERROR_SUCCESS_CALLBACK_FAULTY + directIntegration.TYPE_NAVIGATION; // => true
+
+==== Recipes ====
+
+=== Prevent fallback to shop search ===
+
+    return false;
+
+=== Change the search field's name back to a value compatible with the shop's own search ===
+
+Assuming you changed the name and type of the field to  ''%%query%%'' and  ''%%text%%'', respectively, because Direct Integration could not find the search field automatically.
+In order for the fallback to work, the search form's names must be as they are expected by the shop system.
+The error callback is the ideal place to change it back, because it is executed right before the shop search is started.
+
+    // Let's say the original name of the search field was "supersearchfield":
+    $('#mySearchField').attr('name', 'supersearchfield');
+
+
+====== V3 Template ======
+
+In order to use version 3 of the result/filter template, the following steps are necessary:
+
+  - Set the shop's frontend type to "HTML_3.0"
+  - Set the template file to "html3.tpl"
+  - Configure the search success callback to insert the element with the selector ''.fl-outer-container'' into the page
+  - Paste the following snippet in the Direct Integration editor's custom styles textarea:
+
+
+    .fl-outer-container {
+      @import 'findologic3_settings.scss';
+    
+      // SCSS variable overrides go here.
+    
+      @import 'foundation.scss';
+      @import 'findologic3.scss';
+    
+      // Custom styles go here.
+    }
+
+===== What you should know =====
+
+  * The template works best if it is inserted as a whole, and not split up into its individual components.
+  * ''.fl-outer-container'' in the custom styles limits the default filter/result style to the contents of the element with this selector. Without this restriction, the shop's style may be affected.
+  * Refer to the base style textarea to find out which properties of the template can be changed easily by just setting a variable.
+  * The V3 template is based on [[http://foundation.zurb.com/docs/|Foundation]]. Check the documentation to find out easy ways to customize the template using Foundation SCSS variables.
+  * Some properties can be set directly in ''html3.tpl'' as Smarty variables, such as the width of the filter bar or currency symbols.
+  * Turn a list filter into a box filter with ease by using the ''filter-type-boxes'' SCSS mixin, like so:
+
+    .fl-filter-name-Cloth_Size ul {
+        @include filter-type-boxes(/* border style */, /* selected box border style */);
+    }
+
+  * The template is not suitable for very narrow shops, and works best for full-width shops. For narrow shops, adjusting the width of the filter bar can help.
+
+====== V3.1 Template ======
+
+In order to use version 3.1 of the result/filter template, the following steps are necessary:
+
+  - Set the shop's frontend type to "HTML_3.1"
+  - Set the template file to "html3.1.tpl"
+  - Configure the search success callback to insert the element with the selector ''.fl-outer-container'' into the page
+  - Paste the following snippet in the Direct Integration editor's custom styles textarea:
+
+
+<code css>
+.fl-outer-container, .fl-nav-bar, .fl-shopping-guide-container {
+    @import 'findologic3.1_settings.scss';
+    // SCSS variable overrides go here.
+    @import 'findologic3.1_foundation.scss';
+    @import 'findologic3.1.scss';
+    // Custom styles go here.
+}
+</code>

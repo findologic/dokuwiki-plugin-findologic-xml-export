@@ -1,0 +1,10 @@
+====== FINDOLOGIC-Integration for Magento shops ======
+
+  - Download the Magento plugin: [[http://demo.findologic.com/plugins/FINDOLOGIC_Magento_1.0.4.zip|DOWNLOAD]].
+  - If the plugin from Magento-Connect is currently installed in your shop (e.g. from a previous integration), remove it completely.
+  - Upload the "/app"-folder via FTP into your shop's root.
+  - Empty the shop's cache ("System → Cache Management").
+  - Enter your shopkey((You find your shopkey in the [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Customeraccount]])) ("System → Configuration"). Do not forget to choose the correct StoreView first.
+  - Save the settings.
+  - Inform the [[support@findologic.com|FINDOLOGIC-Support]], so we can proceed with the integration.
+

@@ -1,0 +1,9 @@
+====== FINDOLOGIC-Integration for Shopware shops ======
+
+  - Download the Shopware plugin: [[http://demo.findologic.com/plugins/FINDOLOGIC_Shopware-5_1.0.1.zip|DOWNLOAD]].
+  - If the plugin from Shopware Community Store is currently installed in your shop (e.g. from a previous integration), remove it completely.
+  - Upload the "/FindologicSearch"-folder via FTP into your shop's folder "/engine/Shopware/Plugins/Local/Frontend".
+  - Install the plugin ("Configuration -> Plugin Manager")((in Shopware 4 you find the FINDOLOGIC-plugin under "Local Extensions"))
+  - Enter your shopkey((You find your shopkey in the [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Customeraccount]])) ("Configuration → Plugin Manager → FINDOLOGIC Search"). Do not forget to choose the correct language first.
+  - Save the settings.
+  - Inform the [[support@findologic.com|FINDOLOGIC-Support]], so we can proceed with the integration.

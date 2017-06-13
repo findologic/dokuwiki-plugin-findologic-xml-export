@@ -1,0 +1,47 @@
+====== Allgemeine Informationen für Partner ======
+
+**Mit der intelligenten Suchlösung von FINDOLOGIC zu mehr Umsatz im Online-Shop**
+
+In den meisten Online-Shops reicht ein kleiner Tippfehler, die Verwechslung von Plural und Singular oder ein Rechtschreibfehler und schon findet der Kunde den gewünschten Artikel nicht. Selbst bei korrekter Suchworteingabe sind bei herkömmlichen Suchen die Ergebnisse meist nicht zufriedenstellend. 
+**Das kostet Umsatz! Ihren Umsatz!** 
+
+Die revolutionäre FINDOLOGIC-Technologie ermöglicht mittels einer einzigartigen Kombination von Ranking, Fehlertoleranz, Erkennung von sinngemäßen Zusammenhängen und Filtertechnologie, dass die Top-10 Treffer mit extrem hoher Wahrscheinlichkeit den Artikel enthalten, den Ihr Kunde wünscht. 
+  * **Verstehen, was der Kunde wünscht:** Über sinnverwandte Zusammenhänge findet die FINDOLOGIC-Suche die richtigen Artikel. Zum Beispiel findet „Damen Ledertasche“ auch „Umhängetasche aus Leder“ in der Kategorie „Damen“. 
+  * **Relevante Treffer zuerst:** Über ein intelligentes Ranking werden die relevanten Artikel an erster Stelle gezeigt. 
+  * **Schnell zum Wunschartikel führen:** Über intuitive Filter lassen sich die Ergebnisse z.B. nach Kategorie, Hersteller oder Preisbereich verfeinern. Der Kunde kann so aus hunderten Treffern mit ein, zwei Klicks diejenigen Artikel finden, die ihn wirklich interessieren.
+  * **automatische Fehlertoleranz:** Die Suche nach „tshirt” findet die gewünschten „T–Shirts”
+  * **FINDOLOGIC-Selector:** Der Selector ermöglicht, dass der Kunde an beliebigen Stellen im Shop intuitiv den Artikel findet, den er wünscht - ganz unabhängig von der Benutzung der Suchfunktion! Dazu denkt der FINDOLOGIC-Selector aktiv mit dem Käufer mit und schlägt entlang der jeweiligen Auswahl sinnvolle Verfeinerungsmöglichkeiten und passende Artikel vor. 
+  * **Intuitive Eingabehilfe:** Bereits bei der Eingabe der ersten Buchstaben einer Suchanfrage werden dem Kunden zur Unterstützung sofort sinnvolle Ergänzungen angeboten und Vorschläge gemacht, zB zu Kategorien und Herstellern.
+  * **Blitzschnell:** Lange Such- und Wartezeiten gehören mit FINDOLOGIC eindeutig der Vergangenheit an, da die Suchprozesse über unsere leistungsfähigen Server ausgeführt werden. In der Summe ist das innovative System von FINDOLOGIC in der Lage, selbst bei hunderttausenden Artikeln im Shop blitzschnell in Bruchteilen einer Sekunde und unkompliziert zum passenden Ergebnis zu führen. Die Folge: Zufriedene Besucher, die durch das schnelle Auffinden des Gewünschten zu höheren Umsätzen führen.
+  * **Einfache Anbindung:** Die Anbindung an Ihren Shop ist dabei denkbar einfach und mit wenigen Schritten realisierbar. 
+Optimieren auch Sie mit FINDOLOGIC Ihre Umsätze – ganz ohne jeden Aufwand, ohne versteckte Zusatzkosten und ohne Vertragsbindung! 
+
+**Stop searching – find!** 
+
+====== Verwendung von Suchbanner, Banner und Logo ======
+Verwenden Sie ausschliesslich Banner, die hier aufgeführt sind.
+
+===== Suchbanner-Verwendung =====
+Klicken Sie [[fl:logo_verwendung|hier]] zur Information, wie die Suchbanner eingebunden werden.
+
+===== Banner-Verwendung =====
+Verwenden Sie ausschliesslich Banner, die hier aufgeführt sind.
+
+==== Banner in PNG: 125x125px ====
+{{:fl:bannerfindologic125x125pixelrz.png|}}
+
+==== Banner in PNG: 468x60px ====
+{{:fl:bannerfindologic468x60pixelrz.png|}}
+
+===== Logo-Verwendung =====
+
+==== Logo in PNG: Standard Logo ====
+{{https://secure.findologic.com/www/images/FINDOLOGIC_LogoRGB.jpg}}
+
+==== Logo in PNG: Transparentes Logo ====
+Darf nur verwendet werden, wenn der Hintergrund nicht zu dunkel ist und das Logo hervorragend zu erkennen ist.
+
+{{https://secure.findologic.com/www/images/FINDOLOGIC_LogoRGB_transparent.png}}
+
+==== Logo in PNG: Auflösung mit 300dpi ====
+{{:fl:findologic_logo_rgb_300dpi.png|}}

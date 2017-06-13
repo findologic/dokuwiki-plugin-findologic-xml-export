@@ -1,0 +1,216 @@
+====== Template-Manager ======
+Mit dem Template-Manager können Sie die Anzeige der Suchergebnisse ganz an Ihre Bedürfnisse anpassen!
+Der FINDOLOGIC-Suchservice verwendet smarty-Templates um die HTML-Antwort auf die Suchanfragen zu generieren.
+Der Template-Manager erlaubt den Zugriff auf diese smarty-Templates, um spezielle Anpassungen vorzunehmen, die mit Style-Sheets alleine nicht möglich sind.
+
+Verwenden Sie ein spezielles Shopsystem, so können wir Ihnen die Suchergebnisse auch in XML liefern. Sehr oft wird der Template-Manager auch dahingehend verwendet, um die Filter als HTML zu liefern und die Suchergebnisse als Produkt-IDs zurückzuliefern. Auf der Shopseite werden die Produkt-IDs dann ausgelesen und regulär dargestellt.
+
+===== Manager-Interface =====
+
+Jeder Shop hat einen eigenen Template-Manager, auf den Sie in Ihrem Kundenbereich zugreifen können.
+
+==== Aktionen ====
+Für jedes editierbare Template-File gibt es einen Bereich mit folgenden Aktionen:
+  * **download**: Stellt das ganze Template-File zum Download bereit.
+  * **Browse** / **upload**: Stellt eine Upload-Möglichkeit bereit um das Template-File durch das hinaufgeladene File zu ersetzen.
+  * **view / modify**: Öffnet einen Online-Editor um das Template-File zu betrachten und gegebenfalls zu editieren.
+  * **fetch**: Bietet die Möglichkeit das Template-File durch ein online verfügbares File, mit gegebener URL zu ersetzten. Achtung: Unbedingt die URL via Kopieren&Einfügen eingeben.
+  * **logout**: Abmelden vom Template-Manager
+
+{{ template_manager_changed.png}}
+Sind Änderungen gespeichert, stehen weitere Aktionen zur Verfügung. Datum und Uhrzeit der aktuellen Version steht direkt unter dem Template-File Namen.
+  * **restore former version**: Erlaubt das Zurückspielen einer älteren Version, wenn Änderungen wieder Rückgängig gemacht werden sollen.
+    * Jede Version ist mit Datum und Uhrzeit gekennzeichnet.
+    * Ein Click auf eine der angeführten Versionen stellt genau diese als neueste Version wieder her.
+    * Bei jeder Änderung, auch bei einer Rückstellung, wird eine neue Version erzeugt.
+    * Die Versionsliste kann im Moment nicht gelöscht werden.
+  * **reset**: Stellt die älteste Version, also die ursprüngliche Standardversion, der Template-Datei wieder her.
+
+Geänderte Template-Files sind sofort wirksam.
+
+===== Templates =====
+  * Jede smarty-Template enthält html, wie ''<p> Text ... </p>'', und Template-Tags, wie ''{$RESULT[i].PRICE}''.
+  * Eine genaue Beschreibung des smarty-Systems ist hier zu finden: http://www.smarty.net/manual/de/
+  * html-Tags werden so eingerückt, wie sie in den Suchergebnissen erscheinen sollen.
+  * Template-Tags über ganze Zeilen sollten nicht eingerückt werden, um die Einrückung im Ergebnis zu erhalten.
+  * Der Suchservice von FINDOLOGIC verwendet mehrere Template-Files zur Erzeugung der Suchantwort.
+  * **results.tpl** ist die Hauptdatei, aus der alle anderen Dateien inkludiert werden:
+    * **categories.tpl** für den Kategorie-Filterbereich
+    * **companies.tpl** für den Hersteller-Filterbereich
+    * **prices.tpl** für den Preis-Filterbereich
+    * **paginator.tpl** für das Blättern durch die Ergebnisseiten
+  * Der Suchservice setzt smarty-Variablen, entsprechend des Suchergebnisses zur Verwendung in den Templates.
+  * GET-Parameter, die vom Such-Service nicht verwendet werden, stehen den Templates zur Verfügung, damit die Parameter in allen erzeugten Links enthalten sein können.
+  * Standardmäßig verwendet der Suchservice folgende GET-Parameter:
+    * ''keywords'': Suchanfragentext
+    * ''cats'': ausgewählte Kategoriefilter, durch Komma getrennt
+    * ''co'': ausgewählter Herstellerfilter
+    * ''pmin'': ausgewählter Mindestpreis
+    * ''pmax'': ausgewählter Maximalpreis
+
+{{ template_manager_editor.png }}
+
+==== Variablen für alle Templates ====
+Folgende smarty-Variablen werden vom FINDOLOGIC-Suchservice gesetzt:
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''TOTAL_RESULTS'' | integer | Gesamtzahl der gefundenen Ergebnisse |
+| ''QUERY'' | string | Suchanfragentext |
+| ''COMPANY'' | string | ausgewählter Herstellerfilter, sonst leer |
+| ''CATEGORIES'' | string | ausgewählte Kategoriefilter, mit Komma getrennt |
+| ''PRICE_MIN'' | string | ausgewählter Mindestpreis, sonst leer |
+| ''PRICE_MAX'' | string | ausgewählter Maximalpreis, sonst leer |
+| ''CATEGORY_FILTER_COUNT'' | integer | Anzahl der vom Service gelieferten Kategorie-Filter |
+| ''COMPANY_FILTER_COUNT'' | integer | Anzahl der vom Service gelieferten Hersteller-Filter |
+| ''PRICE_FILTER_COUNT'' | integer | Anzahl der vom Service gelieferten Preis-Filter |
+| ''EXTRA_PARAMETERS'' | array | Array der zusätzlichen GET-Parameter, die nicht vom Service verwendet werden |
+
+=== EXTRA_PARAMETERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''EXTRA_PARAMETERS[i].NAME'' | string | Name dieses Zusatzparameters |
+| ''EXTRA_PARAMETERS[i].VALUE'' | string | Wert dieses Zusatzparameters |
+
+==== results.tpl Variablen ====
+Die Datei **results.tpl** enthält die Erzeugung der Ergebnisliste.
+
+Die folgenden smarty-Variablen werden dafür gesetzt:
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''REMOVE_ALL'' | boolean | true, wenn irgendein Filter gesetzt ist |
+| ''REMOVE_ALL_FILTERS_URL'' | string | URL zu den Suchergebnissen, mit allen bisherigen Filtern entfernt |
+| ''RESULT'' | array | Array der Suchergebnisse |
+| ''COL_WIDTH'' | number | Spaltenbreite in Prozent bei der Anzeige mehrer Produkte nebeneinander |
+
+=== RESULT Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''RESULT[i].ID'' | string | eindeutige Produkt-ID, wie in der [[csv_format|csv]] übergeben |
+| ''RESULT[i].TITLE'' | string | Produkttitel mit Hervorhebung der gefundenen Worte |
+| ''RESULT[i].TITLE|strip_tags'' | string | Produkttitel ohne Hervorhebung |
+| ''RESULT[i].SHORT_DESCRIPTION'' | string | Kurzbeschreibung mit Hervorhebung der gefundenen Worte |
+| ''RESULT[i].PRICE'' | number | aktuell gültiger Preis des Produkts, z.B. Angebotspreis |
+| ''RESULT[i].OVERRIDDEN_PRICE'' | number | Normalpreis des Produkts, z.B. ohne Angebot |
+| ''RESULT[i].MAX_PRICE'' | number | aktueller Produktpreis mit teuerster Option, zur Anzeige von "ab" |
+| ''RESULT[i].TAX_RATE'' | number | Steuersatz des Produkts |
+| ''RESULT[i].IMAGE'' | string | URL des Produkt-Thumbnail-Bildes |
+| ''RESULT[i].URL'' | string | URL der Produktdetailseite |
+| ''RESULT[i].PROPERTIES'' | struct | Struktur mit den Inhalten der optionalen Spalten der CSV ((Beispiel: Ist in der CSV eine zusätzliche Spalte ''detail'' für jeden Artikel definiert, enthält ''RESULT[i].PROPERTY.detail'' den entsprechenden Wert.)) |
+| ''RESULT[i].PROPERTIES.company'' | string | Name des Produktherstellers |
+| ''RESULT[i].NEW_ROW'' | boolean | true, wenn nach diesem Produkt eine neue Zeile anzufangen ist |
+| ''RESULT[i].SAVING'' | number | Einsparung in Prozent gegenüber dem Angebotspreis, falls für das Produkt ein Angebot gilt; ansonsten ''FALSE'' |
+
+==== categories.tpl Variablen ====
+Die Datei **categories.tpl** enthält die Erzeugung des Kategorie-Filters.
+
+Der Filterbereich besteht aus drei Teilen:
+  * bereits ausgewählte Filter, um sie wieder zu entfernen
+  * zur Auswahl stehende Filter
+  * irrelevante Filter, da alle gefundenen Ergebnisse dieser Kategorie angehören
+
+Die folgenden smarty-Variablen werden dafür gesetzt:
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''CATEGORY_CHOSEN_FILTERS'' | array | Array der bereits ausgewählten Filter |
+| ''CATEGORY_FILTERS'' | array | Array der zur Auswahl stehenden Filter |
+| ''CATEGORY_REDUNDANT_FILTERS'' | array | Array der irrelevanten Filter |
+
+=== CATEGORY_CHOSEN_FILTERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''CATEGORY_CHOSEN_FILTERS[i].NAME'' | string | Name dieser ausgewählten Kategorie |
+| ''CATEGORY_CHOSEN_FILTERS[i].VALUE'' | string | Parameter-Wert dieser Kategorie für Input-Forms |
+| ''CATEGORY_CHOSEN_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Kategorie-Filter entfernt |
+
+=== CATEGORY_FILTERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''CATEGORY_FILTERS[i].NAME'' | string | Name dieser zur Auswahl stehenden Kategorie |
+| ''CATEGORY_FILTERS[i].VALUE'' | string | Parameter-Wert dieser Kategorie für Input-Forms |
+| ''CATEGORY_FILTERS[i].FREQUENCY'' | integer | absolute Häufigkeit von Produkten dieser Kategorie im Suchergebnis |
+| ''CATEGORY_FILTERS[i].WEIGHT'' | number | relatives Gewicht dieses Kategorie-Filters für die Tag-Cloud Darstellung |
+| ''CATEGORY_FILTERS[i].EXACT'' | boolean | false, wenn ''FREQUENCY'' und ''WEIGHT'' nur geschätzt sind |
+| ''CATEGORY_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Kategorie-Filter zusätzlich ausgewählt |
+
+=== CATEGORY_REDUNDANT_FILTERS Section ===
+Diese Section hat den gleichen Aufbau, wie die ''CATEGORY_FILTERS'' Section.
+
+==== companies.tpl Variablen ====
+Die Datei **companies.tpl** enthält die Erzeugung des Hersteller-Filters.
+
+Der Filterbereich besteht aus drei Teilen:
+  * bereits ausgewählter Filter, um ihn wieder zu entfernen
+  * zur Auswahl stehende Filter
+  * irrelevante Filter, da alle gefundenen Ergebnisse von diesem Hersteller kommen
+
+Die folgenden smarty-Variablen werden dafür gesetzt:
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''COMPANY_CHOSEN_FILTERS'' | array | Array der bereits ausgewählten Filter, 0 oder 1 elementig |
+| ''COMPANY_FILTERS'' | array | Array der zur Auswahl stehenden Filter |
+| ''COMPANY_REDUNDANT_FILTERS'' | array | Array der irrelevanten Filter |
+
+=== COMPANY_CHOSEN_FILTERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''COMPANY_CHOSEN_FILTERS[i].NAME'' | string | Name des ausgewählten Herstellers |
+| ''COMPANY_CHOSEN_FILTERS[i].VALUE'' | string | Parameter-Wert dieses Herstellers für Input-Forms |
+| ''COMPANY_CHOSEN_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Hersteller-Filter entfernt |
+
+=== COMPANY_FILTERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''COMPANY_FILTERS[i].NAME'' | string | Name dieses zur Auswahl stehenden Herstellers |
+| ''COMPANY_FILTERS[i].VALUE'' | string | Parameter-Wert dieses Herstellers für Input-Forms |
+| ''COMPANY_FILTERS[i].FREQUENCY'' | integer | absolute Häufigkeit von Produkten dieses Herstellers im Suchergebnis |
+| ''COMPANY_FILTERS[i].WEIGHT'' | number | relatives Gewicht dieses Hersteller-Filters für die Tag-Cloud-Darstellung |
+| ''COMPANY_FILTERS[i].EXACT'' | boolean | false, wenn ''FREQUENCY'' und ''WEIGHT'' nur geschätzt sind |
+| ''COMPANY_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Hersteller-Filter ausgewählt |
+
+=== COMPANY_REDUNDANT_FILTERS Section ===
+Diese Section hat den gleichen Aufbau, wie die ''COMPANY_FILTERS'' Section.
+
+==== prices.tpl Variablen ====
+Die Datei **prices.tpl** enthält die Erzeugung des Preis-Filters.
+
+Der Filterbereich besteht aus drei Teilen:
+  * bereits ausgewählter Filter, um ihn wieder zu entfernen
+  * zur Auswahl stehende Filter
+  * irrelevante Filter, da alle gefundenen Ergebnisse in diesem Preisbereich sind
+
+Die folgenden smarty-Variablen werden dafür gesetzt:
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''PRICE_CHOSEN_FILTERS'' | array | Array der bereits ausgewählten Filter, 0 oder 1 elementig |
+| ''PRICE_FILTERS'' | array | Array der zur Auswahl stehenden Filter |
+| ''PRICE_REDUNDANT_FILTERS'' | array | Array der irrelevanten Filter |
+
+=== PRICE_CHOSEN_FILTERS Section ===
+^ Variable ^ Typ ^ Kurzbeschreibung ^
+| ''PRICE_CHOSEN_FILTERS[i].MIN'' | number | ausgewählter Mindestpreis |
+| ''PRICE_CHOSEN_FILTERS[i].MAX'' | number | ausgewählter Höchstpreis |
+| ''PRICE_CHOSEN_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Preis-Filter entfernt |
+
+=== PRICE_FILTERS Section ===
+^ Variable ^ Typ ^ Kruzbeschreibung ^
+| ''PRICE_FILTERS[i].MIN'' | number | Mindestpreis des zur Auswahl stehenden Bereiches |
+| ''PRICE_FILTERS[i].MAX'' | number | Höchstpreis des zur Auswahl stehenden Bereiches |
+| ''PRICE_FILTERS[i].FREQUENCY'' | integer | absolute Häufigkeit von Produkten in diesem Preisbereich im Suchergebnis |
+| ''PRICE_FILTERS[i].WEIGHT'' | number | relatives Gewicht dieses Preis-Filters für die Tag-Cloud-Darstellung |
+| ''PRICE_FILTERS[i].EXACT'' | boolean | false, wenn ''FREQUENCY'' und ''WEIGHT'' nur geschätzt sind |
+| ''PRICE_FILTERS[i].URL'' | string | URL zu den Suchergebnissen, mit diesem Preis-Filter ausgewählt |
+
+=== PRICE_REDUNDANT_FILTERS Section ===
+Diese Section hat den gleichen Aufbau, wie die ''PRICE_FILTERS''-Section.
+
+==== paginator.tpl Variablen ====
+Die Datei **paginator.tpl** enthält die Erzeugung der Ergebnisseitenauswahl am Anfang und am Ende der Suchergebnisse.
+
+^ Variable ^ Typ ^ Beschreibung ^
+| ''SHOW_FROM'' | integer | Nummer des erst angezeigten Produktes, 1-basiert |
+| ''SHOW_TO'' | integer | Nummer des letzt angezeigten Produktes, 1-basiert |
+| ''CURRENT_PAGE'' | integer | Nummer der aktuelle Seite, 1 basiert |
+| ''PREVIOUS_PAGES_HEADER'' | string | Enthält "''...''" falls es Seiten zwischen der ersten und der ersten Seite in ''PREVIOUS_PAGES'' gibt |
+| ''NEXT_PAGES_TRAILER'' | string | Enthält "''...''" falls es Seiten zwischen der letzten und der letzten Seite in ''NEXT_PAGES'' gibt |
+| ''PREVIOUS_PAGES'' | array | Array von Seiten vor der aktuellen Seite |
+| ''PREVIOUS_PAGE'' | array | Enthält Informationen über die vorherige Seite, falls gewählte Seite > 1 |
+| ''NEXT_PAGES'' | array | Array von Seiten nach der aktuellen Seite |
+| ''NEXT_PAGE'' | array | Enthält Informationen über die nächste Seite, falls gewählte Seite < letzte Seite |
+| ''PAGE_SIZE'' | integer | Artikel pro Seite |
+
+=== PREVIOUS_PAGES  und PREVIOUS_PAGE Section ===
+^ Variable ^ Typ ^ Beschreibung ^
+| ''PREVIOUS_PAGES[i].NAME'' | string | Name dieser Seite |
+| ''PREVIOUS_PAGES[i].URL'' | string | URL zu den Suchergebnissen, mit dieser Seite ausgewählt |
+
+=== NEXT_PAGES und NEXT_PAGE Section ===
+Diese Section hat den gleichen Aufbau, wie die ''PREVIOUS_PAGES''-Section.

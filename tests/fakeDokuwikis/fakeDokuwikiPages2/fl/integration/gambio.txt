@@ -1,0 +1,167 @@
+====== FINDOLOGIC Integration für Gambio GX2+ Shops ======
+
+===== Kompatibilität =====
+
+^ Versionsnummer ^ Kompatibel ^
+| GX2 | OK |
+
+Sollte Ihre derzeitige Version der Shopsoftware nicht angeführt sein wenden Sie sich bitte direkt an support@findologic.com.
+Wir prüfen die Kompatibilität gerne auch für Ihre Version.
+
+===== Installation bei Verwendung von Gambio GX2.0.x =====
+  - Laden Sie sich das FINDOLOGIC Integration Package auf Ihren Rechner herunter und entpacken Sie das Archiv: {{:fl:integration:gambio.zip| gambio.zip}}
+  - Kopieren Sie die enthaltenen Verzeichnisse und Dateien per FTP in das Hauptverzeichnis Ihres Gambio GX2 Shops. Hierdurch werden keine Dateien überschrieben. 
+  - Loggen Sie sich als Administrator in Ihren Shop ein und gehen Sie in den Adminbereich / Backend 
+    - Aktualisieren Sie im Backend Ihres Shops die Moduldaten unter Toolbox → Cache leeren → CACHE FÜR MODULINFORMATIONEN LEEREN 
+    - Führen Sie in Ihrem Browser das Skript ''findologic_installer.php'' im Hauptverzeichnis Ihres Shops aus (es werden Datenbankanpassungen durchgeführt die den restlichen Shop nicht beeinflussen): %%http://<IHRE_SHOPDOMAIN>/findologic_installer.php%%
+    - Nach der Erfolgsmeldung gehen Sie wieder in den Adminbereich Ihres Shops und konfigurieren Sie FINDOLOGIC unter ''Module → Findologic'' (die Daten erhalten Sie im [[https://secure.findologic.com/login/|FINDOLOGIC-Kundenaccount]] unter ''Account -> Stammdaten'') 
+    - Unter Shop-ID tragen Sie bitte den Shopkey ein 
+    - Unter Shop URL sollte schon die aktuelle URL Ihres Shops eingetragen sein 
+    - Unter Service URL tragen Sie bitte die FINDOLOGIC/Service-URL ein
+  - Testen Sie nun den Export wie folgt 
+    - Rufen Sie folgende URL in Ihrem Browser (angepasst an Ihre Shop-Domain und Shopkey) auf, dies kann einige Sekunden Dauern: %%http://<IHRE_SHOPDOMAIN>/admin/findologic_export.php?shop=<IHR_SHOPKEY>&limit=100%%
+    - Es sollte eine Textausgabe mit folgender Erfolgsmeldung und der Anzahl Ihrer exportierten Artikel erscheinen "<ANZAHL> products exported successfully." 
+    - Rufen Sie folgende URL in Ihrem Browser auf (es sollte sich die Datei zum Download anbieten und keine Fehlermeldung erscheinen): %%http://<IHRE_SHOPDOMAIN>/export/findologic.csv%%
+    - Beide Aufrufe müssen ohne Fehlermeldungen funktionieren, sollten Sie doch einen Fehler erhalten, dann prüfen Sie bitte noch einmal Ihre Eingaben 
+    - Loggen Sie sich im [[https://secure.findologic.com/login/|FINDOLOGIC-Kundenaccount]] ein und tragen unter ''Einstellungen -> Export'' im Feld ''Export-URL'' die im ersten Schritt getestete URL ein: %%http://<IHRE_SHOPDOMAIN>/admin/findologic_export.php?shop=<IHR_SHOPKEY>&limit=100%%
+    - Zur Aktivierung von FINDOLOGIC ändern Sie in der Datei ''includes/filenames.php''<code>
+define('FILENAME_ADVANCED_SEARCH_RESULT', 'advanced_search_result.php');
+</code>in<code>
+define('FILENAME_ADVANCED_SEARCH_RESULT', 'findologic.php');
+</code>
+  - Um Sicherzugehen dass die Änderungen im Shop übernommen wurden, abschließend im Adminbereich Ihres Shops unter "Toolbox -> Cache leeren" den Cache leeren.
+
+
+===== Installation bei Verwendung von Gambio GX2.1.x / GX2.2.x / GX2.3.x =====
+  - Das Modul ist bereits in Ihrer Gambio-Installation enthalten, Sie müssen also keine Installationsroutine durchführen.
+  - Loggen Sie sich als Administrator in Ihren Shop ein und gehen Sie in den Adminbereich / Backend 
+  - Navigieren Sie unter ''Module → Findologic'' (die Daten erhalten Sie im [[https://secure.findologic.com/login/|FINDOLOGIC-Kundenaccount]] unter ''Account -> Stammdaten'') 
+    - Unter Shop-ID tragen Sie bitte den Shopkey ein 
+    - Unter Shop URL sollte schon die aktuelle URL Ihres Shops eingetragen sein 
+    - Unter Service URL tragen Sie bitte die FINDOLOGIC/Service-URL ein
+  - Testen Sie nun den Export wie folgt 
+    - Rufen Sie folgende URL in Ihrem Browser (angepasst an Ihre Shop-Domain und Shopkey) auf, dies kann einige Sekunden Dauern: %%http://<IHRE_SHOPDOMAIN>/findologic_export.php?shop=<IHR_SHOPKEY>&limit=100%%
+    - Achtung! Sollte die oben genannte URL nicht funktionieren, versuchen Sie es mit dieser: %%http://<IHRE_SHOPDOMAIN>/admin/findologic_export.php?shop=<IHR_SHOPKEY>&limit=100%%
+    - Es sollte eine Textausgabe mit folgender Erfolgsmeldung und der Anzahl Ihrer exportierten Artikel erscheinen "<ANZAHL> products exported successfully." 
+    - Rufen Sie folgende URL in Ihrem Browser auf (es sollte sich die Datei zum Download anbieten und keine Fehlermeldung erscheinen): %%http://<IHRE_SHOPDOMAIN>/export/findologic.csv%%
+    - Beide Aufrufe müssen ohne Fehlermeldungen funktionieren, sollten Sie doch einen Fehler erhalten, dann prüfen Sie bitte noch einmal Ihre Eingaben 
+    - Loggen Sie sich im [[https://secure.findologic.com/login/|FINDOLOGIC-Kundenaccount]] ein und tragen unter ''Einstellungen -> Export'' im Feld ''Export-URL'' die im ersten Schritt getestete URL ein
+  - Haken Sie "Findologic-Suche verwenden" in Ihrem Gambio-Adminbereich an (unter ''Module → Findologic'')
+
+===== Einrichtung der Mehrsprachigkeit =====
+
+Um bei Gambio die Mehrsprachigkeit gewährleisten zu können, müssen ein paar Änderungen im Shop vorgenommen werden.
+
+  * Das File {{:fl:integration:findologic_multi.php|findologic_multi.php}} muss in das Hauptverzeichnis des Shops hochgeladen werden.
+  
+  * Nennen Sie das File zu "findologic.php" um. Löschen Sie (**falls vorhanden**) das alte File, um für das neue Platz zu schaffen.
+
+  * Dieses File nimmt in dieser Form nur Englisch und Deutsch als Sprache an, für mehr Sprachen muss folgende Zeile angepasst werden:
+
+<code>
+$do_findologic_search = ($_SESSION['language'] == 'german' || $_SESSION['language'] == 'english') && is_alive(FL_SERVICE_URL);
+</code>
+
+  * Für jede weitere Sprache muss folgendes ergänzt werden:
+
+<code>
+$do_findologic_search = (... || $_SESSION['language'] == 'ihre_sprache')...;
+</code>
+
+  * Dann muss noch dieses File mit dem derzeitigen ausgetauscht in Ihrem Shop werden: {{:fl:integration:findologic_config.inc.php|}}
+
+  * Dieses File muss angepasst werden, für **jede Sprache** bitte folgende Änderungen vornehmen:
+
+<code>
+	if($_SESSION['language'] == 'english') {
+		//Dies ist der Shopkey Ihres Channels, in diesem Fall English.
+                //Diesen finden Sie in Ihrem Kundenaccount von FINDOLOGIC
+		define("FL_SHOP_ID", 'ENGLISCHER SHOPKEY');
+
+		//Das kann so stehen gelassen werden.
+		define("FL_SERVICE_URL", gm_get_conf("FL_SERVICE_URL") . '/');
+
+		//Das hier ist die .csv, die für die jeweilige Sprache exportiert werden soll.
+                //Diese sollten sich voneinander unterscheiden, also findologic_en.csv, findologic_de.csv, usw...
+		define("FL_EXPORT_FILENAME", "../export/findologic_en.csv");
+
+		//Hier noch den Kürzel für die jeweilige Sprache setzen, zB de, en, fr, it, usw...
+		define("FL_LANG", "en");
+</code>
+
+  * Wenn diese Punkte erledigt sind, müssen Sie nur noch die CSV-URL im FINDOLOGIC-Kundenaccount pro Service mit der von Ihnen definierten ersetzen.
+
+  * Das heißt: Für Ihren deutschen Channel setzen Sie hier www.ihr-shop.de/export/findologic_de.csv ein - je nachdem wie Sie es vorhin definiert haben.
+
+Nach dieser Konfiguration sollte FINDOLOGIC in Ihrem Shop nach einem erneuten Import die Mehrsprachigkeit unterstützen. 
+
+====== Wichtige Hinweise für alle Versionen ======
+
+
+====Wichtiger Hinweis Import====
+Der Import Ihrer exportierten Daten wird nächtlich automatisch bei uns durchgeführt. Mit der Abarbeitung der oberen Schritte müssen Sie entweder den nächtlichen Import Ihrer Daten abwarten oder Sie kontaktieren uns über support@findologic.com für einen einmaligen manuellen Import Ihrer Produkte. Ob der Import funktioniert hat sehen Sie im FINDOLOGIC-Kundenaccount unter Account → Stammdaten im Bereich "importierte Artikel" und "Letzter Import".
+
+====Wichtiger Hinweis zur Aktualität Ihrer Produkte====
+Die Aktualität der Suchergebnisse hängt vom Zeitpunkt des letzten Exports (bzw. Imports seitens FINDOLOGIC) ab. So kann vorkommen, dass ein soeben gelöschter Artikel, bis zum nächsten Import von FINDOLOGIC über die FINDOLOGIC Suche zu finden ist.
+
+==== Wichtiger Hinweis htaccess Verzeichnisschutz / Entwicklungsumgebungen ====
+
+Sollte Ihr Shop hinter einer passwortgeschützten htaccess Datei liegen, hinterlegen Sie bitte für die Dauer dieses Passwortschutzes die Daten im FINDOLOGIC-Kundenaccount unter Einstellungen → Export im Bereich Export-ID (User/Benutzer) und Export-Passwort. Ansonsten ist kein erfolgreicher Export Ihrer Artikeldaten möglich.
+
+==== Wichtiger Hinweis Caching der Suchergebnisse ====
+
+Ist im Shop (unter Konfiguration -> Cache-Optionen) das Caching aktiviert, kann dies zu Einschränkungen der Funktionalität von FINDOLOGIC führen.
+Betroffen sind die Smart Suggest Ergebnisse sowie die Einschränkung der Suchergebnisse mittels Filters. Ergebnisse könnne durch Caching nicht der letzten Benutzerwahl entsprechen. Sollten Sie dies erfahren deaktiveren Sie bitte Ihr Caching.
+
+
+
+===== Integration Smart Suggest =====
+
+[[fl:integration:gambio:smart_suggest|Integration der Smart Suggest bei Gambio]]
+
+===== Design Anpassung =====
+
+Die CSS-Datei zur Darstellung der Filter und Ergebnisse wird automatisch in das FINDOLOGIC-Template eingebunden, Sie können auf dieses im FINDOLOGIC-Template-Manager zugreifen. Die URL der CSS-Datei lautet: ''http://service.findologic.com/ps/ihre-domain.de/css/findologic.css''.
+
+Wenn Sie die Datei anpassen wollen, speichern Sie die CSS-Datei auf dem Server Ihres Shops im Verzeichnis "/templates/" und fügen Sie in der Datei "/includes/header.php" unter die Zeilen:
+
+<code>
+<link type="text/css" rel="stylesheet" href="<?php echo 'templates/'.CURRENT_TEMPLATE.'/stylesheet.css'; ?>" />
+<link type="text/css" rel="stylesheet" href="<?php echo 'templates/'.CURRENT_TEMPLATE.'/gm_dynamic.css.php'.$renew_cache; ?>" />
+</code>
+
+folgende Zeile ein:
+
+<code>
+<link type="text/css" rel="stylesheet" href="templates/findologic.css" />
+</code>
+
+<note important>Vergessen Sie nicht den Original-Verweis im FINDOLOGIC-Template zu entfernen.</note>
+
+Die Templates zur Darstellung des Filters und der Ergebnisse können Sie im Kundenbereich anpassen.
+
+Dokumentation zu den Templates finden Sie unter: [[fl:template_manager_2_0]] und [[fl:template_manager:plugins]].
+
+==== Hinweis: FINDOLOGIC Logo ====
+Bitte beachten Sie folgende Punkte: [[fl:logo_verwendung]]
+
+===== Weitere Felder exportieren =====
+
+Es ist möglich, weitere Felder als die standardmäßig verwendeten zu exportieren, indem Sie den [[fl:xtcommerce_exporter_erweiterung|Gambio Exporter erweitern]].
+
+===== Sie benötigen Hilfe? =====
+Brauchen Sie Hilfe bei der Integration? :
+
+**ennovative GmbH**
+
+Augustinusstr. 11c 
+
+50226 Königsdorf 
+
+Deutschland 
+
+Ansprechpartner: Marcel Woywodt 
+
+Email: woywodt@ennovative.de 
+
+Telefon: 0049 (0) 22 34 250 97 79

@@ -1,0 +1,7 @@
+===== Premium-Paket Features =====
+
+Folgende Features sind im Premium-Paket enthalten:
+  * [[fl:modul:pushen_von_produkten|Pushen von Produkten]]
+  * [[fl:modul:landingpages|Landingpages]]
+  * [[fl:modul:promotions|Promotions]]
+

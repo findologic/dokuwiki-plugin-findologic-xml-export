@@ -1,0 +1,100 @@
+===== Kundenlogin =====
+
+Der Kundenlogin dient dazu, Ihnen einen Überblick über Ihr/e FINDOLOGIC Produkt/e bzw.\\
+über die notwendigen Daten, die zur Integration der FINDOLOGIC Suche in Ihrem/n Onlineshop/s notwendig sind, zu bieten.\\
+Außerdem können Sie über den Kundenlogin die Templates anpassen, Suchstatistiken einsehen und neue Shops hinzufügen.
+
+Sie finden den Kundenlogin unter: [[https://secure.findologic.com/login/]]\\
+Ihre Zugangsdaten sollten Sie bei der Bestellung der Suche per Email zugeschickt bekommen haben.\\
+Wenn das nicht der Fall ist, bitten wir Sie, uns unter [[mailto:support@findologic.com|support@findologic.com]] zu kontaktieren.
+
+==== Login ====
+Wenn Sie den Kundenlogin aufrufen, gelangen Sie auf folgende Seite:
+
+{{:fl:screen_shot_2010-09-15_at_18.09.20.png?500|}}
+
+Dort können Sie sich mit Ihren Zugangsdaten anmelden.\\
+Nach der Anmeldung gelangen Sie automatisch zur ersten Seite im Kundenlogin.\\
+Sie können über das Menü am Kopf der Seite durch den Kundenlogin navigieren.
+
+
+==== Support ====
+Sollten Sie irgendwelche Fragen an uns haben, so können Sie diese jederzeit über den Kundenlogin stellen.\\
+Klicken Sie dazu auf den "Support"-Button, den sie permanent auf der linken Seite sehen:
+
+{{:fl:screen_shot_2010-09-15_at_15.48.30.png|}}
+
+Wenn Sie auf den "Support"-Button geklickt haben, erscheint folgendes Eingabefenster:
+
+{{:fl:screen_shot_2010-09-15_at_15.48.38.png?500|}}
+
+Hinterlassen Sie uns eine Nachricht mit Betreff und Absender-Emailadresse.\\
+Diese Nachricht gelangt dann automatisch an unser Supportsystem und garantiert somit eine schnellere Abwicklung,\\
+als über den üblichen Email Verkehr.\\
+Ein Mitarbeiter wird sich schnellstmöglich um Ihr Anliegen kümmern.
+
+==== Templatemanager ====
+
+Mit dem Templatemanager können Sie das Layout Ihrer Suche anpassen.
+  * siehe [[fl:template_manager]]
+  * bzw. [[fl:template_manager_2_0]]
+
+
+==== Suchanfragen ====
+Auf dieser Seite können Sie sehen, wie viele Suchanfragen Sie in den vergangenen 30 Tagen hatten, welche Suchanfrage am häufigsten eingegeben wurde, etc.\\
+Sie erhalten eine Zusammenfassung über alle Suchanfragen, sowie eine detaillierte Auflösung jedes Suchbegriffs.\\
+Wenn Ihnen nicht klar ist, was die Begriffe bedeuten, können Sie mit der Maus über den Begriff fahren, Sie erhalten dann eine genauere Beschreibung:
+
+{{:fl:screen_shot_2010-09-15_at_15.42.59.png?500|}}
+
+Weiter unten auf der Seite können Sie die letzten 30 Logfiles als CSV Datei downloaden.\\
+Weitere Details zu den Logfiles erhalten Sie unter [[fl:logs]]
+
+{{:fl:screen_shot_2010-09-15_at_15.44.05.png?500|}}
+
+==== Handbücher ====
+Hier finden Sie die wichtigsten Anleitungen und Handbücher für Ihr Shopsystem auf einem Blick.
+
+{{:fl:screen_shot_2010-09-15_at_15.41.46.png|}}
+
+==== Dateien ====
+Hier finden Sie die wichtigsten Module und Dokumente für Ihr Shopsystem.
+
+{{:fl:screen_shot_2010-09-15_at_15.41.40.png|}}
+
+==== Shopauswahl ====
+Hier finden Sie alle Shops aufgelistet, bei denen unser Service läuft und die auf Ihre Email Adresse angemeldet wurden.\\
+Wenn Sie einen anderen Shop auswählen, wird der gesamte Kundenlogin aktualisiert, um die Daten zum ausgewählten Shop zu laden.
+
+{{:fl:screen_shot_2010-09-15_at_15.39.50.png|}}
+
+==== Shop hinzufügen ====
+Sie können jederzeit beliebig viele Shops hinzufügen.\\
+Für jeden Shop wird ein eigenständiger Vertrag mit FINDOLOGIC abgeschlossen.\\
+Hierbei handelt es sich jedoch nur um das Bestellformular, der Vertrag wird Ihnen dann erst von einem unserer Mitarbeiter zugeschickt.\\
+Sie können die Bestellung jederzeit rückgängig machen, indem Sie sich mit uns in Verbindung setzen.
+
+Bei der Bestellung geben Sie uns bitte die Shop URL des neuen Shops, sowie dessen Shopsystem (z.B.: plenty) an.\\
+Weiters müssen Sie noch ein Paket auswählen, das für diesen Shop geeignet ist.
+
+Bei FINDOLOGIC-Individual müssen Sie angeben, wie viele Suchanfragen hier pro Monat erwartet werden bzw. wie viele Produkte der Shop hat.\\
+Optional können Sie unser Autovervollständigungs Modul bestellen.\\
+Weitere Infos zu unseren Produkten entnehmen Sie bitte unserer Homepage, unter [[http://www.findologic.com/pricing]].
+
+Bestätigen Sie am Schluss die Bestellung, indem Sie die [[http://www.findologic.com/agb|AGBs]] akzeptieren und auf "Bestellen" klicken.\\
+Unsere Mitarbeiter werden darüber sofort per Email und über das Supportsystem informiert.
+
+{{:fl:screen_shot_2010-09-15_at_15.32.42.png|}}
+
+==== Passwort ändern ====
+Hier können Sie das Passwort ändern, um sich im Kundenlogin anzumelden.\\
+Wenn Sie auf "Passwort ändern" klicken, fährt auf der rechten Seite (oranger Streifen) ein Eingabeformular aus.\\
+Um das Passwort zu ändern, müssen Sie zuerst das aktuelle Passwort eingeben und darunter zweimal das neu gewählte (um Tippfehler zu vermeiden).\\
+Wenn das alte Passwort korrekt ist bzw. die neuen übereinstimmen, gilt das neu gewählte Passwort ab dem Moment, wo Sie auf "Speichern" klicken.
+
+{{:fl:screen_shot_2010-09-15_at_15.31.10.png|}}
+
+==== Abmelden ====
+Hier können Sie sich wieder ausloggen.\\
+Ihre Sessiondaten werden dadurch gelöscht, somit kann sich kein Nachfolgebenutzer mit Ihre Kundendaten einloggen.\\
+Sie gelangen wieder zurück auf die Startseite.

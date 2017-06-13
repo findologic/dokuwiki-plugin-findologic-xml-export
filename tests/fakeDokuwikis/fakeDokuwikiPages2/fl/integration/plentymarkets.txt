@@ -1,0 +1,212 @@
+====== FINDOLOGIC Integration für plentymarkets ======
+
+===== Aktivierung =====
+
+Um FINDOLOGIC in Ihrem plentymarkets-Shop zu aktivieren, folgen Sie bitte dieser Anleitung
+
+==== plentymarkets-Backend ====
+Im plentymarkets-Backend sind folgende Schritte notwendig:
+  * Erstellen Sie in Ihrem Shop einen Benutzer der Klasse ''API''. Die Daten (Benutzername und Passwort) dieses Benutzers benötigen Sie im Weiteren um Sie im [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Kundenaccount]] einzutragen. Eine Anleitung zum Anlegen des Benutzers finden Sie hier: http://man.plentymarkets.eu/einstellungen/grundeinstellungen/benutzer/benutzer-anlegen/ Bitte beachten Sie, dass Benutzername und Passwort keine Sonderzeichen enthalten dürfen.
+  * Stellen Sie sicher dass der eingetragene API-Benutzer im Reiter ''Berechtigung » API'' folgende Berechtigungen im Sektor "Item" aktiviert hat:
+    * GetItemsBase
+    * GetItemsSearchData
+    * GetWebshopSettings
+
+  * Öffnen Sie den Code unter CMS » Webdesign » Layout » PageDesign » PageDesignContent im Tab ''PageDesignContentMainFrame'' und fügen Sie dort zwischen die Platzhalter ''$FormOpenSearch'' und ''$FormCloseSearch'' folgende Codezeilen hinzu:
+
+
+<code>
+<input id="customer_class" name="customer_class" value="$CustomerClass" type="hidden">
+<input id="multishop_id" name="multishop_id" value="$WebstoreId" type="hidden">
+</code>
+
+Sollten Sie einen mehrsprachigen Shop betreiben und entsprechend Services bei FINDOLOGIC gebucht haben, fügen Sie bitte folgende Zeile im Layout für die jeweilige Sprache hinzu: (hier: "en" für Englisch)
+<code>
+<input id="lang" name="lang" value="en" type="hidden"/>
+</code>
+
+{{:fl:integration:plentymarkets:pagedesigncontent.png|}}
+
+  * Öffnen Sie die Artikelsuche-Einstellungen unter ''Einstellungen » Mandant (Shop) » <SHOP> » Webshop » Artikelsuche'' und wählen Sie in der folgenden Auswahlbox ''Findologic''
+  * Öffnen Sie die FINDOLOGIC-Einstellungen unter ''Einstellungen » Mandant (Shop) » <SHOP> » Dienste » Findologic'' und wählen Sie folgende Einstellungen (gegebenenfalls muss die Sprache erst unter ''Sprache hinzufügen'' hinzugefügt werden)
+    * **FINDOLOGIC für die Webshop-Suche verwenden**: Ja (sofern Sie FINDOLOGIC in der Suche verwenden wollen)
+    * **FINDOLOGIC für die Navigation benutzen**: Ja (sofern Sie FINDOLOGIC in der Navigation verweden wollen)
+    * **Identifikationsschlüssel**: 32-stelliger Shopkey, diesen finden Sie im FINDOLOGIC-Kundenaccount unter ''Account -> Stammdaten'' als ''Shopkey''
+    * **Shop-URL**: Die URL Ihres Shops
+    * **FINDOLOGIC-URL**: Die URL des FINDOLOGIC-Service, diese finden Sie im FINDOLOGIC-Kundenaccount unter ''Account -> Stammdaten'' als ''FINDOLOGIC/Service-URL'' (Bitte achten Sie darauf keine Leerzeichen einzufügen!)
+    * **Artikelanzahl pro Seite**: Wählen Sie, wie viele Artikel pro Seite ausgegeben werden sollen
+
+{{:fl:integration:plentymarkets:grundeinstellungen.png|}}
+
+  * Aktivieren Sie in den globalen plentyMarkets Einstellungen zur Suche die FINDOLOGIC Suche.
+
+{{:fl:integration:plentymarkets:plenty-sucheinstellung-global.png|}}
+
+
+	
+
+==== FINDOLOGIC-Navigation ====
+
+
+  * Unter Menü: CMS » Webdesign » Layout » PageDesign » PageDesignContent → PageDesignContentMainFrame im gewünschten Bereich folgenden Platzhalter einfügen: 
+    <code>
+    {% FindologicFilterContainer() %}    </code>
+
+  * Speichern Sie die Änderungen
+  * Stellen Sie sicher dass unter ''Einstellungen » Mandant (Shop) » <SHOP> » Dienste » Findologic'': FINDOLOGIC für die Navigation benutzen: **Ja ausgewählt** ist.
+ 
+
+
+==== FINDOLOGIC-Kundenaccount ====
+Im [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Kundenaccount]] tragen Sie bitte unter ''Einstellungen -> Export'' folgendes ein:
+  * **Export-URL**: Die Export-URL wird automatisch bestimmt, hier ist kein Eintrag erforderlich
+  * **CSV-Version**: 2 (ist bereits vorausgewählt)
+  * **Export-ID**: Benutzernamen des API-Benutzers aus dem plentymarkets-Backend
+  * **Export-Passwort**: Passwort des API-Benutzers aus dem plentymarkets-Backend
+{{:fl:integration:export.png|}}
+
+Klicken Sie anschliessend auf ''Speichern'' und schreiben Sie ein Mail an [[support@findologic.com]], dass die Integration abgeschlossen ist. Ein Supportmitarbeiter testet daraufhin den Import und gibt Ihnen Bescheid, sollte noch etwas zu korrigieren sein.
+
+===== Smart Suggest =====
+
+[[fl:integration:plentymarkets:smart_suggest|Integration der Smart Suggest bei plentymarkets]]
+
+===== Upgrade auf plentymarkets 5.1 =====
+
+Falls Sie FINDOLOGIC bereits in Ihrem plentymarkets 4.5 Shop integriert hatten und kürzlich auf plentymarkets 5.1 umgestiegen sind, beachten Sie bitte folgende Hinweise zur Umstellung:
+
+==== plentymarkets-Backend ====
+
+Im plentymarkets-Backend sind folgende Schritte notwendig:
+Der Benutzernamen Users muss geändert werden, sofern er nur 3 Zeichen hat. Wir schlagen vor diesen auf ''api_findologic'' umzubenennen. Der Name kann frei gewählt werden, muss nun jedoch mehr als 5 Zeichen lang sein. Hilfe wie Sie einen Benutzer verändern können, finden Sie im [[https://www.plentymarkets.eu/handbuch/einstellungen/grundeinstellungen/benutzer/benutzer-bearbeiten/ | plentyMarkets Handbuch]]
+
+{{:fl:integration:plentymarkets:plenty_apiuser1.png|}}
+
+Stellen Sie sicher dass der eingetragene API-Benutzer im Reiter "Berechtigung -> API" folgende Berechtigungen im Sektor "Item" aktiviert hat:
+  * GetItemBase
+  * GetItemsSearchData
+  * GetWebshopSettings
+{{:fl:integration:plentymarkets:plenty_apiuser3.png|}}
+
+Setzen Sie im Reiter "Berechtigung -> Transfer" alle möglichen Berechtigungen:
+
+{{:fl:integration:plentymarkets:plenty_apiuser2.png|}}
+
+==== FINDOLOGIC Kundenaccount ====
+
+Im FINDOLOGIC Kundenaccount sind folgende Schritte notwendig:
+
+  * Tragen Sie zuvor geänderten Benutzernamen (API Benutzer) in den Einstellungen von FINDOLOGIC unter [[https://secure.findologic.com/login.symfony/web/app.php/shop/settings | Einstellungen -> Export]] im Feld Export-ID ebenfalls ein.
+
+
+===== Upgrade auf plentymarkets 4.5 =====
+
+Falls Sie FINDOLOGIC bereits in Ihrem plentymarkets 4.4 Shop integriert hatten und kürzlich auf plentymarkets 4.5 umgestiegen sind, beachten Sie bitte folgende Hinweise zur Umstellung:
+==== plentymarkets-Backend ====
+
+Im plentymarkets-Backend sind folgende Schritte notwendig:
+  * Erstellen Sie in Ihrem Shop einen Benutzer der Klasse ''API''. Die Daten (Benutzername und Passwort) dieses Benutzers benötigen Sie im Weiteren um Sie im [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Kundenaccount]] einzutragen. Eine Anleitung zum Anlegen des Benutzers finden Sie hier: http://man.plentymarkets.eu/soap-api/einfuehrung-soap-api/#4 Bitte beachten Sie, dass Benutzername und Passwort keine Sonderzeichen enthalten dürfen.
+  * Öffnen Sie den Code unter ''Layout -> Layout-Generator'' im Tab ''Webshop'' unter ''Seiten-Layout -> MainLayoutContent'' und fügen Sie dort zwischen die Platzhalter ''[FormOpen_Search]'' und ''[FormClose_Search]'' folgende Codezeilen ein:
+
+<code>
+<input type="hidden" name="customer_class" id="customer_class" value="[CustomerClass]">
+<input type="hidden" name="multishop_id" id="multishop_id" value="[MultiShop]">
+</code>
+{{:fl:integration:plentymarkets4.png|}}
+
+==== FINDOLOGIC-Kundenaccount ====
+Im [[https://secure.findologic.com/login.symfony/web/app.php/login|FINDOLOGIC-Kundenaccount]] tragen Sie bitte unter ''Einstellungen -> Export'' folgendes ein:
+  * **Export-URL**: Die Export-URL wird automatisch bestimmt, hier ist kein Eintrag erforderlich
+  * **CSV-Version**: 2 (ist bereits vorausgewählt)
+  * **Export-ID**: Benutzernamen des API-Benutzers aus dem plentymarkets-Backend
+  * **Export-Passwort**: Passwort des API-Benutzers aus dem plentymarkets-Backend
+{{:fl:integration:plentymarkets.png|}}
+
+Klicken Sie anschliessend auf ''Speichern'' und schreiben Sie ein Mail an [[support@findologic.com]], dass die Integration abgeschlossen ist. Ein Supportmitarbeiter testet daraufhin den Import und gibt Ihnen Bescheid, sollte noch etwas zu korrigieren sein.
+
+===== FAQ =====
+
+==== Indizierung der Produktdaten ====
+
+Die Indizierung findet automatisch einmal pro Nacht (gegen 01:00) statt.
+
+<note important>Damit Artikel von der FINDOLOGIC-Suche berücksichtigt werden, müssen diese im Webshop sichtbar und einer Kategorie zugeordnet sein.</note>
+
+== Merkmale mit folgenden Eigenschaften werden von FINDOLOGIC berücksichtigt: ==
+
+  - Eigenschaft "Durchsuchbar" muss gesetzt sein((Sie finden diese Einstellung unter ''Artikel'' -> ''Einstellungen'' -> ''Merkmale'', beim jeweiligen Merkmal gibt es dann eine Checkbox ''Durchsuchbar''. Diese muss angehakt sein))
+  - Das Merkmal muss in einer der folgenden Arten aufgebaut sein, um von FINDOLOGIC als Filter verwendet werden zu können:
+    - ''Merkmals-Gruppe'', ''Merkmal'' (Typ: ''kein''). In diesem Fall ist der Filter ''Merkmals-Gruppe=Merkmal''
+    - (''Merkmals-Gruppe'',) ''Merkmal'', ''Merkmals-Wert'' (Typ: alle außer ''kein'', z.B. ''Text'', ''Auswahl'', ...). In diesem Fall ist der Filter ''Merkmal=Merkmals-Wert''
+
+  - Das Merkmal muss einen Wert haben (Freitext oder Auswahl) oder das Merkmal muss einer Gruppe zugeordnet sein
+  - Wenn gesetzt, wird der ''Webshop'' Name für den Export verwendet
+
+== Folgende Artikelnummern werden berücksichtigt: ==
+
+  * ID
+  * Nr. (Artikelnummer)
+  * EAN 1-4
+  * Modell
+  * EANs der Varianten
+
+==  Verkaufsrang mitexportieren ==
+
+Um beim Export der Daten den Verkaufsrang mit zu exportieren, gehen Sie im plentymarkets-Backend unter ''Einstellungen -> Mandant (Shop) -> <SHOP> -> Artikelansichten -> Grundeinstellungen'' und wählen Sie ''Automatische Sortierung nach monatlichen Verkäufen''
+
+==== Nicht verfügbare Varianten ====
+
+Um nur verfügbare Varianten anzuzeigen, machen Sie bitte folgendes:
+  * Führen Sie die Stapelverarbeitung analog zum Screenshot durch:
+{{:fl:integration:plenty_verfuegbarkeit_stapelverarbeitung.png|}}
+  * Informieren Sie den Support unter support@findologic.com, damit die entsprechende Konfiguration des Shops eingestellt wird
+  * Warten Sie den nächtlichen Import ab
+
+Bitte beachten Sie dass, wenn eine Eigenschaft wie zum Beispiel "Größe" gleichzeitig als Merkmal und als Attribut angelegt sind, eine Verfügbarkeitsprüfung nicht möglich ist. Ebenso können nur Lagerbestände im Zusammenhang mit Attributen unterstützt werden, Merkmale haben in plentymarkets keinen Lagerbestand. Achten Sie zudem bitte darauf das, wenn der Überverkauf für ein Produkt aktiviert ist, die Bestandsprüfung ebenso deaktiviert ist.
+
+
+
+==== Hersteller-Filter werden nicht richtig ausgegeben ====
+Sollten in Ihrem Shop keine Auswahlmöglichkeiten beim Herstellerfilter angezeigt werden, müssen Sie ggf. unter Artikel -> Einstellungen -> Hersteller die gewünschten Namen bei "Externer Name" eintragen.
+
+<note important>Beachten Sie bitte, dass für FINDOLOGIC falls angegeben der externe Name des Herstellers exportiert wird</note>
+
+==== Darstellung der Suchergebnisse ====
+FINDOLOGIC liefert an plentymarkets lediglich die IDs der Suchergebnisse zurück. Die Darstellung der Ergebnisse erfolgt durch das Shopsystem selbst und kann entsprechend auch dort konfiguriert werden. 
+
+==== Einbindung der Navigations-Filter ====
+
+Die FINDOLOGIC-Filter können innerhalb der Kategorie-Seiten dargestellt werden. Eine Einbindung auf der Startseite ist aktuell nicht möglich.
+
+==== Smart Suggest funktioniert nicht ====
+
+Falls Ihre Smart Suggest nicht (mehr) korrekt funktioniert, prüfen Sie bitte ob der Platzhalter für die Multishop-ID in Ihrem Shop korrekt ersetzt wird. 
+Suchen Sie dafür nach diesem Code im Quelltext Ihres Shops: 
+
+''name="multishop_id"''
+
+Wird in dem hidden-Field der Platzhalter ''[MultiShop]'' nicht durch die jeweilige ID Ihres Multishops ersetzt, wenden Sie sich bitte an den plentymarkets-Support: 
+''<input type="hidden" name="multishop_id" id="multishop_id" value="[MultiShop]">''
+
+==== Nicht-Verfügbare Artikel und Varianten von der Suche ausschließen ====
+
+Beim FINDOLOGIC-Support kann mitgeteilt werden, das Artikel und Varianten einer bestimmten Verfügbarkeitsklasse **nicht** exportiert werden sollen (und damit nicht über die Suche auffindbar sind). Im unteren Beispiel werden also die Verfügbarkeitsklassen 1-4, sowie 6-10 exportiert, jedoch **nicht** die Verfügbarkeitsklasse 5.
+
+Diese kann im plentymarkets-Backend unter ''Artikel->Artikel bearbeiten'' bei einzelnen Artikeln im Reiter ''Verfügbar'' eingesehen werden. 
+
+{{:fl:integration:verfuegbarkeit.png|}}
+
+Für Varianten kann dies unter ''Artikel->Artikel bearbeiten->Attribute->Varianten'' und dort im Dropdown pro Variante eingesehen werden
+
+{{:fl:integration:varianten.png|}}
+
+
+==== Artikel ist in über Navigation auffindbar, aber nicht über die Suche ====
+
+Hier kann es sein, dass dem Artikel eine Standard-Kategorie fehlt. In diesem Fall hilft es, wenn eine beliebige Kategorie erneut gespeichert wird. Dadurch werden die Standard-Kategorien der Artikel neu gesetzt.
+
+
+
+===== Bekannte Einschränkungen =====
+
+  * Die ausgewählte Sortierung aus der Kategorienavigation wird bei Auswahl eines Navigations-Filters **nicht** übernommen

@@ -1,0 +1,40 @@
+====== FINDOLOGIC-Integration für xanario-Shops  ======
+
+===== Kompatibilität =====
+
+Sollten Sie Fragen zur Kompatibilität zu Ihrer derzeitigen Version der Shopsoftware haben, wenden Sie sich bitte direkt an support@findologic.com.
+Wir prüfen die Kompatibilität gerne auch für Ihre Version.
+
+
+
+==== Modul downloaden, installieren und konfigurieren ====
+
+Das Modul und die Installationsanleitung erhalten Sie direkt bei xanario.
+
+==== Modul einrichten ====
+Nachdem das Modul integriert wurde, geben Sie bitte die Einstellungen im Modul an. Alle Daten finden Sie in Ihrem Kunden-Account bei FINDOLOGIC.
+
+<note tip>
+Wenden Sie sich bitte direkt an die xanario Ltd., die kompetenten Mitarbeiter helfen Ihnen gerne bei Fragen zum Modul.
+In Problemfällen mit unseren Partnern können Sie sich selbstverständlich gerne direkt an FINDOLOGIC wenden.
+</note>
+
+==== Konfiguration im FINDOLOGIC-Kundenbereich ====
+
+Im [[https://secure.findologic.com/login/|Kundenbereich]] ist keine weitere Einrichtung erforderlich.
+
+
+===== Sie benötigen Hilfe? =====
+Bitte wenden Sie sich dazu direkt an Xanario
+
+**xanario Ltd.**
+
+Schulstr. 11
+
+09125 Chemnitz
+
+Deutschland
+
+Telefon: 0049 (0) 37 12 78 66 80
+
+Email: info@xanario.de

@@ -1,0 +1,14 @@
+====== FINDOLOGIC Smart Suggest Integration für xtc Veyton ======
+
+  * Für die FINDOLOGIC-Smart Suggest benötigen Sie das aktuelle FINDOLOGIC xtc Veyton Modul ([[http://www.bui-hinsche.de/e-commerce/xt-commerce-4/plugins/10/findologic-suche-fuer-xt-commerce-4|Zum Plugin]])
+  * Bitte achten Sie bei einem Update darauf Template-Dateien, so diese von Ihnen angepasst wurden, vorher zu sichern.
+  * Der im FINDOLOGIC Kundenaccount angesprochene Code-Schnippsel muss bei xtc Veyton **nicht** eingefügt werden, dies wird bereits vom Modul übernommen
+  * Passen Sie bitte Ihr Shop-Template folgendermaßen an. Beim Standardtemplate in der Datei: SHOPVERZEICHNIS/templates/xt_grid/xtCore/boxes/box_search.html: Zeile 12
+von:
+<code>
+{form type=hidden name=page value=search}
+</code>
+zu: 
+<code>
+<!--{form type=hidden name=page value=search}-->
+</code>

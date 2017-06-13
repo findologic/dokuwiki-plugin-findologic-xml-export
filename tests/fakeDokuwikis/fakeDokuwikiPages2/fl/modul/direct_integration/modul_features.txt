@@ -1,0 +1,66 @@
+====== Featurematrix für Direct Integration Module ======
+
+ Im Folgenden ist eine Auflistung der einzelnen FINDOLOGIC Direct Integration Module, mit den entsprechend exportierten Feldern. 
+
+<note important>Diese Matrix ist noch in der Entstehung! Bei einigen Modul-Feature Zuordnungen muss die Verfügbarkeit noch geklärt werden. Entsprechende Felder sind mit einem '?' gekennzeichnet. </note>
+
+
+==== Matrix ====
+
+
+^ ^ Magento (not yet released) ^ OXID (beta) ^ Shopware (not yet released) ^
+| **Funktionen**^^^|
+| Suche | ✓ | ✓ | ✓ |
+| Navigation | ✓| ✓ | ✓ |
+| Tracking | ✓| ✓ | ✓ |
+| **Attribute (Filter)**^^^|
+| Kategorien | ✓ | ✓ | ✓ |
+| Hersteller | ✓ | ✓ | ✓ |
+| Preis | ✓ | ✓ | ✓ |
+| Varianten-Attribute | ✓ | ✓ | ✓ |
+| Artikel-Eigenschaften | ✓ | - | ✓ |
+| Bewertungen | ✓ | ✓ | ✓ |
+| Angebote | ✓ | ✓ | ✓ |
+| Neuheiten | ✓ | - | ✓ |
+| Versandkostenfrei | - | - | ✓ |
+| Verfügbarkeit | ✓ | ✓ | - |
+| **Eigenschaften (Informationen im Template)**^^^|
+| Preis| ✓ | ✓ | ✓ |
+| Streichpreis | ✓ | ✓ | ✓ |
+| Titel | ✓ | ✓ | ✓ |
+| Artikelnummer | ✓ | ✓ | ✓ |
+| Kurzbeschreibung | ✓ | ✓ | ✓ | 
+| Langbeschreibung | ✓ | ✓ | ✓ |
+| Produktbild | ✓ | ✓ | ✓ | 
+| Thumbnail | ✓ | ✓ | ✓ | 
+| Lagerstand | ✓ | ✓ | ✓ | 
+| Bewertungen | ✓ | ✓ | ✓ | 
+| Steuersatz | ✓ | ✓ | ✓ | 
+| Gewicht | ✓ | ✓ | ✓ | 
+| Variantenartikel vorhanden | ✓ | ✓ | ✓ | 
+| Variantenartikel mit unterschiedlichen Preisen vorhanden | ✓ | ✓ | ✓ | 
+| UVP | ✓ | ✓ | - | 
+| Verfügbarkeit | ✓ | ✓ | - | 
+| Neuheiten | ✓ | - | ✓ | 
+| Versandkostenfrei | - | ✓ | ✓ | 
+| Lieferzeit | - | ✓ | ✓ | 
+| Breite | - | ✓ | ✓ | 
+| Höhe | - | ✓ | ✓ | 
+| Länge | - | ✓ | ✓ | 
+| Maßeinheit | - | ✓ | ✓ | 
+| Inhalt | - | ✓ | ✓ | 
+| Grundeinheit | - | - | ✓ | 
+| Verpackungseinheit | - | - | ✓ | 
+| Highlight/Top | - | - | ✓ | 
+| Erscheinungsdatum | - | - | ✓ | 
+| Freitextfelder | - | - | ✓ | 
+| Merkzettel-URL | - | - | ✓ | 
+| Vergleichs-URL | - | - | ✓ | 
+| Warenkorb-URL | - | - | ✓ | 
+| Herstellerbild | - | - | ✓ | 
+
+
+=== Legende ===
+  * '✓' -> Ja / Verfügbar
+  * '-' -> Nein / Nicht Verfügbar (meist weil vom Shopsystem nicht unterstützt)
+  * '?' -> Ungeklärt

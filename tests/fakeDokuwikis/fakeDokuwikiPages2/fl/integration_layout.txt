@@ -1,0 +1,36 @@
+====== Layout Customizing in 3 Schritten ======
+Das Layout können Sie über den [[fl:template_manager|Template-Manager]] und/oder über die findologic.css komplett frei gestalten. Jedoch haben wir für Sie bereits ein Standardlayout eingestellt, sodass Sie die Suche ohne Anpassungen verwenden können. Um der Suchdarstellung einen Look&Feel von Ihrer Seite zu geben, können Sie hier wesentliche Farbanpassungen vornehmen: in nur 3 Schritten.
+
+===== 1. Hintergrundfarbe für die Filterbox =====
+
+<file>
+#flCloudArea {
+	background-color: #888888;
+}
+</file>
+
+
+===== 2. Farbwert der zu erwartenden Ergebnisse (in Klammern neben dem Filter) ===== 
+
+<file>
+.flFrequency {
+	color: #000000;
+}
+</file>
+
+
+===== 3. Filter Farbwerte/Darstellung ===== 
+Bei den Filtern handelt es sich um Links, die in folgenden CSS definiert werden. Hier können Sie die Farbwerte setzen. Kommentieren Sie die Werte aus (''%%//%%''), dann werden die Standardwerte von Ihrem Shop übernommen.
+
+<file>
+.flFilterCloud a {
+    color: #000000;
+    font-family: arial;
+    text-decoration: none;
+}
+
+.flFilterCloud a:hover {
+    text-decoration: underline;
+    color: #000000;
+}
+</file>

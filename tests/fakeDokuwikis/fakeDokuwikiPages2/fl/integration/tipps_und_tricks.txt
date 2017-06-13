@@ -1,0 +1,16 @@
+====== Tipps und Tricks ======
+
+==== Filter vorauswählen ====
+Um einzustellen, dass ein bestimmter Filter nach Absenden des Suchformulars bereits vorausgewählt ist (z.B. Hersteller = Adidas, Kategorie = Sportschuhe), fügen Sie für jeden Filter ein verstecktes Feld mit den entsprechenden Werten in das Suchformular ein:
+
+<code html>
+<form>
+<input type="text" name="query">
+...
+<!-- Hier die gewünschten vorausgewählten Filter einfügen -->
+<input type="hidden" name="attrib[vendor][]" value="Adidas" />
+<input type="hidden" name="attrib[cat][]" value="Sportschuhe" />
+...
+<input type="submit" />
+</form>
+</code>

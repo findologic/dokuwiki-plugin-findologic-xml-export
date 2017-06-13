@@ -1,0 +1,8 @@
+[[fl:integration:shopware|{{:fl:integration:logo_shopware.jpg?200}}]]
+
+<note important>Bitte wählen Sie Ihre Integrationsvariante: 
+
+  * [[fl:integration:shopware_api|API]]
+  * [[fl:integration:shopware_di|Direct Integration]]
+</note>
+

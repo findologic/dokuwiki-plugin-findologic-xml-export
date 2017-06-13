@@ -1,0 +1,68 @@
+====== Checklist ======
+
+===== Plugin =====
+
+If the plugin is written for a shopysystem (not a specific shop), then check the following: 
+
+  * It is possible to install the plugin via the shop's native plugin-management
+  * The plugin is written OOP, so it can be adapted easily
+  * There is propper documentation for the plugin
+
+===== Shop Backend =====
+  * Each language / subshop (shop-instance) can have it's own shopkey. Also see [[fl:modul:direct_integration:shop_backend_configuration|Shop Backend Configuration]].
+  * Can the shopkey be deleted by entering and saving an empty shopkey? Is the FINDOLOGIC-Service **not** integrated then (Script should not be included in the head).
+  * Is the entered shopkey trimed (spaces upfront and in the end are removed)?
+  * Is the entered shopkey in correct format (validation when a shopkey is entered)? 32 characters, only digits and UPPERCASE letters?
+
+===== Export =====
+
+==== Working Export ====
+
+  * Does the output validate with the [[https://github.com/FINDOLOGIC/xml-export/blob/master/src/main/resources/findologic.xsd|XML-Schema]]?
+  * Does the [[fl:modul:direct_integration:export|export]] return the correct amount of products for the call?((e.g. the first two articles for /findologic_export.php?shopkey=1234&start=0&limit=2))
+  * Does the export deliver a meaningful error-message, if a [[fl:modul:direct_integration:export#parameter_of_the_export-url|parameter]] is missing?
+  * Is it possible to derive and overwrite a function of the export?
+
+==== Correct Articles ====
+
+  * Is the right article-information exported for different lanuages (texts, prices, categories, ...)
+  * For an article with a shown and a hidden variant, only the attributes of the shown variant are exported.
+  * An article only found in a hidden category is not exported.
+  * An article found in a hidden and in a show category is exported.
+  * A hidden category is not exported as an attribute to an shown article.
+
+Additionally the following combinations have to be checked:
+
+^ Product ^ Stock ^ Sale ^ Export ^
+| Product 1 |  >0  |  Yes  |  **Yes**  |
+| Product 2 |  >0  |  No |  **Yes**  |
+| Product 3 |  <0  |  Yes  |  **Yes**  |
+| Product 4 |  <0  |  No  |  **No**  |
+
+^ Product ^ Active ^ Export ^
+| Product 1 |  Yes  |  **Yes**  |
+| Product 1 |  No  |  **No**  |
+
+^ Product ^ Show^ Export ^
+| Product 2 |  Yes  |  **Yes**  |
+| Product 2 |  No  |  **No**  |
+
+===== FINDOLOGIC-Javascript =====
+
+  * In the ''<head>'' of each page of the shop the FINDOLOGIC-Javascript with the correct md5-encoded shopkey and the respective [[fl:modul:direct_integration:xml_schema#calculating_the_usergroup-hash_usergroup|usergroup-hash]] is integrated. Also see [[fl:modul:direct_integration:script_integration|Script Integration]].
+  * If the page is called with the parameter ''?findologic=off'' the code must not be included.
+
+===== Tracking =====
+
+  * The tracking-code with the correct variables is inserted into the respective pages. Also see [[fl:modul:direct_integration:tracking_integration|Tracking Integration]]. 
+  * The further functioning will be checked by FINDOLOGIC.
+
+===== Overview =====
+
+  - [[:fl:modul:direct_integration:shop_backend_configuration|Shop Backend Configuration]]
+  - ** Export **
+    - [[:fl:modul:direct_integration:Export|Export]]
+    - [[:fl:modul:direct_integration:xml_schema|XML-Schema]]
+  - [[:fl:modul:direct_integration:script_integration|Script Integration]]
+  - [[:fl:modul:direct_integration:tracking_integration|Tracking-Integration]]
+  - Checklist

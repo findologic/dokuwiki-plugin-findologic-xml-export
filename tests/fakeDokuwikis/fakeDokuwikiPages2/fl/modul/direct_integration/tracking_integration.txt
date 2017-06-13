@@ -1,0 +1,340 @@
+====== FINDOLOGIC Tracking Information ======
+
+===== Legal Note =====
+
+Tracking of user related data on websites underlies various legal regulations, which differ among countries in EU. We present an example but point out explicitely:
+
+<note warning>FINDOLOGIC GmbH accepts no liability for the following boilerplate text. Responsibility to check this text regarding the applicable data protection regulations underlies FINDOLOGIC customers</note>
+
+> Diese Website benutzt eine Trackingverfahren zur statistischen Auswertung der Besucherzugriffe. Hierbei kommen sog. “Cookies”, Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglichen zum Einsatz. Die durch den Cookie erzeugten Informationen über Ihre Benutzung dieses Internetangebotes werden gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können. 
+> <code html>
+<iframe style="border: 0; height: 200px; width: 600px;" src="http://tracking.findologic.com/index.php?module=CoreAdminHome&action=optOut&language=de"></iframe>
+</code>
+
+Content of the IFrame is configurable per language parameter. The german version can be found here: http://tracking.findologic.com/index.php?module=CoreAdminHome&action=optOut&language=de
+To show a text in another language, the parameter "language" must be assigned with language abbreviation as a value (i.e. de, en, es, ...)
+
+
+====== Tracking Integration ======
+
+All scripts listed below must be included into the indicated pages. 
+Thereby all variables of the type ''{$VARIABLE}''from the script must be replaced at a run-time by corresponding value.
+
+==== Own implementation ====
+
+If you make the integration of tracking yourself, please note the following points: 
+
+  * If your search parameter is not called ''q'', ''query'', ''s'', ''search'', ''searchword'', ''k'' or ''keyword'' (e.g. %%www.shop.com/search.php?search=pants%% ? in this case the parameter is ''search''), please communicatethis information to the FINDOLOGIC support team.
+  * If your category parameter is not called attrib[cat] (e.g. %%www.shop.com/search.php?search=pants&attrib[cat]=menwear%% ? in this case the parameter is ''attrib[cat]''), please communicate this information to the FINDOLOGIC support team.
+
+
+==== General integration ====
+
+The following script must be integrated into **every page**.
+
+<note>Variables to be replaced: ''{$HASHED_SHOPKEY}'' - upper case of md5-hash of the Shopkey</note>
+<note important>Please check that the correct Shopkey is in the output for multilingual shops or subshops. </note>
+
+<code javascript>
+<script type="text/javascript">
+    var fl_paq = fl_paq || [];
+    (function(){ var u=(("https:" == document.location.protocol) ? "https://tracking.findologic.com/" : "http://tracking.findologic.com/");
+    fl_paq.push(['setSiteId', '{$HASHED_SHOPKEY}']);
+    fl_paq.push(['setTrackerUrl', u+'tracking.php']);
+    fl_paq.push(['trackPageView']);
+    fl_paq.push(['enableLinkTracking']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'tracking.js';
+    s.parentNode.insertBefore(g,s); })();
+</script>
+</code>
+
+=== Request parameter reference ===
+
+The sent parameters match the general request parameter reference.
+
+==== Tracking of the search (not necessary with Direct Integration) ====
+
+The following script must be integrated into **every search results page**.
+<note>Variables to be replaced: ''{$QUERY}'', ''{$FILTER_NAME}'', ''{$NUM_RESULTS}''</note>
+
+<code javascript>
+<script type="text/javascript">
+    fl_paq.push(['trackSiteSearch',
+        "{$QUERY}",         // Search keyword searched for; e.g. "pants"
+        "{$FILTER_NAME}",   // Filter selected in your search engine. If you do not need this, set to false; e.g. "cat=Menswear, color=red"
+        {$NUM_RESULTS}      // Number of results on the Search results page. Zero indicates a 'No Result Search Keyword'. Set to false if you don't know; e.g. 1
+    ]);
+
+    // We recommend not to call trackPageView() on the Site Search Result page
+    // fl_paq.push(['trackPageView']);
+</script>
+</code>
+
+=== Request parameter reference ===
+
+See general request parameter reference for documentation of the remaining request parameters.
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''search'' | Required | ''$QUERY'' \\ ''$FILTER_NAMES'' | The search keywords from the search field. | ''fancy pants'' |
+| ''search_count'' | Required | ''$NUM_RESULTS'' | The number of found products. Should be set to ''false'' if unavailable. | ''123'' |
+
+==== Tracking of category ====
+
+The following script must be integrated into **each page of addressable category**.
+
+<note>Variables to replace: ''{$CATEGORY_NAME_X}''</note>
+
+<code javascript>
+<script type="text/javascript">
+    // on a category page, productSKU and productName are not applicable and are set to false
+    fl_paq.push(['setEcommerceView',
+        false, // No product SKU on Category page
+        false, // No product name on Category page
+        category = ["{$CATEGORY_NAME_1}", "{$CATEGORY_NAME_2}", ...] // Category Page, or array of up to 5 categories; e.g. path "Menswear -> Pants": ["Menswear", "Pants"]
+    ]);
+    fl_paq.push(['trackPageView']);
+</script>
+</code>
+
+
+=== Request parameter reference ===
+
+See general request parameter reference for documentation of the remaining request parameters. If there is a corresponding variable in the snippet, it is listed in the //Variable// column.
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''cvar'' | Required | ''$CATEGORY_NAME_*'' | List categories as JSON object.  | See below this table for a structure example. |
+
+**Example for ''cvar'' JSON structure:**
+
+<code json>
+{
+    "5": [ "_pkc", "[\"Pants\"]" ] // Categories as specified in $PRODUCT_CATEGORY_1, $PRODUCT_CATEGORY_2...
+    // Note that the category value is the stringified version of a JSON array containing strings.
+}
+</code>
+
+==== Tracking of product pages ====
+
+The following script must be integrated into **every product details page**.
+
+<note>Variables to be replaced: ''{$PRODUCT_ORDERNUMBER}'', ''{$PRODUCT_TITLE}'', ''{$PRODUCT_CATEGORY_X}'', ''{$PRODUCT_PRICE}''</note>
+
+<code javascript>
+<script type="text/javascript">
+    // all parameters are optional, but we recommend to set at minimum productSKU and productName
+    fl_paq.push(['setEcommerceView',
+        "{$PRODUCT_ORDERNUMBER}",                                // (required) SKU: Product unique identifier; e.g. "a-123"
+        "{$PRODUCT_TITLE}",                                      // (optional) Product name; e.g. "Pants"
+        ["{$PRODUCT_CATEGORY_1}", "{$PRODUCT_CATEGORY_2}", ...], // (optional) Product category, or array of up to 5 categories; e.g. article`s first category-path "Menswear -> Pants": ["Menswear", "Pants"]
+        {$PRODUCT_PRICE}                                         // (optional) Product Price as displayed on the page; e.g. 1.23
+    ]);
+    fl_paq.push(['trackPageView']);
+</script>
+</code>
+
+=== Request parameter reference ===
+
+See general request parameter reference for documentation of the remaining request parameters. If there is a corresponding variable in the snippet, it is listed in the //Variable// column.
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''cvar'' | Required | ''$PRODUCT_ORDERNUMBER'' \\ ''$PRODUCT_TITLE'' \\ ''$PRODUCT_CATEGORY_*'' \\ ''$PRODUCT_PRICE'' | Product information as JSON. | See below this table for a structure example. |
+
+**Example for ''cvar'' JSON structure:**
+
+<code json>
+{
+    "2": [ "_pkp", 13.37 ], // Price, according to $PRODUCT_PRICE
+    "3": [ "_pks", "wbk002c" ], // SKU, according to $PRODUCT_ORDERNUMBER
+    "4": [ "_pkn", "My product" ], // Name of the product, according to $PRODUCT_TITLE
+    "5": [ "_pkc", "[\"Women\",\"Tops & Blouses\"]" ] // Categories as specified in $PRODUCT_CATEGORY_1, $PRODUCT_CATEGORY_2...
+    // Note that the category value is the stringified version of a JSON array containing strings.
+}
+</code>
+
+==== Tracking of shopping cart updates ====
+
+The following script must be integrated into **every shopping cart page** .
+
+<note>Variables to replace: ''{$PRODUCT_ORDERNUMBER}'', ''{$PRODUCT_NAME}'', ''{$PRODUCT_CATEGORY_X}'', ''{$PRODUCT_PRICE}'', ''{$PRODUCT_QUANTITY}'', ''{$CART_AMOUNT}''</note>
+<note important>Each ordered item must be stated separately using the function ''addEcommerceItem''.</note>
+<note important>If you are using AJAX function for adding items to the shopping cart, please insert tracking request in the corresponding function.</note>
+
+Please replace before integration ''{$PRODUCT_ORDERNUMBER}'', ''{$PRODUCT_NAME}'', ''{$PRODUCT_CATEGORY_1}'', ''{$PRODUCT_CATEGORY_2}'' (corresponding to the number), ''{$PRODUCT_PRICE}'', ''{$PRODUCT_QUANTITY}''.
+
+<code javascript>
+<script type="text/javascript">
+    // add the first product to the order
+    fl_paq.push(['addEcommerceItem',
+        "{$PRODUCT_ORDERNUMBER}",                                // (required) SKU: Product unique identifier; e.g. "a-123"
+        "{$PRODUCT_NAME}",                                       // (optional) Product name; e.g. "Pants"
+        ["{$PRODUCT_CATEGORY_1}", "{$PRODUCT_CATEGORY_2}", ...], // (optional) Product category, or array of up to 5 categories; e.g. article`s first category-path "Menswear -> Pants": ["Menswear", "Pants"]
+        {$PRODUCT_PRICE},                                        // (recommended) Product price; e.g. 1.23
+        {$PRODUCT_QUANTITY}                                      // (optional, default to 1) Product quantity; e.g. 1
+    ]);
+
+    // Here it is important to add all other products found in the cart, even the products not updated by the current "Add to cart" click
+    fl_paq.push(['addEcommerceItem',
+        ...
+
+    // Records the cart for this visit
+    fl_paq.push(['trackEcommerceCartUpdate', {$CART_AMOUNT}]); // (required) Cart`s grand total; e.g. 2.34
+    fl_paq.push(['trackPageView']);
+</script>
+</code>
+
+<note important>When tracking is added, the weekly report mail contains sensitive data about your shops revenue. Please contact support@findologic.com for more information.</note>
+
+=== Request parameter reference ===
+
+See general request parameter reference for documentation of the remaining request parameters. If there is a corresponding variable in the snippet, it is listed in the //Variable// column.
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''revenue'' | Required | ''$CART_AMOUNT'' | Total value of the shopping cart. \\ Is based on the individual prices and quantities of the provided products. \\ The decimal separator must be a dot. Thousands separators must not be used. | 270.63 |
+| ''ec_items'' | Required | ''$PRODUCT_ORDERNUMBER'' \\ ''$PRODUCT_NAME'' \\ ''$PRODUCT_CATEGORY_*'' \\ ''$PRODUCT_PRICE'' \\ ''PRODUCT_QUANTITY'' | Information on the products in the shopping cart.  | See below this table for a structural example. |
+| ''idgoal'' | Auto | | Used internally. Must always be ''0''. | ''0'' |
+
+**Example for ''ec_items'' JSON structure:**
+
+<code json>
+[
+    // An array like below for each product in the shopping cart:
+    [
+        "ace000", // Product SKU, based on $PRODUCT_ORDERNUMBER
+        "Aviator Sunglasses", // Product name, based on $PRODUCT_NAME
+        [], // Optional array of product category strings, as provided in $PRODUCT_CATEGORY_1, $PRODUCT_CATEGORY_2...
+        250, // Unit price, based on $PRODUCT_PRICE
+        1 // Selected quantity, as in $PRODUCT_QUANTITY
+    ]
+]
+</code>
+
+==== Tracking of Check-Outs ====
+
+The following script must be integrated into **every order confirmation page**.
+<note>Variables to replace: ''{$PRODUCT_ORDERNUMBER}'', ''{$PRODUCT_NAME}'', ''{$PRODUCT_CATEGORY_X}'', ''{$PRODUCT_PRICE}'', ''{$PRODUCT_QUANTITY}'', ''{$ORDER_ID}'', ''{$ORDER_TOTAL}'', ''{$ORDER_SUB_TOTAL}'', ''{$ORDER_TAX_AMOUNT}'', ''{$ORDER_SHIPPING_AMOUNT}'', ''{$ORDER_DISCOUNT}''</note>
+<note important>Each ordered item must be stated separately using the function ''addEcommerceItem''.</note>
+
+<code javascript>
+<script type="text/javascript">
+    // add the first product to the order
+    fl_paq.push(['addEcommerceItem',
+        "{$PRODUCT_ORDERNUMBER}",                                   // (required) SKU: Product unique identifier; e.g. "a-123"
+        "{$PRODUCT_NAME}",                                          // (optional) Product name; e.g. "Pants"
+        ["{$PRODUCT_CATEGORY_1}", "{$PRODUCT_CATEGORY_2}", ...],    // (optional) Product category, or array of up to 5 categories; e.g. article`s first category-path "Menswear -> Pants": ["Menswear", "Pants"]
+        {$PRODUCT_PRICE},                                           // (recommended) Product price; e.g. 1.23
+        {$PRODUCT_QUANTITY}                                         // (optional, default to 1) Product quantity; e.g. 1
+    ]);
+
+    // Here you can add other products in the order
+    fl_paq.push(['addEcommerceItem',
+        ...
+
+    // Specifiy the order details to Tracking server and sends the data to Tracking server
+    fl_paq.push(['trackEcommerceOrder',
+        "{$ORDER_ID}",            // (required) Unique Order ID; e.g. "xyz1"
+        {$ORDER_TOTAL},           // (required) Order Revenue grand total (includes tax, shipping, and subtracted discount); e.g. 2.34
+        {$ORDER_SUB_TOTAL},       // (optional) Order sub total (excludes shipping); e.g. 1.34
+        {$ORDER_TAX_AMOUNT},      // (optional) Tax amount; e.g. 0.1
+        {$ORDER_SHIPPING_AMOUNT}, // (optional) Shipping amount; e.g. 0.2
+        {$ORDER_DISCOUNT}         // (optional) Discount offered (set to false for unspecified parameter); e.g. 0.7
+    ]);
+
+    // we recommend to leave the call to trackPageView() on the Order confirmation page
+   fl_paq.push(['trackPageView']);
+</script>
+</code>
+
+=== Request parameter reference ===
+
+See general request parameter reference for documentation of the remaining request parameters. If there is a corresponding variable in the snippet, it is listed in the //Variable// column.
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''revenue'' | Required | ''$ORDER_TOTAL'' | Total value of the order. \\ Is based on the individual prices and quantities of the provided products. \\ The decimal separator must be a dot. Thousands separators must not be used. | 270.63 |
+| ''ec_items'' | Required | ''$PRODUCT_ORDERNUMBER'' \\ ''$PRODUCT_NAME'' \\ ''$PRODUCT_CATEGORY_*'' \\ ''$PRODUCT_PRICE'' \\ ''PRODUCT_QUANTITY'' | Information on the products that were checked out.  | See below this table for a structural example. |
+| ''ec_id'' | Required | ''$ORDER_ID'' | ID of the order, as generated by the shop. Doesn't have to be the real one, but it must be unique. | ''201'' |
+| ''ec_st'' | Optional | ''$ORDER_SUB_TOTAL'' | Sum of the order before without shipping. \\ The decimal separator must be a dot. Thousands separators must not be used. | ''249.99'' |
+| ''ec_tx'' | Optional | ''$ORDER_TAX_AMOUNT'' | Sales tax as an absolute monetary value.  \\ The decimal separator must be a dot. Thousands separators must not be used. | ''10.5'' |
+| ''ec_sh'' | Optional | ''$ORDER_SHIPPING_AMOUNT'' | Cost of shipping. \\ The decimal separator must be a dot. Thousands separators must not be used. | ''5.2'' |
+| ''ec_dt'' | Optional | ''$ORDER_DISCOUNT'' | Discount on the order as an absolute monetary value. \\ The decimal separator must be a dot. Thousands separators must not be used. | ''1.8'' |
+| ''idgoal'' | Auto | | Used internally. Must always be ''0''. | ''0'' |
+
+**Example for ''ec_items'' JSON structure:**
+
+<code json>
+[
+    // An array like below for each product in the shopping cart:
+    [
+        "ace000", // Product SKU, based on $PRODUCT_ORDERNUMBER
+        "Aviator Sunglasses", // Product name, based on $PRODUCT_NAME
+        [], // Optional array of product category strings, as provided in $PRODUCT_CATEGORY_1, $PRODUCT_CATEGORY_2...
+        250, // Unit price, based on $PRODUCT_PRICE
+        1 // Selected quantity, as in $PRODUCT_QUANTITY
+    ]
+]
+</code>
+
+==== Howto: Finding problems ====
+
+In order to verify that tracking actually works, you have to check the requests sent by the scripts and make sure that they contain all required data in a valid format. Here is an example for Chrome Developer Tools users:
+
+{{:fl:internal:modul:direct_integration:devtools.png|}}
+
+  - Open the developer tools' //Network// tab and filter requests by //tracking.php//
+  - Click a tracking request you want to inspect
+  - In the //Headers// Tab of the request information area, scroll down to //Query String Parameters//. These contain the data sent by the tracking scripts.
+
+The following sections document the use of the scripts required for tracking. With each script, you will find a description of what data is transferred in those //Query String Parameters//. Values marked as //required// must be set using the relevant script. //Optional// values can be set via script, but are not required for tracking to function. //Auto// values are listed for completeness - they are set internally and don't require attention from the integrator.
+
+If you want to find out which of the scripts below caused a specific request:
+
+  - Consider which part of the shop you're working on. Certain scripts should only be integrated on certain pages, and cannot send any requests on others.
+  - If the parameters contain a //revenue// value, the request was most likely caused by shopping cart or check-out scripts.
+  - Required parameters vary the most between different types of request. Looking for those, using the parameter reference.
+
+=== General request parameter reference ===
+
+The following parameters are sent with each tracking request, and are not documented separately in the snippet-specific request parameter references.
+
+
+^ Name ^ Required? ^ Variable ^ Description ^ Example ^
+| ''action_name'' | Optional | | Helps with grouping tracking requests by purpose. Generally not necessary. | ''Catalog Overview'' |
+| ''idsite'' | Auto | ''$HASHED_SHOPKEY'' | MD5-hashed shopkey. | ''117B33B4F534644FF9CAC87B6881DB4F'' |
+| ''rec'' | Auto | | Always set to ''1''. | ''1'' |
+| ''r'' | Auto | | Random cache buster to avoid cached tracking requests. | ''406220'' |
+| ''h'' | Auto | | Current hour. | ''13'' |
+| ''m'' | Auto | | Current minute. | ''37'' |
+| ''s'' | Auto | | Current second. | ''42'' |
+| ''url'' | Auto | | URL of the current page. | ''http://example.org/catalogsearch'' |
+| ''urlref'' | Auto | | URL of the previous page (referrer). | ''http://example.org/'' |
+| ''_id'' | Auto | | Unique visitor ID. | ''b08723df6125fe33'' |
+| ''_idts'' | Auto | | First visit timestamp in seconds since epoch. | ''1435655552'' |
+| ''_idvc'' | Auto | | Visit count. | ''12'' |
+| ''_idn'' | Auto | | ''0'' if recurring visitor, non-zero otherwise. Superseded by ''_idvc''. | ''0'' |
+| ''_refts'' | Auto | | Referral timestamp in seconds since epoch. | ''1447238398'' |
+| ''_viewts'' | Auto | | Last view timestamp in seconds since epoch. | ''1447236482'' |
+| ''_ref'' | Auto | | The external referrer, e.g. a search engine linking to the shop. | ''https://google.com/?q=demoshop'' |
+| ''send_image'' | Auto | | Set to ''0'' to avoid sending a tracking pixel. | ''0'' |
+| ''pdf'' | Auto | | Browser supports displaying PDFs if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''qt'' | Auto | | Browser supports playing back QuickTime media if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''realp'' | Auto | | Browser supports playing back RealPlayer media if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''wma'' | Auto | | Browser supports playing back Windows Media Player files if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''dir'' | Auto | | Browser supports Shockwave Director if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''fla'' | Auto | | Browser supports Adobe Flash if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''java'' | Auto | | Browser supports Java if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''gears'' | Auto | | Browser supports Google Gears if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''ag'' | Auto | | Browser supports Silverlight if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''cookie'' | Auto | | Browser supports cookies if the value is ''1'', otherwise ''0'' | ''1'' |
+| ''res'' | Auto | | Display resolution. | ''1920x1080'' |
+| ''gt_ms'' | Auto | | Page loading time in milliseconds. | ''1186'' |
+
+
+
+===== Overview =====
+
+  - [[:fl:modul:direct_integration:shop_backend_configuration|Shop Backend Configuration]]
+  - ** Export **
+    - [[:fl:modul:direct_integration:Export|Export]]
+    - [[:fl:modul:direct_integration:xml_schema|XML-Schema]]
+  - [[:fl:modul:direct_integration:script_integration|Script Integration]]
+  - Tracking-Integration
+  - [[:fl:modul:direct_integration:checklist|Checklist]]

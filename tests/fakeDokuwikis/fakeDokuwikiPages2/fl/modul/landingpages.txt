@@ -1,0 +1,27 @@
+====== Landingpages ======
+
+
+Mit diesem Feature haben Sie (ab FINDOLOGIC-Professional) die Möglichkeit für definierte Keywords eine von Ihnen eingerichtete Seite (Landingpage) anstatt der Suchergebnisse anzeigen zu lassen. Dies bietet sich vor allem für Suchbegriffe an, für die es keine Produkte wohl aber eine eigene Seite gibt, wie z.B. AGB, Impressum, ...
+
+===== Parameter =====
+
+  * Name: beliebiger Name für Ihre Landingpage, der Name dient nur zur Übersicht
+  * URL der Landingpage: Adresse der Landingpage
+  * Landingpage aktiv: Gibt an, ob die Landingpage aktiv ist oder nicht
+  * Keywords: Beliebig viele Keywords bei deren Eingabe die Landingpage angezeigt werden soll
+
+===== Funktionsweise =====
+
+{{:fl:modul:landingpage_screenshot.jpg|}}
+
+===== Einbau in das Template =====
+
+==== Shops mit XML-Rückgabe ====
+
+Sobald also ein Tag ''<landingPage link="http://www.xyz.com"/>'' in der XML-Rückgabe mitgeliefert wird, kann der Shop dies entsprechend Ihren Vorgaben verarbeiten. Die dafür notwendigen Anpassungen sind direkt im Shopsystem durchzuführen. 
+
+==== Shops mit HTML-Rückgabe ====
+
+Zum Einbau der Landing-Pages müssen keine weiteren Schritte vorgenommen werden, sobald es aktive Landing-Page-Einträge gibt werden diese automatisch genutzt.
+
+<note important>Zur Weiterleitung muss der Kunde JavaScript aktiviert haben</note>

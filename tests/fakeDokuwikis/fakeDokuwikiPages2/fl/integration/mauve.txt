@@ -1,0 +1,81 @@
+====== FINDOLOGIC-Integration für Mauve Shops ======
+
+===== Kompatibilität =====
+
+Sollten Sie Fragen zur Kompatibilität zu Ihrer derzeitigen Version der Shopsoftware haben, wenden Sie sich bitte direkt an support@findologic.com.
+Wir prüfen die Kompatibilität gerne auch für Ihre Version.
+
+<note warning>Die FINDOLOGIC-Integration wird ausschließlich von Mauve übernommen. Dazu senden wir die notwendigen Daten von uns direkt an Mauve. Diese Dokumentation dient lediglich der Vollständigkeit.</note>
+
+===== Konfiguration im FINDOLOGIC-Kundenbereich =====
+
+Im [[https://secure.findologic.com/login/|Kundenbereich]] ist keine weitere Einrichtung erforderlich. Sie brauchen lediglich unseren Support zu kontaktieren, sobald das FINDOLOGIC-Modul installiert wurde.
+
+
+===== Vorbereitung des Moduls im Shop =====
+In diesem Schritt werden die nötigen FINDOLOGIC-Dateien auf den Shop-Server kopiert.
+
+  * Kopieren Sie dazu einfach den Inhalt des Ordners ''mauve'' in der Datei [[https://secure.findologic.com/integration/download.php?module=shops/mauve|mauve.zip]] in den entsprechenden Basis-Ordner Ihres Mauve-Shops.
+  * Verschieben Sie die Datei ''findologic.tpl.php'' in den Unterordner ''templates/''.
+  * Öffnen Sie die Konfigurationsdatei ''findologic_config.inc.php'' und tragen Sie unter den ersten 3 Punkten den SHOP-KEY, die SHOP-URL und die SERVICE-URL, welche Sie im Customer-Login finden, ein.
+  * WICHTIG: Vergessen Sie bei den URLs nicht den Slash am Ende, da es sonst zu Problemen bei der Darstellung der Ergebnisse kommt.
+  * Beispiel: 
+              
+              define("FL_SHOP_ID", "1234567890ABCDEF1234567890ABCDEF");
+              define("FL_SHOP_URL", "http://www.mein-shop.de/");
+              define("FL_SERVICE_URL", "http://srv05.findologic.com/ps/mein-shop.de/");
+
+<note important>Bitte aktivieren Sie das nun installierte FINDOLOGIC-Modul noch nicht, da FINDOLOGIC zunächst noch den aktuellen Artikelbestand indizieren muss.</note>
+
+===== Indizierung des Artikelbestands =====
+Sobald die vorhergehenden Schritte durchgeführt sind bitten wir Sie, FINDOLOGIC zu kontaktieren, damit der aktuelle Artikelbestand indiziert werden kann.
+
+<note important>Um über die Suche auffindbar zu sein, muss der Artikel einer Kategorie zugeordnet sein</note>
+
+Auf unserer Seite wird dann auch ein Service eingerichtet, der Ihren Artikelbestand einmal täglich aktualisiert.
+
+Sobald alles bereit für den Online-Betrieb ist, erhalten Sie von uns ein schriftliches GO via Email!
+
+<note tip>Sollte es nach dem Aktivieren der Suche zu Fehlern kommen, deren Ursache nicht offensichtlich ist (z.B. komplett leere Seite statt Suchergebnissen), können Sie die Anzeige von Fehlermeldungen einschalten, indem Sie den Parameter ''&medebug=1'' an die URL anhängen.</note>
+
+Die URL müsste dann z.B. von ''http://www.mein-shop.de/findologic.php?q=maske'' zu ''http://www.mein-shop.de/findologic.php?q=maske&medebug=1'' verändert werden.
+
+===== Design Anpassung =====
+
+Die CSS-Datei zur Darstellung der Filter und Ergebnisse wird automatisch in das FINDOLOGIC-Template eingebunden, Sie können auf dieses im FINDOLOGIC-Template-Manager zugreifen. Die URL der CSS-Datei lautet: ''http://service.findologic.com/ps/ihre-domain.de/css/findologic.css''.
+Wenn Sie diese anpassen wollen, kopieren Sie die Datei in Ihren Shop und binden Sie die modifizierte CSS-Datei dort ein. 
+
+<note important>Vergessen Sie nicht den Original-Verweis im FINDOLOGIC-Template zu entfernen.</note>
+
+Im Stylesheet finden Sie einen Block mit der Bezeichnung: **#flContentContainer**.
+Dort können Sie den **border** und die **margin-right** auskommentieren (mit 2 Slashes).
+Somit gibt es keine Größenveränderung im Ergebnis-Container.
+
+Um die Ergebnisanzeige vorab bereits farblich etwas anzupassen, finden Sie hier 3 wichtige Schritte: [[fl:integration_layout]].
+
+
+Die Templates zur Darstellung des Filters und der Ergebnisse können Sie im Kundenbereich anpassen.
+
+Dokumentation zu den Templates finden Sie unter: [[fl:template_manager]] bzw. [[fl:template_manager_2_0]] und [[fl:template_manager:plugins]].
+
+==== Hinweis: FINDOLOGIC-Logo ====
+Bitte beachten Sie dazu folgende Punkte: [[fl:logo_verwendung]]
+
+
+
+===== Sie benötigen Hilfe? =====
+Brauchen Sie Hilfe bei der Integration? :
+
+**Mauve Mailorder Software GmbH & Co KG**
+
+Laurentiusweg 83
+
+45276 Essen
+
+Deutschland
+
+Ansprechpartner: Ashkan Ghorab
+
+Email: ghorab@mauve.de
+
+Telefon: 0049 (0) 201 43 79 18 31 

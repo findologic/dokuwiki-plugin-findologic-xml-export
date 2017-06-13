@@ -1,0 +1,179 @@
+====== FINDOLOGIC-Integration für OXID-Shops ======
+
+===== Wichtige Hinweise =====
+
+==== Kompatibilität ====
+
+Bitte prüfen Sie ob Ihre Shopsystemversion mit der aktuellen Modulversion bei OXID Exchange kompatibel ist.
+
+Unter Umständen werden auch ältere Shopsystemversionen unterstützt. Wenden Sie sich in diesem Fall bitte direkt an support@findologic.com.
+
+Die entsprechende Integrationsanleitung für ältere OXID Versionen finden Sie [[fl:integration:oxid:lower_4_7|hier]].
+
+Sollten Sie von einer älteren Modulversion updaten wollen beachten Sie bitte die Dokumentation zu [[#update_neuinstallation|Update / Neuinstallation]].
+
+===== Installation des Moduls=====
+
+====Schritt 1: Download des Moduls====
+
+Laden Sie die aktuelle Version des FINDOLOGIC-Moduls herunter.
+
+  * [[http://exchange.oxid-esales.com/Shopping-experience/Shop-search/FINDOLOGIC-CE-1-1-47-12-Stable-CE-4-7-x.html|Für OXID CE]]
+  * [[http://exchange.oxid-esales.com/Shopping-experience/Shop-search/FINDOLOGIC-PE-EE-1-2-47-13-Stable-EE-PE-4-7-x-5-0-x-4-8-x-5-1-x.html|Für OXID PE/EE]]
+
+====Schritt 2: Installation des Pakets====
+
+  * Entpacken Sie die heruntergeladene Datei und kopieren Sie den Inhalt des Ordners ''copy_this'' in den Stammordner Ihres Shops.
+
+====Schritt 3: Einstellungen im Shop-Backend====
+
+  * Loggen Sie sich bei Ihrem eShop Admin ein und gehen Sie auf den Menüpunkt ''Erweiterungen -> Module -> FINDOLOGIC-Suche''.
+  * Aktivieren Sie hier das FINDOLOGIC Modul.
+
+{{:fl:integration:oxid_2.png|}}
+
+  * Wählen Sie nun den Menüpunkt ''Findologic Suche -> Einstellungen'' und tragen Sie Ihren Shopkey und Ihre Service-URL ein. Shopkey und Service URL finden Sie im FINDOLOGIC Kundenaccount unter dem Menüpunkt ''Account → Stammdaten''.
+
+{{:fl:integration:oxid_1.png|}}
+
+====Schritt 4: Aktivierung====
+
+  * Sobald, das Modul eingerichtet wurdeschreiben Sie ein diesbezügliches Email an support@findologic.com, damit wir Ihre Artikeldaten das erste Mal indizieren können.
+  * Der Status kann erst auf aktiv wechseln, wenn Ihre Artikeldaten indiziert wurden.
+
+==== Schritt 5: Finden statt Suchen ====
+
+Die FINDOLOGIC Suche bietet viele Möglichkeiten Ihre Produktsuche zu verbessern. Nutzen Sie diese Möglichkeiten jetzt!
+
+  * [[https://secure.findologic.com/login.symfony/web/app.php/synonym/new|Einrichten von Synonymen]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/shop/filter|Konfiguration der Filter]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/shop/logos|Einrichten von Herstellerlogos]]
+
+=== Ab FINDOLOGIC Basic ===
+  * [[fl:integration:oxid:smart_suggest|Integration der Smart Suggest bei OXID]]
+
+=== Ab FINDOLOGIC Professional ===
+  * [[https://secure.findologic.com/login.symfony/web/app.php/landingpage/new|Einrichten von Landingpages]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/promotion/new|Einrichten von Promotions]]
+  * [[https://secure.findologic.com/login.symfony/web/app.php/bonusrule/new|Pushen von Produkten]]
+
+===== Hinweise und weiterführende Dokumentation =====
+
+==== Einstellungen bei OXID ====
+
+  * Damit Artikel gefunden werden, wählen Sie beim Artikel die Option ''Erweitert'' -> ''Kann gesucht werden''.
+  * Damit Artikel mit Varianten über die Suche gefunden werden, muss zumindest eine der Varianten aktiv sein.
+  * Artikel die keiner Kategorie zugeordnet sind, können auch von der Suche nicht gefunden werden, da sie im Export nicht mitgeliefert werden.
+  * Um Artikel ohne Lagerbestand von der Suche auszuschließen, wählen Sie beim Artikel die Option ''Lager'' -> ''Lieferstatus'' -> ''Wenn ausverkauft offline''.
+  * Auf Ihrem Server muss die PHP-Direktive ''allow_url_fopen'' aktiviert sein.
+
+=== Bereichsslider bei einem responsive Template ===
+
+Falls Sie ein Responsive Template eines Drittherstellers verwenden und der Bereichsslider auf einem Mobile Device nicht korrekt funktioniert, können Sie versuchen die jQuery-UI Version zu aktualisieren. Diese können Sie {{:fl:integration:oxid:fl-slider.js.zip|hier}} herunterlanden. Diese Datei muss in Ihrem Shop unter ''modules/findologic/out/src/js/'' entpackt werden.
+
+=== Das Export-Script liefert den Fehler "Could not insert Articles in Table tmp_d41d8cd98fb24e98998" ===
+
+Es gibt im Shop ein Problem beim Erstellen von temporären Tabellen. Genaueres sollte in den Webserver-Logs des Kunden stehen.
+
+=== Das Export-Script liefert den Fehler "Could not create HEAP Table" ===
+
+**Ursache**:\\
+Die eingesetzte OXID Version ist mit MySQL Version nicht kompatibel.\\
+**Lösung**:\\
+  * Zeile 576 in der Datei /SHOPROOT/admin/dynexportbase.php anpassen.
+<code>
+576c576
+<         $sQ = "CREATE TABLE if not exists {$sHeapTable} ( oxid char(32) NOT NULL default '' ) TYPE=HEAP {$sTableCharset}";
+---
+>         $sQ = "CREATE TABLE if not exists {$sHeapTable} ( oxid char(32) NOT NULL default '' ) ENGINE=HEAP {$sTableCharset}";
+</code>
+
+
+
+=== Umlautfehler ===
+
+Sollten bei Filtern bzw. den Farbkacheln Probleme mit Umlauten auftreten (anstelle des Umlauts wird ein Fragezeichen angezeigt) so liegt in den meisten Fällen eine zu alte OXID-Version vor. Eine Lösung wäre die OXID-Shopversion zu aktualisieren.
+
+
+=== Funktionen im Shop-Backend ===
+
+{{:fl:integration:oxid_module_priceslider.jpg|}}
+
+**“Ausgabe der Findologic-Filter deaktivieren?”**
+
+Hiermit kann die Ausgabe aller Filter unterdrückt werden.
+
+**“Preisfilter als Slider anzeigen?”**
+
+Auswahl ob der Preisfilter als Slider oder als “Filterbox” angezeigt werden soll.
+
+
+**“Hinweise bei Update des Moduls auf Version 1.3.47.14 bzw. 1.3.49.14”**
+
+Bitte geben Sie, bei einem Update auf diese Version, unserem Support bescheid, damit der Pfad des Smart Suggest Proxys von "autocomplete.php" auf den neuen Pfad "modules/findologic/autocomplete.php" angepasst werden kann.
+
+==== Hilfe bei der Integration ====
+
+=== STRAIGHT2SUCCESS ===
+
+Professionelle Integration mit der Unterstützung von FINDOLOGIC? Nutzen Sie jetzt das STRAIGHT2SUCCESS Paket von FINDOLOGIC!
+
+www.findologic.com/straight2success
+
+
+==== Mehr herausholen! ====
+
+Noch mehr aus Ihrer FINDOLOGIC-Suche herausholen? Kein Problem, wir helfen Ihnen - mit FINETUNING! 
+
+www.findologic.com/finetuning
+
+Kennen Sie schon FINDOLOGIC-Professional? Erstellen Sie zielgerichtete Promotions, eigene Landingpages zu Suchbegriffen oder pushen Sie bestimmte Artikel, wie etwa Eigenmarken!
+
+www.findologic.com/findologic-professional
+
+==== Update / Neuinstallation ====
+
+=== Schritt 1: Modul deaktivieren ===
+Deaktivieren Sie das Modul im Adminbereich
+== Ab Version 4.6 ==
+
+  * Deaktivieren Sie das Modul unter dem Menüpunkt ''Erweiterungen -> Module -> FINDOLOGIC-Suche''.
+
+== Versionen kleiner 4.6 ==
+
+  * Wählen Sie den Menüpunkt ''Stammdaten -> Grundeinstellungen -> System -> Module''
+  * Entfernen Sie folgende Zeilen
+
+  search => findologic/findologic
+  oxsearch => findologic/flsearch
+  oxarticle => findologic/core/floxarticle
+
+=== Schritt 2: Moduldateien entfernen ===
+
+== Ab Version 4.6 ==
+  * Entfernen Sie den Ordner ''modules/findologic''
+
+== Versionen kleiner 4.6 ==
+  * Entfernen Sie folgende Dateien bzw. Ordner:
+    * ''admin/findologic_admin.php''
+    * ''modules/findologic''
+    * ''out/admin/de/findologic_lang.php''
+    * ''out/admin/en/findologic_lang.php''
+    * ''out/admin/tpl/findologic_admin.tpl''
+    * ''out/basic/de/findologic_lang.php''
+    * ''out/basic/en/findologic_lang.php''
+    * ''out/basic/src/findologic.css''
+    * ''out/basic/tpl/inc/findologic_filter.tpl''
+    * ''views/findologic_export.php''
+
+=== Schritt 3: tmp Ordner leeren ===
+
+  * Leeren Sie den Inhalt des ''tmp/'' Verzeichnisses (ausgenommen eine eventuell vorhandene ''.htaccess'' Datei).
+
+=== Schritt 4: Neuinstallation ===
+
+Führen Sie die Installation wie [[#installation_des_moduls|oben angeführt]] durch.
+
+==== Weitere Fragen ====
+
+Sollte Ihre Frage nicht in unseren [[https://findologic.zendesk.com/forums|FAQ]] enthalten sein, melden Sie sich jeder Zeit bei <support@findologic.com>.

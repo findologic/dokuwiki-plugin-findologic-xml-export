@@ -1,0 +1,5 @@
+====== Integration der Smart Suggest bei modified ======
+
+Bei modified Shops ist die Smart Suggest bereits im Shop integriert.
+
+Bitte konfigurieren Sie im FINDOLOGIC-Kundenaccount die Smart Suggest nach Ihren Wünschen. Sie müssen keine weiteren Schritte durchführen.

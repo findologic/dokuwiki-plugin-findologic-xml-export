@@ -1,0 +1,119 @@
+====== Guided Shopping ======
+
+Mit diesem Feature haben Sie die Möglichkeit Kunden, durch das einfache beantworten von Fragen, genau die richtigen Produkte finden zu lassen. Die importierten Filter stellen hierbei die Fragen dar.
+
+===== Parameter =====
+
+==== Name ====
+
+Der Name dient zum einen zur Übersicht, sowie als Namensvorschlag zur späteren Einbindung und als Titel des Guided Shopping
+
+
+==== Vorausgewählte Kategorie ====
+
+Die vorausgewählte Kategorie, die der Kunde nicht abwählen kann, dient zur Einschränkung der Produkte (optional).
+
+
+==== Ausgewählte Fragen / Verfügbare Fragen ====
+
+Fragen sind per Drag&Drop (Verschieben mittels Maus) in die Kategorien Ausgewählte Fragen oder Verfügbare Fragen verschiebbar.
+
+=== Ausgewählte Fragen ===
+
+Diese Filter werden als Fragen für den Guided Shopping verwendet.
+
+=== Verfügbare Fragen ===
+
+Diese Filter stehen noch als Fragen für den Guided Shopping zur Verfügung.
+
+==== Fragen konfigurieren ====
+
+=== Datenbank-Name ===
+
+Der Name des Feldes wie im Export übergeben.
+
+=== Frage ===
+
+Der Wortlaut der Frage wie er im Guided Shopping angezeigt werden soll.
+
+=== Typ ===
+
+== Text ==
+Filterwerte werden als verlinkter Text angezeigt.
+
+== Farbfilter ==
+Filterwerte werden als Farbkacheln dargestellt.
+
+|{{:fl:farbfiltervn2.png|Farbfilter Vorher/Nachher }}|
+
+Damit alle Farben als Kacheln dargestellt werden können, müssen gegebenenfalls noch Farben im Konfigurator nachgetragen werden. Eine Anleitung hierzu finden Sie unter: |[[fl:farbfilter#Einstellen_der_Farben_im_Kundenaccount|Einstellen der Farben im Kundenaccount]]|
+
+== Dropdown ==
+Filterwerte werden in einem Dropdown Element dargestellt. 
+|{{:fl:filterkonfiguration_drop_fix.png| }}|
+
+  * Fixierte Filterwerte gibt an, wieviele Filterwerte als Textfilter über dem Dropdown Filter angezeigt werden sollen. Im Dropdown Filter werden dann die restlichen möglichen Filterwerte gelistet. Mögliche Werte: Ganze Zahlen > 0
+
+== Bild ==
+Filterwerte werden mit hinterlegten Bildern dargestellt. 
+Die Filterdarstellung mit Bildern eignet sich vor allem für Herstellerlogos und wird deswegen standardmäßig nur für den Herstellerfilter angeboten.
+Um diesen Filter nutzen zu können hinterlegen sie zuerst die notwendigen Herstellerlogos dieser [[fl:modul:herstellerlogos|Anleitung ]] gemäß.
+
+|{{:fl:filterkonfiguration_bild_options.png| }}|
+
+  * Darstellungsstil
+     * Als Liste:           Nach jedem angezeigten Bild erfolgt ein Zeilenumbruch - Darstellung der Filterwerte vertikal
+     * Aneinandergereiht:   Bilder werden nebeneinander angezeigt, automatischer Zeilenumbruch bei Filterbreite - Darstellung der Filterwerte horizontal
+  * Bezeichnung anzeigen:   Den Namen des Filterwertes zusätzlich zum Bild anzeigen
+  * Bildbreite:             Festgelegte Breite der Bilder in Pixel. (Bild wird skaliert)          
+  * Bildhöhe:               Festgelegte Höhe der Bilder in Pixel. (Bild wird skaliert)
+
+== Bereichsslider ==
+Filterwerte im Schieberegler angezeigt.
+Um diesen Filter auswählen zu können müssen für das entsprechende Attribut Zahlenwerte als Filterwerte hinterlegt sein.
+
+|{{:fl:filterkonfiguration_bereich_options.png| }}|
+
+  * Einheit: Einheit die zu den Zahlenwerten angezeigt werden soll.
+
+=== Weitere Optionen ===
+
+Folgende weitere Optionen werden angezeigt, sofern der ausgewählte Filtertyp diese Option ermöglicht.
+
+{{:fl:filterkonfiguration_allgemein_options_neu.png|}}
+
+  * CSS Klasse: Filter erhalten diese CSS Klasse zugewiesen. Ermöglicht die Umsetzung eigener CSS Anweisungen über Shopeigene Stylesheets
+  * 'keine Filter verfügbar' Text: Dieser Text wird angezeigt sofern kein Filterwert verfügbar ist, der Filter aber als Hauptfilter definiert wurde. Wird dieses Feld leergelassen erscheint standardmäßig 'keine Filter verfügbar' bei leerem Filter.
+  * Sortierung: Legt fest in welcher Reihenfolge Filterwerte angezeigt werden.
+     * A-Z: Lexikographische Sortierung
+     * Relevanz: Sortierung nach berechneter Relevanz der Ergebnisse
+     * Häufigkeit: Die häufigsten Filterwerte werden zuerst gelistet
+     * 0-9: Aufsteigende Sortierung
+  * Mehrfachauswahl: Wenn aktiviert, können mehrere Filterwerte gleichzeitig ausgewählt werden
+  * Häufigkeit anzeigen: Zeigt wenn aktiviert, die Anzahl der Artikel pro Filterwert in Klammer neben dem Filterwert an.
+
+
+
+===== Funktionsweise =====
+
+Bei einem klick auf dem im Shop-Template eingefügten Link öffnet sich der Guided Shopping.
+
+{{:fl:guided_shopping_2.png|}}
+
+Hier kann der Benutzer die einzelnen Fragen beantworten und die Ergebnisse anzeigen lassen. Dadurch findet sich der Kunde auf der Suchseite, mit den vorausgewählten Filtern wieder.
+
+===== Einbau in das Template =====
+
+Nach dem speichern bzw. beim editieren eines Guided Shopping finden Sie am Ende der Seite einen Code-Schnipsel. Diese können Sie, in Ihrem Shop-Template, an beliebiger Stelle einbinden. Dies erzeugt einen Link, welcher beim Klick den Guided Shopping im Shop öffnet.
+
+===== Kompatibilität =====
+
+Guided Shopping funktioniert nur korrekt wenn die neueste Version der Smart Suggest eingebunden ist.
+
+===== Eigene Anpassungen =====
+
+Bisher sind keine individuellen Funktionsanpassungen möglich.
+
+===== Weitere Fragen =====
+
+Sollte Ihre Frage nicht in unseren [[https://findologic.zendesk.com/hc|Helpcenter]] enthalten sein, melden Sie sich jeder Zeit bei <support@findologic.com>.

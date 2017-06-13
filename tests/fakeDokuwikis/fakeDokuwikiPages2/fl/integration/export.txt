@@ -1,0 +1,132 @@
+====== Export ======
+
+Aufgrund von Laufzeitbeschränkungen muss ein Export sequentiell aufrufbar sein.\\
+Hierzu muss eine Start-URL bereitgestellt werden. Per ''Location''-Header (HTTP location) wird die nächste aufzurufende URL angegeben.((Diese Start URL kann im FINDOLOGIC Kundenaccount im Punkt "Einstellungen" --> "Import/Export" --> "Export" im Feld Export-URL eingetragen werden.))\\
+Dieser Umleitung wird solange gefolgt, bis kein ''Location''-Header mehr zurückgegeben wird.
+
+
+
+===== Parameter =====
+
+Für den inkrementellen Export werden bestimmte Parameter der //Export-URL// übergeben.
+
+  * ''start''
+    * Bestimmt den ersten zu exportierenden Artikel (Offset).
+  * ''limit''
+    * Bestimmt die Intervallgröße / Anzahl der zu exportierenden Artikel.
+  * ''shopkey''
+    * Bestimmt den entsprechenden FINDOLOGIC Service für die zu exportierenden Artikel.
+    * Pro Sprache und Subshop ist ein eigener FINDOLOGIC Service notwendig.
+  * ''language''
+    * Bestimmt die Sprache der zu exportierenden Artikel.
+
+===== Rückgabe =====
+
+Mögliche Ausgaben im Body des Skripts können sein:
+
+== Bei noch laufendem Export ==
+''SUCCESS: Unfinished'': Der Export ist noch nicht abgeschlossen, es folgt eine Weiterleitung auf den nächsten Aufruf
+
+== Bei vollendeten Export ==
+''SUCCESS: Finished'': Der Export wurde korrekt abgeschlossen.
+
+''FILE: <PFAD_ZUR_CSV>/<CSV_DATEINAME>'': Ausgabe des Pfads und des Dateinamens (ohne Domain)
+
+== Bei Fehler während des Exports ==
+''ERROR'', ''<Fehlermeldung>'': Es wurde ein Fehler festgestellt.
+
+===== CSV Datei =====
+
+Die Artikeldaten werden nach einem entsprechenden [[fl:csv_format_2_0|Format]] in eine CSV Datei exportiert.\\
+Der Dateiname muss nach dem Export ausgegeben werden (siehe Beispiel unten).
+
+=== Verzeichnis ===
+Die CSV Datei muss im Shopsystem üblichen Verzeichnis für Exporte oder (wenn nicht vorhanden) im Shop-Backend eingestellten Export-Pfad erstellt werden.\\
+=== Bezeichnung ===
+Die Bezeichnung der CSV muss sich folgendermaßen zusammensetzen:\\
+<code>findologic_<shopid>_<language code>.csv</code>
+Gibt es bei dem Shopsystem keine Subshop Funktionalität, bzw. wird nur ein Hauptshop verwendet ist der Default-Wert für die ''shopid'' gleich ''0''.
+=== Beispiele ===
+Es wird der Hauptshop in deutscher Sprache exportiert:\\
+  http://www.mein-shop.de/export/findologic_0_de.csv
+
+Es wird ein Subshop mit ID 2, in englischer Sprache exportiert:\\
+  http://www.mein-shop.de/export/findologic_2_en.csv
+
+
+===== Ablauf =====
+
+  - Start
+    * Die Export-URL wird seitens FINDOLOGIC mit obigen Parametern aufgerufen
+      * Aufruf: ''<nowiki>http://www.mein-shop.de/findologic_export.php?start=0&limit=100&language=de&shopkey=ABCDABCDABCDABCDABCDABCDABCDABCD</nowiki>''
+  - Initialisierung
+    * Die CSV Datei wird mit dem entsprechenden Dateinamen geleert bzw. neu erstellt.
+  - Export
+    * Die Anzahl an zu exportierenden Artikel entspricht dem Wert des ''limit'' Parameters.
+    * Der Index des ersten zu exportierenden Artikels entspricht dem Wert des ''start'' Parameters (0-basiert).
+    * Die Artikel werden in die ''CSV'' exportiert.
+  - Rückgabe
+    * Es wird eine Weiterleitung auf das nächste Artikelintervall zurückgegeben.
+    * <code>HTTP/1.1 302 Found
+Location: http://www.mein-shop.de/findologic_export.php?start=100&limit=100&language=de&shopkey=ABCDABCDABCDABCDABCDABCDABCDABCD
+...
+
+SUCCESS: Unfinished</code>
+    * Der Wert des ''start'' Parameters ist jeweils der Wert des letzten ''start'' Paramters plus dem Wert des ''limit'' Parameters.
+    * Der Wert des ''limit'' Parameters bleibt erhalten.
+  - Wiederholung ab Punkt 3
+  - Abschluss
+    * Wurde der letzte Artikel exportiert wird die entsprechende Statusmeldung ausgegeben
+    * <code>HTTP/1.1 200 OK
+...
+
+SUCCESS: Finished
+FILE: <PFAD_ZUR_CSV>/<CSV_DATEINAME></code>
+  - Download
+    * Die eben erstellte ''CSV'' wird von FINDOLOGIC bezogen.
+    * Die Produktinidizierung seitens FINDOLOGIC wird gestartet.
+
+===== Beispiel =====
+
+  - Start: ''<nowiki>http://www.mein-shop.de/findologic_export.php?start=0&limit=1000&language=de&shopkey=ABCDABCDABCDABCDABCDABCDABCDABCD</nowiki>''
+  - Rückgabe: <code>HTTP/1.1 302 Found
+Location: http://www.mein-shop.de/findologic_export.php?start=1000&limit=1000&language=de&shopkey=ABCDABCDABCDABCDABCDABCDABCDABCD
+...
+
+SUCCESS: Unfinished</code>
+  - Aufruf: ''<nowiki>http://www.mein-shop.de/findologic_export.php?start=1000&limit=1000&language=de&shopkey=ABCDABCDABCDABCDABCDABCDABCDABCD</nowiki>''
+  - Rückgabe: <code>HTTP/1.1 200 OK
+...
+
+SUCCESS: Finished
+FILE: findologic_1_de.csv</code>
+  - Export erfolgreich abgeschlossen, Download der CSV
+
+====== Sonstiges ======
+
+=== .htaccess Schutz ===
+
+Das Exportskript kann auch in einem .htaccess geschützten Bereich liegen. Shopbetreiber können hierfür im FINDOLOGIC Kundenaccount Benutzername und Passwort hinterlegen.
+
+=== Load-Balancing ===
+
+Sollten Sie in Ihrer Infrastruktur Load-Balancing einsetzen, achten Sie bitte darauf, dass Export-Aufrufe immer zum gleichen Host geleitet werden bzw. auf einen Host, der außerhalb des Clusters liegt. Ansonsten kann der Export nicht vollständig generiert werden.
+
+====== Weiterführende Dokumentation ======
+
+  * Allgemeines
+    * [[fl:integration:eigenes_sonstiges|Übersicht]]
+    * [[fl:integration:checklist_modul|Checklist]]
+  * Export
+    * [[fl:integration:export|Export Dokumentation]]
+    * [[fl:csv_format_2_0|CSV Formatbeschreibung]]
+  * Request
+    * [[fl:integration:request|Dokumentation des Requests]]
+  * Rückgabe
+    * [[fl:integration:response:xml|Beschreibung des XML Formats]]
+    * [[fl:integration:response:html|Dokumentation der HTML Rückgabe]]
+    * [[fl:template_manager_2_0|Beschreibung der Templates]]
+  * Smart Suggest
+    * [[fl:integration:smart_suggest|Einbindung der Smart Suggest]]
+  * Navigation
+    * [[fl:navigation|Implementierungsanleitung der Navigation]]
