@@ -13,7 +13,7 @@
         bootstrap                   = "vendor/autoload.php"
 >
     <testsuites>
-        <testsuite name="FINDOLOGIC XMl export for DokuWiki">
+        <testsuite name="FINDOLOGIC XML export for DokuWiki">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
