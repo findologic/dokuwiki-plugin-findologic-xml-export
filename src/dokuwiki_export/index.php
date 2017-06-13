@@ -31,5 +31,5 @@ require_once('DokuwikiXMLExport.php');
 $DokuwikiXMLExport = new DokuwikiXMLExport();
 
 $export = $DokuwikiXMLExport->generateXMLExport($start, $count, $config);
-//Header('Content-type: text/xml');
+Header('Content-type: text/xml');
 echo($export);
