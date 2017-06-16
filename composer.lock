@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0dc82e0c21b0aa9414e8b840478b4687",
+    "content-hash": "7d30ac5d336f6c239120887ca766cc22",
     "packages": [],
     "packages-dev": [
         {
@@ -185,16 +185,16 @@
         },
         {
             "name": "findologic/libflexport",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/findologic/libflexport.git",
-                "reference": "a94b072f5c69e1dfa072fb529e92869c77185eb4"
+                "reference": "bfde9eece135fedd5671dc835d0318ac6734c893"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/findologic/libflexport/zipball/a94b072f5c69e1dfa072fb529e92869c77185eb4",
-                "reference": "a94b072f5c69e1dfa072fb529e92869c77185eb4",
+                "url": "https://api.github.com/repos/findologic/libflexport/zipball/bfde9eece135fedd5671dc835d0318ac6734c893",
+                "reference": "bfde9eece135fedd5671dc835d0318ac6734c893",
                 "shasum": ""
             },
             "require": {
@@ -221,10 +221,10 @@
             ],
             "description": "FINDOLOGIC export toolkit for XML and CSV data export",
             "support": {
-                "source": "https://github.com/findologic/libflexport/tree/v0.0.2",
+                "source": "https://github.com/findologic/libflexport/tree/v0.0.3",
                 "issues": "https://github.com/findologic/libflexport/issues"
             },
-            "time": "2017-06-02T10:26:00+00:00"
+            "time": "2017-06-16T10:43:07+00:00"
         },
         {
             "name": "goetas-webservices/xsd2php-runtime",

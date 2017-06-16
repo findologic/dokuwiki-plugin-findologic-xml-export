@@ -28,7 +28,7 @@ class DokuwikiXMLExportTest extends TestCase
         $failMessage = 'A array with one value should be returned if only one page is in the Dokuwiki directory.';
         $this->assertEquals($expected, $test, $failMessage);
     }
-    public function testForADokuwikiWithTwoOrMorePagesAnArrayWithValuesIsExported()
+    public function testForADokuwikiWithTwoPagesAnArrayWithTwoValuesIsExported()
     {
         $getFilesAndDirectories = new filesAndDirectories();
         $test = $getFilesAndDirectories->getFilesAndDirectories(__DIR__ . '/fakeDokuwikis/fakeDokuwikiPages2');
@@ -37,7 +37,7 @@ class DokuwikiXMLExportTest extends TestCase
         $expected[0] = __DIR__ . '/fakeDokuwikis/fakeDokuwikiPages2/findologic_documentation.txt';
         $expected[1] = __DIR__ . '/fakeDokuwikis/fakeDokuwikiPages2/home.txt';
 
-        $failMessage = 'An array which is not empty should be returned if there are more then two pages in the Dokuwiki directory';
+        $failMessage = 'An array which should have two keys should be returned if there are two pages in the Dokuwiki directory';
         $this->assertEquals($expected, $test, $failMessage);
     }
 }
