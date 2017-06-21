@@ -85,7 +85,7 @@ class DokuwikiXMLExport
      * @param integer $key The number of the loop.
      * @return string Returns the ordernumber.
      */
-    public function getOrdernumber($pages, $key)
+    private function getOrdernumber($pages, $key)
     {
 
         $ordernumber = str_replace(($_SERVER["DOCUMENT_ROOT"]), "", $pages[$key]);
@@ -105,7 +105,7 @@ class DokuwikiXMLExport
      * @param integer $key The number of the loop.
      * @return string Returns the Name/Title of the page.
      */
-    public function getName($pages, $key)
+    private function getName($pages, $key)
     {
         $page = file_get_contents($pages[$key]);
         $match = array();
@@ -124,7 +124,7 @@ class DokuwikiXMLExport
      * @param integer $key The number of the loop.
      * @return string Returns the Summary of the page.
      */
-    public function getSummaryAndDescription($pages, $key)
+    private function getSummaryAndDescription($pages, $key)
     {
         $page = file_get_contents($pages[$key]);
         $summaryAndDescription = $page;
@@ -138,7 +138,7 @@ class DokuwikiXMLExport
      * @param integer $key The number of the loop.
      * @return string Returns the Summary of the page.
      */
-    public function getUrl($pages, $key)
+    private function getUrl($pages, $key)
     {
         $config = parse_ini_file("config.ini");
         $url = $config["url"] . "/doku.php?id=" . $this->getOrdernumber($pages, $key);
