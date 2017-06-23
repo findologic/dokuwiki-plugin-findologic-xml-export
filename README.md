@@ -8,5 +8,5 @@ This repository creates an XML export based on the dokuwiki data with the FINDOL
 
 Dependencies:
 
- * [findologic/libflexport](https://github.com/findologic/libflexport) | 0.0.3
- * [sebastianbergmann/phpunit](https://github.com/sebastianbergmann/phpunit) | 5.7
+ * [findologic/libflexport](https://github.com/findologic/libflexport) | v0.0.3
+ * [sebastianbergmann/phpunit](https://github.com/sebastianbergmann/phpunit) | v5.7
