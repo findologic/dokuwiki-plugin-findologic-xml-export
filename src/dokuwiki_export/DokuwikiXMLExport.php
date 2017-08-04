@@ -64,7 +64,7 @@ class DokuwikiXMLExport
             $item->setDescription($description);
 
             $price = new Price();
-            $price->setValue("0.0");
+            $price->setValue('0.0');
             $item->setPrice($price);
 
             $Url = new Url();
@@ -87,7 +87,6 @@ class DokuwikiXMLExport
      */
     private function getOrdernumber($pages, $key)
     {
-
         $ordernumber = str_replace(($_SERVER["DOCUMENT_ROOT"]), "", $pages[$key]);
         $ordernumber = str_replace("/", ":", $ordernumber);
         $ordernumber = strstr($ordernumber, "pages");
