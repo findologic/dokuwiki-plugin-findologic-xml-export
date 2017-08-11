@@ -5,7 +5,7 @@
  * @group plugin_phpdokuwiki2findologic
  * @group plugins
  */
-class general_plugin_phpdokuwiki2findologic_test extends DokuWikiTest {
+class GeneralPluginPhpdokuwiki2findologicTest extends \DokuWikiTest {
 
     /**
      * Simple test to make sure the plugin.info.txt is in correct format
