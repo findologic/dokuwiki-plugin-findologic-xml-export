@@ -3,7 +3,7 @@
  * DokuWiki Plugin findologicxmlexport (Admin Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author  Dominik Brader <dominikbrader841@gmail.com>
+ * @author  Dominik Brader <support@findologic.com>
  */
 
 // must be run within Dokuwiki

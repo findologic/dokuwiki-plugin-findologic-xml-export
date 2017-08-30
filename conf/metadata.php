@@ -2,8 +2,7 @@
 /**
  * Options for the findologicxmlexport plugin
  *
- * @author Dominik Brader <dominikbrader841@gmail.com>
+ * @author Dominik Brader <support@findologic.com>
  */
 
 $meta['excludePages'] = array('string');
-
