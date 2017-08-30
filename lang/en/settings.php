@@ -1,12 +1,12 @@
 <?php
 /**
- * english language file for phpdokuwiki2findologic plugin
+ * english language file for findologicxmlexport plugin
  *
- * @author Dominik Brader <d.brader@findologic.com>
+ * @author Dominik Brader <dominikbrader841@gmail.com>
  */
 
 // keys need to match the config setting name
-$lang['menu']       = 'FINDOLOGIC XML Export Settings';
+$lang['excludePages'] = 'Exclude pages from export "," seperated. Eg: start,';
 
 
 

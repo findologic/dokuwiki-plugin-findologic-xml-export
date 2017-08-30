@@ -1,11 +1,11 @@
 <?php
 /**
- * General tests for the phpdokuwiki2findologic plugin
+ * General tests for the findologicxmlexport plugin
  *
- * @group plugin_phpdokuwiki2findologic
+ * @group plugin_findologicxmlexport
  * @group plugins
  */
-class GeneralPluginPhpdokuwiki2findologicTest extends DokuWikiTest {
+class general_plugin_findologicxmlexport_test extends DokuWikiTest {
 
     /**
      * Simple test to make sure the plugin.info.txt is in correct format
@@ -24,7 +24,7 @@ class GeneralPluginPhpdokuwiki2findologicTest extends DokuWikiTest {
         $this->assertArrayHasKey('desc', $info);
         $this->assertArrayHasKey('url', $info);
 
-        $this->assertEquals('phpdokuwiki2findologic', $info['base']);
+        $this->assertEquals('findologicxmlexport', $info['base']);
         $this->assertRegExp('/^https?:\/\//', $info['url']);
         $this->assertTrue(mail_isvalid($info['email']));
         $this->assertRegExp('/^\d\d\d\d-\d\d-\d\d$/', $info['date']);
@@ -45,15 +45,15 @@ class GeneralPluginPhpdokuwiki2findologicTest extends DokuWikiTest {
             include($meta_file);
         }
 
-        $this->assertEquals(gettype($conf), gettype($meta),'Both ' . DOKU_PLUGIN . 'phpdokuwiki2findologic/conf/default.php and ' . DOKU_PLUGIN . 'phpdokuwiki2findologic/conf/metadata.php have to exist and contain the same keys.');
+        $this->assertEquals(gettype($conf), gettype($meta),'Both ' . DOKU_PLUGIN . 'findologicxmlexport/conf/default.php and ' . DOKU_PLUGIN . 'findologicxmlexport/conf/metadata.php have to exist and contain the same keys.');
 
         if (gettype($conf) != 'NULL' && gettype($meta) != 'NULL') {
             foreach($conf as $key => $value) {
-                $this->assertArrayHasKey($key, $meta, 'Key $meta[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'phpdokuwiki2findologic/conf/metadata.php');
+                $this->assertArrayHasKey($key, $meta, 'Key $meta[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'findologicxmlexport/conf/metadata.php');
             }
 
             foreach($meta as $key => $value) {
-                $this->assertArrayHasKey($key, $conf, 'Key $conf[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'phpdokuwiki2findologic/conf/default.php');
+                $this->assertArrayHasKey($key, $conf, 'Key $conf[\'' . $key . '\'] missing in ' . DOKU_PLUGIN . 'findologicxmlexport/conf/default.php');
             }
         }
 

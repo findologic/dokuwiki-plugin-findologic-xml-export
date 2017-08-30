@@ -1,0 +1,21 @@
+{
+    "name": "thekeymaster/dokuwiki-plugin-findologic-xml-export",
+    "authors": [
+        {
+            "name": "TheKeyMaster",
+            "email": "d.brader@findologic.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/findologic/libflexport"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "require":{
+        "findologic/libflexport": "^0.0.4"
+    }
+}

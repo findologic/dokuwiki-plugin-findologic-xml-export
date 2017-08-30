@@ -1,9 +1,8 @@
 <?php
 /**
- * Default settings for the phpdokuwiki2findologic plugin
+ * Default settings for the findologicxmlexport plugin
  *
- * @author Dominik Brader <d.brader@findologic.com>
+ * @author Dominik Brader <dominikbrader841@gmail.com>
  */
 
-$conf['url'] = '';
-
+$conf['excludePages'] = '';

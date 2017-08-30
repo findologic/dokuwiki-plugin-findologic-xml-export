@@ -1,9 +1,9 @@
 <?php
 /**
- * Options for the phpdokuwiki2findologic plugin
+ * Options for the findologicxmlexport plugin
  *
- * @author Dominik Brader <d.brader@findologic.com>
+ * @author Dominik Brader <dominikbrader841@gmail.com>
  */
 
-$meta['url'] = array('string');
+$meta['excludePages'] = array('string');
 
