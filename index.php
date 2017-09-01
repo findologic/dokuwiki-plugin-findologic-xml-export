@@ -1,9 +1,16 @@
 <?php
 
 /**
- *  This is the Dokuwiki export made by D. Brader for FINDOLOGIC.
- *  If any bugs occur, please contact the support team (support@findologic.com).
+ * This is the Dokuwiki export made by Dominik Brader for FINDOLOGIC.
+ * If any bugs occur, please submit a new issue
+ * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
  */
+
+if(!defined('DOKU_INC')) {
+    define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
+}
+// Get $conf from DokuWiki for constructor
+global $conf;
 
 // Get URL parameters start and count
 if (isset($_GET["count"])) {
@@ -21,12 +28,12 @@ if (isset($_GET["start"])) {
 
 // Check if parameters are valid.
 if (!is_numeric($count) || !is_numeric($start) || $start < 0 || $count < 1) {
-    echo "Error count/start value(s) is/are not valid.";
+    echo 'Error count/start value(s) is/are not valid.';
     return false;
 }
 
 require_once('DokuwikiXMLExport.php');
-$DokuwikiXMLExport = new DokuwikiXMLExport();
+$DokuwikiXMLExport = new DokuwikiXMLExport($conf);
 
 $export = $DokuwikiXMLExport->generateXMLExport($start, $count);
 if ($export == true) {

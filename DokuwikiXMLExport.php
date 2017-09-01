@@ -1,15 +1,16 @@
 <?php
 
 /**
- *  This is the Dokuwiki export made by D. Brader for FINDOLOGIC.
- *  If any bugs occur, please contact the support team (support@findologic.com).
+ * This is the Dokuwiki export made by Dominik Brader for FINDOLOGIC.
+ * If any bugs occur, please submit a new issue
+ * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
  */
-if(!defined('DOKU_INC')) {
-    define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
+if (!defined('DOKU_INC')) {
+    define('DOKU_INC', realpath(dirname(__FILE__) . '/../../../') . '/');
 }
 
-require_once (DOKU_INC.'inc/init.php');
-require (__DIR__ . '/vendor/autoload.php');
+require_once(DOKU_INC . 'inc/init.php');
+require(__DIR__ . '/vendor/autoload.php');
 
 use FINDOLOGIC\Export\Exporter;
 use FINDOLOGIC\Export\Data\Name;
@@ -23,6 +24,18 @@ use FINDOLOGIC\Export\Data\Attribute;
 
 class DokuwikiXMLExport
 {
+
+    /**
+     * Default value for a price. DokuWiki pages do not have a price and this is just a placeholder.
+     * FINDOLOGIC requires the price attribute, so this is the reason why it is exported.
+     */
+    const PRICE_PLACEHOLDER = '0.0';
+
+    /**
+     * This value is needed to tell FINDOLOGIC this is a category.
+     */
+    const CATEGORY_KEY = 'cat';
+
     /**
      * Generate the entire XML Export based on the Dokuwiki metadata.
      *
@@ -32,16 +45,14 @@ class DokuwikiXMLExport
      */
     public function generateXMLExport($start, $count)
     {
-        global $conf;
-
-        $Indexer = new Doku_Indexer();
-        $pagesAndDeletedPages = $Indexer->getPages();
+        $indexer = new Doku_Indexer();
+        $pagesAndDeletedPages = $indexer->getPages();
 
         $excludedPages = $this->splitConfigToArray($conf['plugin']['findologicxmlexport']['excludePages']);
         $pages = null;
-        foreach ($pagesAndDeletedPages as $page){
-            if (p_get_metadata($page)['description']){ // Only get pages with content
-                if (!in_array($page, $excludedPages)){ // Exclude pages from config
+        foreach ($pagesAndDeletedPages as $page) {
+            if (p_get_metadata($page)['description']) { // Only get pages with content
+                if (!in_array($page, $excludedPages)) { // Exclude pages from config
                     $pages[] = $page;
                 }
             }
@@ -50,15 +61,13 @@ class DokuwikiXMLExport
 
         $total = count($pages);
 
-        // If count is higher then total, set count=total to prevent an exception.
-        if ($count > $total) {
-            $count = $total;
-        }
+        // The count can't be higher then the total number of pages.
+        $count = min($total, $count);
+
 
         // If count + start is higher then total, then something went totally wrong.
         if (($count + $start) > $total) {
-            echo ('Call "\DokuwikiXMLExport::generateXMLExport" failed while trying to validate start and count values.');
-            return false;
+            throw new \InvalidArgumentException("Call method " . __METHOD__ . " in class " . __CLASS__ . " failed while trying to validate start and count values");
         }
 
         $items = array();
@@ -78,7 +87,7 @@ class DokuwikiXMLExport
             $item->setDescription($description);
 
             $price = new Price();
-            $price->setValue('0.0');
+            $price->setValue(self::PRICE_PLACEHOLDER);
             $item->setPrice($price);
 
             $Url = new Url();
@@ -92,15 +101,21 @@ class DokuwikiXMLExport
             $item->addOrdernumber(new Ordernumber($this->getOrdernumber($pages, $i)));
             $items[] = $item;
 
-            $attributeCategory = new Attribute('cat', $this->getAttributesCategory($pages, $i));
+            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($pages, $i));
             $item->addAttribute($attributeCategory);
         }
         return $exporter->serializeItems($items, $start, $total);
     }
 
+    protected $conf;
+
+    public function __construct($conf)
+    {
+        $this->conf = $conf;
+    }
 
     /**
-     * Gets the Ordernumber of the current page.
+     * Gets the ID of the DokuWiki page and sets the ordernumber equal to it.
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
      * @param integer $key The Item ID.
@@ -138,6 +153,12 @@ class DokuwikiXMLExport
     }
 
     /**
+     * This constant contains the placeholder value to a DokuWiki page.
+     * Everything after this path will be interpreted as a DokuWiki page.
+     */
+    const DOKU_BASE = 'doku.php?id=';
+
+    /**
      * Gets the Url of the current page.
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
@@ -146,7 +167,7 @@ class DokuwikiXMLExport
      */
     private function getUrl($pages, $key)
     {
-        $url = DOKU_URL . 'doku.php?id=' . $this->getOrdernumber($pages, $key);
+        $url = DOKU_URL . self::DOKU_BASE . $this->getOrdernumber($pages, $key);
         return $url;
     }
 
@@ -160,13 +181,18 @@ class DokuwikiXMLExport
     private function getDateAdded($pages, $key)
     {
         $metadata = p_get_metadata($pages[$key]);
-        $date = date_create();
-        $date = date_timestamp_set($date, $metadata["date"]["created"]);
-        return new DateTime(date_format($date, \DateTime::ATOM));
+        $date = new DateTime();
+        $date->setTimestamp($metadata["date"]["created"]);
+        return $date;
     }
 
     /**
      * Gets the Category Attribute of the current page.
+     *
+     * Formats DokuWiki IDs to categories.
+     *
+     * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
+     *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
      * @param integer $key The Item ID.
@@ -175,6 +201,7 @@ class DokuwikiXMLExport
     private function getAttributesCategory($pages, $key)
     {
         $ordernumber = $this->getOrdernumber($pages, $key);
+
         $attribute = str_replace('_', ' ', $ordernumber);
         $attribute = str_replace(':', '_', $attribute);
         return (array($attribute));
@@ -186,9 +213,10 @@ class DokuwikiXMLExport
      * @param string $config Excluded pages in a string.
      * @return array Returns the pages that should be excluded as array.
      */
-    private function splitConfigToArray($config) {
+    private function splitConfigToArray($config)
+    {
         $array = explode(',', $config);
-        $trimmedArray = array_map('trim',$array);
+        $trimmedArray = array_map('trim', $array);
         return $trimmedArray;
     }
 }

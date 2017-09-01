@@ -1,9 +1,10 @@
 <?php
 /**
- * DokuWiki Plugin findologicxmlexport (Admin Component)
+ * This is the Dokuwiki export made by Dominik Brader for FINDOLOGIC.
  *
- * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
- * @author  Dominik Brader <support@findologic.com>
+ * If any bugs occur, please submit a new issue
+ * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
+ * @author Dominik Brader <support@findologic.com>
  */
 
 // must be run within Dokuwiki
@@ -38,9 +39,6 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin {
      */
     public function html() {
         echo (
-            "<h1>FINDOLOGIC XML Export Plugin</h1><p>You can call the FINDOLOGIC Export when clicking on this Link: </p>" .
-            "<a href='". DOKU_URL . 'lib/plugins/findologicxmlexport' . "'>Click here</a>");
+            "<h1>FINDOLOGIC XML Export Plugin</h1><p>You can <a href='\". DOKU_URL . 'lib/plugins/findologicxmlexport'>call the FINDOLOGIC Export manually</a>.</p>");
     }
 }
-
-// vim:ts=4:sw=4:et:

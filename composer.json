@@ -1,9 +1,9 @@
 {
-    "name": "thekeymaster/dokuwiki-plugin-findologic-xml-export",
+    "name": "findologic/dokuwiki-plugin-findologic-xml-export",
     "authors": [
         {
-            "name": "TheKeyMaster",
-            "email": "d.brader@findologic.com"
+            "name": "Dominik Brader",
+            "email": "support@findologic.com"
         }
     ],
     "repositories": [
