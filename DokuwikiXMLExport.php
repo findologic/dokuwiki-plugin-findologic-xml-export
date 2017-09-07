@@ -161,10 +161,7 @@ class DokuwikiXMLExport
      */
     private function getUrl($pages, $key)
     {
-        $page =  wl($pages[$key]);
-        $base = parse_url(DOKU_URL);
-        $http = $base["scheme"] . '://';
-        $url =  $http . $base["host"] . $page;
+        $url =  wl($pages[$key], '', true);
         return $url;
     }
 
