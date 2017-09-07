@@ -29,7 +29,7 @@ class DokuwikiXMLExport
      * Default value for a price. DokuWiki pages do not have a price and this is just a placeholder.
      * FINDOLOGIC requires the price attribute, so this is the reason why it is exported.
      */
-    const PRICE_PLACEHOLDER = '0.0';
+    const PRICE_PLACEHOLDER = 0.0;
 
     /**
      * This value is needed to tell FINDOLOGIC this is a category.
@@ -67,7 +67,7 @@ class DokuwikiXMLExport
 
         // If count + start is higher then total, then something went totally wrong.
         if (($count + $start) > $total) {
-            throw new \InvalidArgumentException("Call method " . __METHOD__ . " in class " . __CLASS__ . " failed while trying to validate start and count values");
+            throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
         }
 
         $items = array();
@@ -115,7 +115,7 @@ class DokuwikiXMLExport
     }
 
     /**
-     * Gets the ID of the DokuWiki page and sets the ordernumber equal to it.
+     * Returns the ID / ordernumber.
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
      * @param integer $key The Item ID.
@@ -153,12 +153,6 @@ class DokuwikiXMLExport
     }
 
     /**
-     * This constant contains the placeholder value to a DokuWiki page.
-     * Everything after this path will be interpreted as a DokuWiki page.
-     */
-    const DOKU_BASE = 'doku.php?id=';
-
-    /**
      * Gets the Url of the current page.
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
@@ -167,7 +161,10 @@ class DokuwikiXMLExport
      */
     private function getUrl($pages, $key)
     {
-        $url = DOKU_URL . self::DOKU_BASE . $this->getOrdernumber($pages, $key);
+        $page =  wl($pages[$key]);
+        $base = parse_url(DOKU_URL);
+        $http = $base["scheme"] . '://';
+        $url =  $http . $base["host"] . $page;
         return $url;
     }
 
