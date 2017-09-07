@@ -87,7 +87,7 @@ class DokuwikiXMLExport
             $item->setDescription($description);
 
             $price = new Price();
-            $price->setValue(number_format(self::PRICE_PLACEHOLDER, 1));
+            $price->setValue(self::PRICE_PLACEHOLDER);
             $item->setPrice($price);
 
             $Url = new Url();
