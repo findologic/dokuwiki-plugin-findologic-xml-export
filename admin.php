@@ -38,7 +38,8 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin {
      * Render HTML output, e.g. helpful text and a form
      */
     public function html() {
-        echo (
-            "<h1>FINDOLOGIC XML Export Plugin</h1><p>You can <a href='\". DOKU_URL . 'lib/plugins/findologicxmlexport'>call the FINDOLOGIC Export manually</a>.</p>");
+        echo ('<h1>FINDOLOGIC XML Export Plugin</h1><p>You can <a href="');
+        echo (DOKU_URL);
+        echo ('lib/plugins/findologicxmlexport">call the FINDOLOGIC Export manually</a>.</p>');
     }
 }
