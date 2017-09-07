@@ -1,12 +1,32 @@
-# PHPdokuwiki2findologic
+# DokuWiki Plugin: FINDOLOGIC XML Export
 
-[![Travis](https://api.travis-ci.org/TheKeymaster/phpdokuwiki2findologic.svg)](https://travis-ci.org/TheKeymaster/phpdokuwiki2findologic)
+[![Travis](https://travis-ci.org/findologic/dokuwiki-plugin-findologic-xml-export.svg?branch=master)](https://travis-ci.org/findologic/dokuwiki-plugin-findologic-xml-export/)
 
-This repository creates an XML export based on the dokuwiki data with the FINDOLOGIC XML scheme. It uses the library [libflexport](https://github.com/findologic/libflexport) to generate the XML.
+This DokuWiki plugin creates an XML based on the DokuWiki metadata with the FINDOLOGIC XML scheme.  
+It uses the library [findologic/libflexport](https://github.com/findologic/libflexport) to generate the XML.
 
-**Note: Tests are not yet complete. Use it on your own risk.**
+For any other dependencies please refer to the [composer.json](https://raw.githubusercontent.com/findologic/dokuwiki-plugin-findologic-xml-export/master/composer.json) file.
 
-Dependencies:
+### Install
 
- * [findologic/libflexport](https://github.com/findologic/libflexport) | v0.0.3
- * [sebastianbergmann/phpunit](https://github.com/sebastianbergmann/phpunit) | v5.7
+ - Open your extension manager and install the Plugin via "Search and Install"
+
+### Manual installation
+
+ 1. Download this repository
+ 2. Go into your DokuWiki folder and open the directory `/lib/plugins/`
+ 3. Create a folder in this directory named `findologicxmlexport` and copy the downloaded files in it
+ 
+### Usage
+
+ - Open your DokuWiki Admin page and there you will see the newly installed Plugin
+ 
+ ![https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/raw/master/examples/example_admin.png](https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/raw/master/examples/example_admin.png)
+
+ - When opening the Plugin there is a link where you can directly access the XML export data.
+ - **It is recommend to also include a `.htaccess` file, so strangers that know this link cannot access your page data.**
+ 
+### Important Notes
+ 
+ - Tests are not yet complete. Use it on your own risk!
+ - Bugs? Please [submit an issue](https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new).
