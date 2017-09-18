@@ -21,6 +21,7 @@ use FINDOLOGIC\Export\Data\Url;
 use FINDOLOGIC\Export\Data\Ordernumber;
 use FINDOLOGIC\Export\Data\DateAdded;
 use FINDOLOGIC\Export\Data\Attribute;
+use FINDOLOGIC\Export\Data\Property;
 
 class DokuwikiXMLExport
 {
@@ -35,6 +36,18 @@ class DokuwikiXMLExport
      * This value is needed to tell FINDOLOGIC this is a category.
      */
     const CATEGORY_KEY = 'cat';
+
+    /**
+     * This value is the key for a dummy property.
+     * Hotfix workaround for a bug @ FINDOLOGIC
+     */
+    const PROPERTY_DUMMY_KEY = 'dummy';
+
+    /**
+     * This value is the value for a dummy property.
+     * Hotfix workaround for a bug @ FINDOLOGIC
+     */
+    const PROPERTY_DUMMY_VALUE = array('dummy');
 
     /**
      * Generate the entire XML Export based on the Dokuwiki metadata.
@@ -103,6 +116,9 @@ class DokuwikiXMLExport
 
             $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($pages, $i));
             $item->addAttribute($attributeCategory);
+
+            $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
+            $item->addProperty($propertyDummy);
         }
         return $exporter->serializeItems($items, $start, $total);
     }
