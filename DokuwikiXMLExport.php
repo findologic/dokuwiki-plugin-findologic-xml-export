@@ -59,7 +59,8 @@ class DokuwikiXMLExport
         }
         $exporter = Exporter::create(Exporter::TYPE_XML, $count);
 
-        $total = count($pages);
+        // total -1 because the XML starts counting at 0 like an array
+        $total = count($pages) - 1;
 
         // The count can't be higher then the total number of pages.
         $count = min($total, $count);
