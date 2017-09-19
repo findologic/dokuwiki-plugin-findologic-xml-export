@@ -61,7 +61,7 @@ class DokuwikiXMLExport
         $indexer = new Doku_Indexer();
         $pagesAndDeletedPages = $indexer->getPages();
 
-        $excludedPages = $this->splitConfigToArray($conf['plugin']['findologicxmlexport']['excludePages']);
+        $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
         $pages = null;
         foreach ($pagesAndDeletedPages as $page) {
             if (p_get_metadata($page)['description']) { // Only get pages with content
