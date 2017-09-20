@@ -205,7 +205,5 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
         $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should match the category value "cat".');
         $this->assertEquals($expectedAttributeValue, $attributeValue, 'Expected attribute value in XML should match the namespace formatted in a FINDOLOGIC proper format "test123_test123_test123".');
         $this->assertEquals($expectedDateAdded, $dateAdded, 'Expected dateAdded value in XML should match the created date of the page. Value can vary.');
-
-        print_r($DokuwikiXMLExport->generateXMLExport(0, 20));
     }
 }
