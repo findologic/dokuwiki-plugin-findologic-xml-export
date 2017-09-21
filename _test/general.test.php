@@ -11,6 +11,11 @@ require_once (__DIR__ . '/../admin.php');
 class general_plugin_findologicxmlexport_test extends DokuWikiTest {
 
     /**
+     * A page needs to have content. This is the placeholder for this value.
+     */
+    const PAGE_CONTENT_PLACEHOLDER = 'This page is for test purposes.';
+
+    /**
      * Remove all DokuWiki pages before each test
      */
     public function setUp(){
@@ -100,8 +105,9 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      * Test to ensure that XML is valid when DokuWiki has one page.
      */
     public function test_xml_response_is_valid_if_dokuwiki_has_one_page() {
-        saveWikiText('home', '==== Home ==== Some demo text.', '');
-        idx_addPage('home', '', '');
+        $pageId = 'home';
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
+        idx_addPage($pageId, '', '');
 
         $conf = array();
         $DokuwikiXMLExport = new DokuwikiXMLExport($conf);
@@ -126,8 +132,8 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
     public function test_xml_response_is_valid_if_dokuwiki_has_two_pages() {
         $pageId1 = 'home1';
         $pageId2 = 'home2';
-        saveWikiText($pageId1, '==== Home1 ==== Some demo text.', '');
-        saveWikiText($pageId2, '==== Home2 ==== Some demo text.', '');
+        saveWikiText($pageId1, self::PAGE_CONTENT_PLACEHOLDER, '');
+        saveWikiText($pageId2, self::PAGE_CONTENT_PLACEHOLDER, '');
 
         idx_addPage($pageId1, '', '');
         idx_addPage($pageId2, '', '');
@@ -155,8 +161,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
     public function test_xml_elements_equal_to_dokuwiki_page_data() {
         $pageId = 'test123:test123:test123';
         $pageTitle = 'test123';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         // Set title manually because you cant save it with the saveWikiText function.
@@ -194,7 +199,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
         $dateAdded = (string)$dateAddeds[0]->dateAdded[0];
 
         $expectedName = $pageTitle;
-        $expectedSummary = $expectedDescription = $pageContent;
+        $expectedSummary = $expectedDescription = self::PAGE_CONTENT_PLACEHOLDER;
         $expectedOrdernumber = $pageId;
         $expectedUrl = 'http://wiki.example.com/./doku.php?id=' . $pageId;
         $expectedPropertyKey = 'dummy';
@@ -224,8 +229,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_xml_element_name_is_formatted_namespace_from_dokuwiki_page_data() {
         $pageId = 'test321:test321:test321';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -244,8 +248,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_two() {
         $pageId = 'test123:test123';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -273,8 +276,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_one() {
         $pageId = 'test321';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -308,8 +310,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_start_value_one() {
         $pageId = 'demopage1';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -324,8 +325,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_start_value_two() {
         $pageId = 'demopage2';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -340,8 +340,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_count_value_zero() {
         $pageId = 'demopage3';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -356,8 +355,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_count_value_zero_and_start_one() {
         $pageId = 'demopage4';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -372,8 +370,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_count_value_below_zero() {
         $pageId = 'demopage5';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -388,8 +385,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_start_value_below_zero() {
         $pageId = 'demopage6';
-        $pageContent = 'This page is for test purposes.';
-        saveWikiText($pageId, $pageContent, '');
+        saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
         idx_addPage($pageId, '', '');
 
         $conf = array();
@@ -403,10 +399,9 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
      */
     public function test_call_export_with_count_greater_than_total() {
         $pageId = array();
-        $pageContent = 'This page is for test purposes.';
         for ($i=1; $i<=9; $i++){
             $pageId[$i] = 'demopage0' . $i;
-            saveWikiText($pageId[$i], $pageContent, '');
+            saveWikiText($pageId[$i], self::PAGE_CONTENT_PLACEHOLDER, '');
             idx_addPage($pageId[$i], '', '');
         }
 
@@ -424,5 +419,67 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest {
         $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" when export is called with start "0".');
         $this->assertEquals($expectedCount, $count, 'Expected count value should match "9" when export is called with "10" and $total is "9".');
         $this->assertEquals($expectedTotal, $total, 'Expected total value should match "9" when DokuWiki has 9 pages.');
+    }
+
+    //======================================================================
+    // PLUGIN SETTING TESTS
+    //======================================================================
+
+    /**
+     * Test to ensure that the configuration works as expected and excluding of pages work properly.
+     * Correct page needs to be exported.
+     */
+    public function test_plugin_setting_exclude_pages() {
+        $pageIds = array('settingtest1337', 'excludeme1', 'excludeme2');
+        foreach ($pageIds as $pageId) {
+            saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
+            idx_addPage($pageId, '', '');
+        }
+
+        $conf = array();
+        $conf['plugin']['findologicxmlexport']['excludePages'] = 'excludeme1, excludeme2';
+
+        $DokuwikiXMLExport = new DokuwikiXMLExport($conf);
+        $xml = new SimpleXMLElement($DokuwikiXMLExport->generateXMLExport(0, 20));
+
+        $total = implode('', ($xml->xpath('/findologic/items/@total')));
+
+        $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
+        $ordernumber = $ordernumbers[0];
+
+        $expectedTotal = 1;
+        $expectedOrdernumber = $pageIds[0];
+
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when two of three total pages are excluded in the configuration.');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest1337" when two of three total pages are excluded in the configuration.');
+    }
+
+    /**
+     * Test to ensure that the configuration works as expected and excluding of pages work properly. Only one page.
+     * Correct page needs to be exported.
+     */
+    public function test_plugin_setting_exclude_pages_one_page() {
+        $pageIds = array('settingtest2', 'excludeme3');
+        foreach ($pageIds as $pageId) {
+            saveWikiText($pageId, self::PAGE_CONTENT_PLACEHOLDER, '');
+            idx_addPage($pageId, '', '');
+        }
+
+        $conf = array();
+        $conf['plugin']['findologicxmlexport']['excludePages'] = 'excludeme3';
+
+        $DokuwikiXMLExport = new DokuwikiXMLExport($conf);
+        $xml = new SimpleXMLElement($DokuwikiXMLExport->generateXMLExport(0, 20));
+
+        $total = implode('', ($xml->xpath('/findologic/items/@total')));
+
+        $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
+        $ordernumber = $ordernumbers[0];
+
+        $expectedTotal = 1;
+        $expectedOrdernumber = $pageIds[0];
+
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when one of two total pages are excluded in the configuration.');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest2" when one of two total pages are excluded in the configuration.');
     }
 }
