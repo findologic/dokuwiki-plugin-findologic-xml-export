@@ -19,25 +19,20 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     /**
      * Helper function to save a page.
      *
-     * @param array /string $ids one or multible page ids
+     * @param array $ids An array with page ids (eg. start or wiki:syntax)
      * @param string $content Optional content, else the default test value will be set
      */
     private function savePages($ids, $content = self::PAGE_CONTENT_PLACEHOLDER)
     {
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                saveWikiText($id, $content, '');
-                idx_addPage($id);
-            }
-        }
-        if (is_string($ids)) {
-            $id = $ids;
+        foreach ($ids as $id) {
             saveWikiText($id, $content, '');
             idx_addPage($id);
         }
     }
 
     /**
+     * Gets parameters, calls the Export and returns the XML as SimpleXMLElement.
+     *
      * @param int $start Optional start value, default 0 will be set
      * @param int $count Optional count value, default 20 will be set
      * @param array $conf Optional configuration, default empty array will be set
@@ -58,7 +53,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $pages = $indexer->getPages();
         foreach ($pages as $page) {
             // Saving a page with empty content will result in removing it.
-            $this->savePages($page, '');
+            $this->savePages(array($page), '');
         }
     }
 
@@ -125,28 +120,14 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     //======================================================================
 
     /**
-     * Test to ensure that XML is valid when DokuWiki has no pages.
+     * Test to ensure that XML is valid when DokuWiki has a certain amount of pages.
+     * @dataProvider parameterProviderForXMLResponse
      */
-    public function test_xml_response_is_valid_if_dokuwiki_has_no_pages()
+    public function test_xml_response_is_valid_if_dokuwiki_has_a_certain_amount_of_pages($pageIds = array())
     {
-        $xml = $this->getXML();
-
-        $start = implode('', ($xml->xpath('/findologic/items/@start')));
-        $count = implode('', ($xml->xpath('/findologic/items/@count')));
-        $total = implode('', ($xml->xpath('/findologic/items/@total')));
-
-        $expected = 0;
-        $this->assertEquals($expected, $start, 'Expected start value should match "0" when DokuWiki has no pages.');
-        $this->assertEquals($expected, $count, 'Expected count value should match "0" when DokuWiki has no pages.');
-        $this->assertEquals($expected, $total, 'Expected total value should match "0" when DokuWiki has no pages.');
-    }
-
-    /**
-     * Test to ensure that XML is valid when DokuWiki has one page.
-     */
-    public function test_xml_response_is_valid_if_dokuwiki_has_one_page()
-    {
-        $this->savePages('home');
+        if ($pageIds) { // I also want to check for an empty DokuWiki
+            $this->savePages(array($pageIds));
+        }
 
         $xml = $this->getXML();
 
@@ -155,44 +136,30 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
 
         $expectedStart = 0;
-        $expectedCount = 1;
-        $expectedTotal = 1;
+        $expectedCount = count($pageIds);
+        $expectedTotal = count($pageIds);
 
-        $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" when DokuWiki has one page.');
-        $this->assertEquals($expectedCount, $count, 'Expected count value should match "1" when DokuWiki has one page.');
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when DokuWiki has one page.');
+        $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" calling it with "0".');
+        $this->assertEquals($expectedCount, $count, 'Expected count value should match the requested count value.');
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should match the amount of total pages.');
     }
 
-    /**
-     * Test to ensure that XML is valid when DokuWiki has two pages.
-     */
-    public function test_xml_response_is_valid_if_dokuwiki_has_two_pages()
+    public function parameterProviderForXMLResponse()
     {
-        $pageIds = array('home1', 'home2');
-        $this->savePages($pageIds);
-
-        $xml = $this->getXML();
-
-        $start = implode('', ($xml->xpath('/findologic/items/@start')));
-        $count = implode('', ($xml->xpath('/findologic/items/@count')));
-        $total = implode('', ($xml->xpath('/findologic/items/@total')));
-
-        $expectedStart = 0;
-        $expectedCount = 2;
-        $expectedTotal = 2;
-
-        $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" when DokuWiki has two pages.');
-        $this->assertEquals($expectedCount, $count, 'Expected count value should match "2" when DokuWiki has two pages.');
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "2" when DokuWiki has two pages.');
+        return [
+            'no pages' => array(), // Empty DokuWiki
+            'one page' => ['home'],
+            'two pages' => ['home1', 'home2']
+        ];
     }
 
     /**
      * Test to ensure that XML outputs basic export data.
      */
-    public function test_xml_elements_equal_to_dokuwiki_page_data()
+    public function test_xml_elements_from_response_are_equal_to_dokuwiki_page_data()
     {
         $pageId = 'test123:test123:test123';
-        $this->savePages($pageId);
+        $this->savePages(array($pageId));
 
         // Set title manually because you can't save it with the saveWikiText function.
         $pageTitle = 'test123';
@@ -256,16 +223,16 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     /**
      * Test to ensure that if no title is given, the XML will have the namespace well formated as title.
      */
-    public function test_xml_element_name_is_formatted_namespace_from_dokuwiki_page_data()
+    public function test_xml_element_name_is_empty_when_page_has_no_title()
     {
-        $this->savePages('test321:test321:test321');
+        $this->savePages(array('test321:test321:test321'));
 
         $xml = $this->getXML();
 
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
 
-        $expectedName = 'Test321 Test321 Test321';
+        $expectedName = '';
         $this->assertEquals($expectedName, $name, 'Expected name in XML should be the namespace of the page formatted "Test321 Test321 Test321".');
     }
 
@@ -274,7 +241,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
      */
     public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_two()
     {
-        $this->savePages('test123:test123');
+        $this->savePages(array('test123:test123'));
 
         $xml = $this->getXML();
 
@@ -299,7 +266,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
      */
     public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_one()
     {
-        $this->savePages('test321');
+        $this->savePages(array('test321'));
 
         $xml = $this->getXML();
 
@@ -334,7 +301,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     public function test_exception_is_thrown_when_call_export_with_start_value_one($start, $count)
     {
         try {
-            $this->savePages('demopage1');
+            $this->savePages(array('demopage1'));
 
             $xml = $this->getXML($start, $count);
             $this->fail('An exception should be thrown when trying to call the export with corner case start and count values.');
@@ -364,7 +331,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $pageId = array();
         for ($i = 1; $i <= 9; $i++) {
             $pageId[$i] = 'demopage0' . $i;
-            $this->savePages($pageId[$i]);
+            $this->savePages(array($pageId[$i]));
         }
 
         $xml = $this->getXML();
@@ -401,24 +368,19 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $xml = $this->getXML(0, 20, $conf);
 
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
-        $secondItem = $xml->xpath('//item[@id="1"]');
-
-        // If there is no second item I am sure there is only one
-        if (!$secondItem) {
-            $totalPagesIsOne = true;
-        } else {
-            $totalPagesIsOne = false;
-        }
+        $items = $xml->xpath('//item');
+        $itemCount = count($items);
 
         $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
         $ordernumber = $ordernumbers[0];
 
         $expectedTotal = 1;
         $expectedOrdernumber = $pageIds[0];
+        $expectedItems = 1;
 
         $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when two of three total pages are excluded in the configuration.');
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest1337" when two of three total pages are excluded in the configuration.');
-        $this->assertTrue($totalPagesIsOne, 'Expected only one page should be in the XML when two of three pages are excluded in the configuration.');
+        $this->assertEquals($expectedItems, $itemCount, 'Expected only one page should be in the XML when one of two pages is excluded in the configuration.');
     }
 
     /**
@@ -436,23 +398,18 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $xml = $this->getXML(0, 20, $conf);
 
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
-        $secondItem = $xml->xpath('//item[@id="1"]');
-
-        // If there is no second item I am sure there is only one
-        if (!$secondItem) {
-            $totalPagesIsOne = true;
-        } else {
-            $totalPagesIsOne = false;
-        }
+        $items = $xml->xpath('//item');
+        $itemCount = count($items);
 
         $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
         $ordernumber = $ordernumbers[0];
 
         $expectedTotal = 1;
         $expectedOrdernumber = $pageIds[0];
+        $expectedItems = 1;
 
         $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when one of two total pages are excluded in the configuration.');
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest2" when one of two total pages are excluded in the configuration.');
-        $this->assertTrue($totalPagesIsOne, 'Expected only one page should be in the XML when one of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedItems, $itemCount, 'Expected only one page should be in the XML when one of two pages is excluded in the configuration.');
     }
 }
