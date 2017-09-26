@@ -300,14 +300,10 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
      */
     public function test_exception_is_thrown_when_call_export_with_start_value_one($start, $count)
     {
-        try {
-            $this->savePages(array('demopage1'));
+        $this->savePages(array('demopage1'));
 
-            $xml = $this->getXML($start, $count);
-            $this->fail('An exception should be thrown when trying to call the export with corner case start and count values.');
-        } catch (\InvalidArgumentException $e) {
-            throw new \InvalidArgumentException($e);
-        }
+        $xml = $this->getXML($start, $count);
+        $this->fail('An exception should be thrown when trying to call the export with corner case start and count values.');
     }
 
     public function parameterProviderForXMLCall()
