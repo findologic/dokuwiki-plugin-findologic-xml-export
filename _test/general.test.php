@@ -11,6 +11,10 @@ require_once(__DIR__ . '/../admin.php');
 
 class general_plugin_findologicxmlexport_test extends DokuWikiTest
 {
+    //======================================================================
+    // HELPER FUNCTIONS AND CONSTANTS
+    //======================================================================
+
     /**
      * A page needs to have content. This is the placeholder for this value.
      */
@@ -33,15 +37,15 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     /**
      * Gets parameters, calls the Export and returns the XML as SimpleXMLElement.
      *
-     * @param int $start Optional start value, default 0 will be set
-     * @param int $count Optional count value, default 20 will be set
-     * @param array $conf Optional configuration, default empty array will be set
+     * @param int $start Optional start value
+     * @param int $count Optional count value
+     * @param array $conf Optional configuration
      * @return SimpleXMLElement Export generated XML
      */
     private function getXML($start = 0, $count = 20, $conf = array())
     {
-        $DokuwikiXMLExport = new DokuwikiXMLExport($conf);
-        return new SimpleXMLElement($DokuwikiXMLExport->generateXMLExport($start, $count));
+        $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
+        return new SimpleXMLElement($dokuwikiXmlExport->generateXMLExport($start, $count));
     }
 
     /**
@@ -116,17 +120,19 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     }
 
     //======================================================================
-    // XML TESTS
+    // XML RESPONSE TESTS
     //======================================================================
 
     /**
      * Test to ensure that XML is valid when DokuWiki has a certain amount of pages.
+     *
+     * @param $ids array An array with page ids (eg. start or wiki:syntax)
      * @dataProvider parameterProviderForXMLResponse
      */
-    public function test_xml_response_is_valid_if_dokuwiki_has_a_certain_amount_of_pages($pageIds = array())
+    public function test_xml_response_is_valid($ids = array())
     {
-        if ($pageIds) { // I also want to check for an empty DokuWiki
-            $this->savePages(array($pageIds));
+        if ($ids) { // I also want to check for an empty DokuWiki
+            $this->savePages(array($ids));
         }
 
         $xml = $this->getXML();
@@ -136,10 +142,10 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
 
         $expectedStart = 0;
-        $expectedCount = count($pageIds);
-        $expectedTotal = count($pageIds);
+        $expectedCount = count($ids);
+        $expectedTotal = count($ids);
 
-        $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" calling it with "0".');
+        $this->assertEquals($expectedStart, $start, 'Expected start value should match the requested start value.');
         $this->assertEquals($expectedCount, $count, 'Expected count value should match the requested count value.');
         $this->assertEquals($expectedTotal, $total, 'Expected total value should match the amount of total pages.');
     }
@@ -149,14 +155,15 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         return [
             'no pages' => array(), // Empty DokuWiki
             'one page' => ['home'],
-            'two pages' => ['home1', 'home2']
+            'two pages' => ['home1', 'home2'],
+            'ten pages' => ['page_1', 'page_2', 'page_3', 'page_4', 'page_5', 'page_6', 'page_7', 'page_8', 'page_9', 'page_10']
         ];
     }
 
     /**
-     * Test to ensure that XML outputs basic export data.
+     * Test to ensure that the XML response is set accordingly to the page data.
      */
-    public function test_xml_elements_from_response_are_equal_to_dokuwiki_page_data()
+    public function test_xml_response_is_valid_and_elements_are_set_accordingly_to_page_data()
     {
         $pageId = 'test123:test123:test123';
         $this->savePages(array($pageId));
@@ -208,22 +215,22 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $pageCreated->setTimestamp($pageMetadata["date"]["created"]);
         $expectedDateAdded = (string)$pageCreated->format(\DateTime::ATOM);
 
-        $this->assertEquals($expectedName, $name, 'Expected name in XML should match the pages first title "test123".');
+        $this->assertEquals($expectedName, $name, 'Expected name in XML should match the pages first title.');
         $this->assertEquals($expectedSummary, $summary, 'Expected summary in XML should match the pages content.');
         $this->assertEquals($expectedDescription, $description, 'Expected description in XML should match the pages content.');
-        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber in XML should match the pages namespace "test123:test123:test123".');
-        $this->assertEquals($expectedUrl, $url, 'Expected url in XML should match the DokuWiki-URL and the pages namespace "http://wiki.example.com/./doku.php?id=test123:test123:test123".');
-        $this->assertEquals($expectedPropertyKey, $propertyKey, 'Expected property key in XML should match the dummy value "dummy".');
-        $this->assertEquals($expectedPropertyValue, $propertyValue, 'Expected property value in XML should match the dummy value "dummy".');
-        $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should match the category value "cat".');
-        $this->assertEquals($expectedAttributeValue, $attributeValue, 'Expected attribute value in XML should match the namespace formatted in a FINDOLOGIC proper format "test123_test123_test123".');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber in XML should match the pages namespace.');
+        $this->assertEquals($expectedUrl, $url, 'Expected url in XML should match the DokuWiki-URL and the pages namespace.');
+        $this->assertEquals($expectedPropertyKey, $propertyKey, 'Expected property key in XML should match the dummy value.');
+        $this->assertEquals($expectedPropertyValue, $propertyValue, 'Expected property value in XML should match the dummy value.');
+        $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should match the category value.');
+        $this->assertEquals($expectedAttributeValue, $attributeValue, 'Expected attribute value in XML should match the namespace formatted in a FINDOLOGIC proper format.');
         $this->assertEquals($expectedDateAdded, $dateAdded, 'Expected dateAdded value in XML should match the created date of the page. Value can vary.');
     }
 
     /**
-     * Test to ensure that if no title is given, the XML will have the namespace well formated as title.
+     * Test to ensure that if no title is given, the XML name will be empty as well.
      */
-    public function test_xml_element_name_is_empty_when_page_has_no_title()
+    public function test_xml_response_is_valid_and_element_name_is_empty_when_page_has_no_title()
     {
         $this->savePages(array('test321:test321:test321'));
 
@@ -233,13 +240,13 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $name = (string)$names[0];
 
         $expectedName = '';
-        $this->assertEquals($expectedName, $name, 'Expected name in XML should be the namespace of the page formatted "Test321 Test321 Test321".');
+        $this->assertEquals($expectedName, $name, 'Expected name in XML should be empty when page has no title.');
     }
 
     /**
      * Test to ensure that ordernumber and attribute categories in the XML are valid when DokuWiki has a namespace height of two.
      */
-    public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_two()
+    public function test_xml_response_is_valid_and_elements_are_set_accordingly_to_page_data_when_namespace_height_is_two()
     {
         $this->savePages(array('test123:test123'));
 
@@ -264,7 +271,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     /**
      * Test to ensure that ordernumber and attribute categories in the XML are valid when DokuWiki has a namespace height of one.
      */
-    public function test_xml_elements_equal_to_dokuwiki_page_data_when_namespace_height_is_one()
+    public function test_xml_response_is_valid_and_elements_are_set_accordingly_to_page_data_when_namespace_height_is_one()
     {
         $this->savePages(array('test321'));
 
@@ -286,43 +293,11 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber in XML should match the pages namespace when namespace height is two "test123:test123".');
     }
 
-    //======================================================================
-    // EXPORT CALL TESTS
-    //======================================================================
-
     /**
-     * Test to ensure that parameters are correctly handled in the export call.
-     *
-     * @param integer $start Start value for Export call
-     * @param integer $count Count value for Export call
-     * @dataProvider parameterProviderForXMLCall
-     * @expectedException InvalidArgumentException
+     * Test to ensure that response is valid and parameters are correctly handled in the export call when
+     * the count is greater than total.
      */
-    public function test_exception_is_thrown_when_call_export_with_start_value_one($start, $count)
-    {
-        $this->savePages(array('demopage1'));
-
-        $xml = $this->getXML($start, $count);
-        $this->fail('An exception should be thrown when trying to call the export with corner case start and count values.');
-    }
-
-    public function parameterProviderForXMLCall()
-    {
-        return [
-            'test start = 1 and count = 1' => [1, 1],
-            'test start = 2 and count = 1' => [2, 1],
-            'test start = 0 and count = 0' => [0, 0],
-            'test start = 1 and count = 0' => [1, 0],
-            'test start = 0 and count = -1' => [0, -1],
-            'test start = -1 and count = 0' => [-1, 0]
-        ];
-    }
-
-    /**
-     * Test to ensure that parameters are correctly handled in the export call.
-     * start = 0, count = 10, total = 9;
-     */
-    public function test_call_export_with_count_greater_than_total()
+    public function test_xml_response_is_valid_when_calling_export_with_count_greater_than_total()
     {
         $pageId = array();
         for ($i = 1; $i <= 9; $i++) {
@@ -345,14 +320,49 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
     }
 
     //======================================================================
-    // PLUGIN SETTING TESTS
+    // XML CALL TESTS
+    //======================================================================
+
+    /**
+     * Test to ensure that parameters are correctly handled in the export call and
+     * an exception is thrown if it does not work.
+     *
+     * @param integer $start Start value for Export call
+     * @param integer $count Count value for Export call
+     * @param string $message Error message if test fails
+     * @dataProvider parameterProviderForXMLCall
+     */
+    public function test_xml_call_exception_is_thrown_when_calling_export_with_wrong_params($start, $count, $message)
+    {
+        try {
+            $this->savePages(array('demopage1'));
+            $xml = $this->getXML($start, $count);
+            $this->fail($message);
+        } catch (\InvalidArgumentException $e) {
+        }
+    }
+
+    public function parameterProviderForXMLCall()
+    {
+        return [
+            'test start = 1 and count = 1' => [1, 1, 'An exception should be thrown, because you can\'t get the second page if there is none.'],
+            'test start = 2 and count = 1' => [2, 1, 'An exception should be thrown, because you can\'t get the third page if there is none.'],
+            'test start = 0 and count = 0' => [0, 0, 'An exception should be thrown, because you can\'t get a page with no count.'],
+            'test start = 1 and count = 0' => [1, 0, 'An exception should be thrown, because you can\'t get the second page with no count and does not even exist.'],
+            'test start = 0 and count = -1' => [0, -1, 'An exception should be thrown, because you can\'t get a page with a negative count value.'],
+            'test start = -1 and count = 0' => [-1, 0, 'An exception should be thrown, because you can\'t get a page with a negative start value.']
+        ];
+    }
+
+    //======================================================================
+    // PLUGIN CONFIGURATION TESTS
     //======================================================================
 
     /**
      * Test to ensure that the configuration works as expected and excluding of pages work properly.
      * Correct page needs to be exported when 2 of 3 pages are excluded.
      */
-    public function test_plugin_setting_exclude_pages()
+    public function test_plugin_conf_exclude_two_pages()
     {
         $pageIds = array('settingtest1337', 'excludeme1', 'excludeme2');
         $this->savePages($pageIds);
@@ -374,18 +384,18 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $expectedOrdernumber = $pageIds[0];
         $expectedItems = 1;
 
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when two of three total pages are excluded in the configuration.');
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should be one when two of three total pages are excluded in the configuration.');
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest1337" when two of three total pages are excluded in the configuration.');
-        $this->assertEquals($expectedItems, $itemCount, 'Expected only one page should be in the XML when one of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedItems, $itemCount, 'Only one page should be in the XML when two of three pages is excluded in the configuration.');
     }
 
     /**
      * Test to ensure that the configuration works as expected and excluding of pages work properly. Only one page.
-     * Correct page needs to be exported.
+     * Correct page needs to be exported when 1 of 2 pages are excluded.
      */
-    public function test_plugin_setting_exclude_pages_one_page()
+    public function test_plugin_conf_exclude_one_page()
     {
-        $pageIds = array('settingtest2', 'excludeme3');
+        $pageIds = array('settingtest1337', 'excludeme3');
         $this->savePages($pageIds);
 
         $conf = array();
@@ -404,8 +414,8 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $expectedOrdernumber = $pageIds[0];
         $expectedItems = 1;
 
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "1" when one of two total pages are excluded in the configuration.');
-        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest2" when one of two total pages are excluded in the configuration.');
-        $this->assertEquals($expectedItems, $itemCount, 'Expected only one page should be in the XML when one of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should be one when one of two total pages are excluded in the configuration.');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should be "settingtest2" when one of two total pages are excluded in the configuration.');
+        $this->assertEquals($expectedItems, $itemCount, 'Only one page should be in the XML when one of two pages is excluded in the configuration.');
     }
 }
