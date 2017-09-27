@@ -314,9 +314,9 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $expectedStart = 0;
         $expectedCount = $expectedTotal = 9;
 
-        $this->assertEquals($expectedStart, $start, 'Expected start value should match "0" when export is called with start "0".');
-        $this->assertEquals($expectedCount, $count, 'Expected count value should match "9" when export is called with "10" and $total is "9".');
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should match "9" when DokuWiki has 9 pages.');
+        $this->assertEquals($expectedStart, $start, 'Expected start value should match the requested start value.');
+        $this->assertEquals($expectedCount, $count, 'Expected count value should match the requested count value.');
+        $this->assertEquals($expectedTotal, $total, 'Expected total value should match the amount of total pages.');
     }
 
     //======================================================================
