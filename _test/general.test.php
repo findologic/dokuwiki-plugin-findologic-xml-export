@@ -239,8 +239,7 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
 
-        $expectedName = '';
-        $this->assertEquals($expectedName, $name, 'Expected name in XML should be empty when page has no title.');
+        $this->assertEmpty($name, 'Expected name in XML should be empty when page has no title.');
     }
 
     /**
@@ -293,10 +292,6 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber in XML should match the pages namespace when namespace height is two "test123:test123".');
     }
 
-    /**
-     * Test to ensure that response is valid and parameters are correctly handled in the export call when
-     * the count is greater than total.
-     */
     public function test_xml_response_is_valid_when_calling_export_with_count_greater_than_total()
     {
         $pageId = array();
@@ -384,9 +379,9 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $expectedOrdernumber = $pageIds[0];
         $expectedItems = 1;
 
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should be one when two of three total pages are excluded in the configuration.');
-        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should match "settingtest1337" when two of three total pages are excluded in the configuration.');
-        $this->assertEquals($expectedItems, $itemCount, 'Only one page should be in the XML when two of three pages is excluded in the configuration.');
+        $this->assertEquals($expectedTotal, $total, 'Unexpected total when calling export with two out of three pages are excluded in the configuration.');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Unexpected ordernumber when calling export with two out of three pages are excluded in the configuration..');
+        $this->assertEquals($expectedItems, $itemCount, 'Unexpected count when calling export with two out of three pages are excluded in the configuration.');
     }
 
     /**
@@ -414,8 +409,8 @@ class general_plugin_findologicxmlexport_test extends DokuWikiTest
         $expectedOrdernumber = $pageIds[0];
         $expectedItems = 1;
 
-        $this->assertEquals($expectedTotal, $total, 'Expected total value should be one when one of two total pages are excluded in the configuration.');
-        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber should be "settingtest2" when one of two total pages are excluded in the configuration.');
-        $this->assertEquals($expectedItems, $itemCount, 'Only one page should be in the XML when one of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedTotal, $total, 'Unexpected total when calling export with one out of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedOrdernumber, $ordernumber, 'Unexpected ordernumber when calling export with one out of two pages is excluded in the configuration.');
+        $this->assertEquals($expectedItems, $itemCount, 'Unexpected count when calling export with one out of two pages is excluded in the configuration.');
     }
 }
