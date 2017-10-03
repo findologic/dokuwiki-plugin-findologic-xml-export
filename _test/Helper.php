@@ -52,9 +52,6 @@ class Helper
     {
         $indexer = new Doku_Indexer();
         $pages = $indexer->getPages();
-        foreach ($pages as $page) {
-            // Saving a page with empty content will result in removing it.
-            Helper::savePages(array($page), '');
-        }
+        self::savePages($pages, ''); // Saving a page with empty content will result in removing it.
     }
 }

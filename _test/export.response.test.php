@@ -27,9 +27,7 @@ class export_response_test extends DokuWikiTest
     public function test_parameters_start_count_and_total_are_valid_for_($ids = array(), $expectedCount, $expectedTotal)
     {
         // If there are no pages, no pages can be saved.
-        if (!$expectedCount == 0 && !$expectedTotal == 0) {
-            Helper::savePages($ids);
-        }
+        Helper::savePages($ids);
 
         $xml = Helper::getXML();
         $start = implode('', ($xml->xpath('/findologic/items/@start')));
@@ -59,8 +57,8 @@ class export_response_test extends DokuWikiTest
         $pageId = array();
         for ($i = 1; $i <= 9; $i++) {
             $pageId[$i] = 'demopage0' . $i;
-            Helper::savePages(array($pageId[$i]));
         }
+        Helper::savePages($pageId);
         $xml = Helper::getXML();
         $start = implode('', ($xml->xpath('/findologic/items/@start')));
         $count = implode('', ($xml->xpath('/findologic/items/@count')));
