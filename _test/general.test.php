@@ -12,14 +12,13 @@
 
 require_once(__DIR__ . '/../DokuwikiXMLExport.php');
 require_once(__DIR__ . '/../admin.php');
-require_once(__DIR__ . '/helper.php');
+require_once(__DIR__ . '/../_test/Helper.php');
 
 class general_plugin_findologicxmlexport_test extends DokuWikiTest
 {
     public function setUp()
     {
-        $helper = new helper;
-        $helper->setUp();
+        Helper::setUp();
     }
 
     /**

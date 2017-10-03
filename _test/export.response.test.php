@@ -12,31 +12,26 @@
 
 require_once(__DIR__ . '/../DokuwikiXMLExport.php');
 require_once(__DIR__ . '/../admin.php');
-require_once(__DIR__ . '/helper.php');
+require_once(__DIR__ . '/../_test/Helper.php');
 
 class export_response_test extends DokuWikiTest
 {
     public function setUp()
     {
-        $helper = new helper;
-        $helper->setUp();
+        Helper::setUp();
     }
 
     /**
      * @dataProvider parameterProviderForXMLResponse
      */
-    public function test_parameters_start_count_and_total_are_valid_for_($ids = array())
+    public function test_parameters_start_count_and_total_are_valid_for_($ids = array(), $expectedCount, $expectedTotal)
     {
-        $helper = new helper;
-        if ($ids) { // I also want to check for an empty DokuWiki
-            $helper->savePages(array($ids));
-            $expectedCount = count($ids);
-            $expectedTotal = count($ids);
-        } else {
-            $expectedCount = 0;
-            $expectedTotal = 0;
+        // If there are no pages, no pages can be saved.
+        if (!$expectedCount == 0 && !$expectedTotal == 0) {
+            Helper::savePages($ids);
         }
-        $xml = $helper->getXML();
+
+        $xml = Helper::getXML();
         $start = implode('', ($xml->xpath('/findologic/items/@start')));
         $count = implode('', ($xml->xpath('/findologic/items/@count')));
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
@@ -51,22 +46,22 @@ class export_response_test extends DokuWikiTest
     public function parameterProviderForXMLResponse()
     {
         return [
-            'no pages' => [''], // Empty DokuWiki
-            'one page' => ['home'],
-            'two pages' => ['home1', 'home2'],
-            'ten pages' => ['page_1', 'page_2', 'page_3', 'page_4', 'page_5', 'page_6', 'page_7', 'page_8', 'page_9', 'page_10']
+            // name => [[ids], count, total]
+            'no pages' => [[''], 0, 0], // Empty DokuWiki
+            'one page' => [['home'], 1, 1],
+            'two pages' => [['home1', 'home2'], 2, 2],
+            'ten pages' => [['page_1', 'page_2', 'page_3', 'page_4', 'page_5', 'page_6', 'page_7', 'page_8', 'page_9', 'page_10'], 10, 10]
         ];
     }
 
     public function test_parameters_start_count_and_total_are_valid_when_calling_export_with_count_greater_than_total()
     {
-        $helper = new helper;
         $pageId = array();
         for ($i = 1; $i <= 9; $i++) {
             $pageId[$i] = 'demopage0' . $i;
-            $helper->savePages(array($pageId[$i]));
+            Helper::savePages(array($pageId[$i]));
         }
-        $xml = $helper->getXML();
+        $xml = Helper::getXML();
         $start = implode('', ($xml->xpath('/findologic/items/@start')));
         $count = implode('', ($xml->xpath('/findologic/items/@count')));
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
@@ -82,14 +77,13 @@ class export_response_test extends DokuWikiTest
      */
     public function test_all_elements_are_set_according_to_page_data()
     {
-        $helper = new helper;
         $pageId = 'test123:test123:test123';
-        $helper->savePages(array($pageId));
+        Helper::savePages(array($pageId));
         // Set title manually because you can't save it with the saveWikiText function.
         $pageTitle = 'test123';
         $pageMetaTitle = array('title' => $pageTitle);
         p_set_metadata($pageId, $pageMetaTitle);
-        $xml = $helper->getXML();
+        $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = $names[0];
         $summaries = $xml->xpath('/findologic/items/item/summaries/summary');
@@ -109,7 +103,7 @@ class export_response_test extends DokuWikiTest
         $dateAddeds = $xml->xpath('/findologic/items/item/dateAddeds');
         $dateAdded = (string)$dateAddeds[0]->dateAdded[0];
         $expectedName = $pageTitle;
-        $expectedSummary = $expectedDescription = helper::PAGE_CONTENT_PLACEHOLDER;
+        $expectedSummary = $expectedDescription = Helper::PAGE_CONTENT_PLACEHOLDER;
         $expectedOrdernumber = $pageId;
         $expectedUrl = 'http://wiki.example.com/./doku.php?id=' . $pageId;
         $expectedPropertyKey = 'dummy';
@@ -136,33 +130,17 @@ class export_response_test extends DokuWikiTest
     /**
      * @dataProvider parameterProviderForNamespaceDepthTesting
      */
-    public function test_elements_ordernumber_and_category_are_set_according_to_page_data_when_namespace_depth_is_($amount, $ids)
+    public function test_elements_ordernumber_and_category_are_set_according_to_page_data_when_namespace_depth_is_($id, $expectedAttributeValue)
     {
-        $helper = new helper;
-        $helper->savePages(array($ids));
-        $xml = $helper->getXML();
+        Helper::savePages(array($id));
+        $xml = Helper::getXML();
         $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
         $ordernumber = $ordernumbers[0];
         $attributes = $xml->xpath('/findologic/items/item/allAttributes/attributes/attribute');
         $attributeKey = (string)$attributes[0]->key[0];
         $attributeValue = (string)$attributes[0]->values[0]->value[0];
 
-        switch ($amount) {
-            case 1:
-                $expectedOrdernumber = 'home';
-                $expectedAttributeValue = 'home';
-                break;
-            case 2:
-                $expectedOrdernumber = 'home:home';
-                $expectedAttributeValue = 'home_home';
-                break;
-            case 3:
-                $expectedOrdernumber = 'home:home:home';
-                $expectedAttributeValue = 'home_home_home';
-                break;
-            default:
-                $this->fail('Expected amount of pages is not correct.');
-        }
+        $expectedOrdernumber = $id;
 
         $expectedAttributeKey = 'cat';
         $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should always match "cat".');
@@ -173,17 +151,16 @@ class export_response_test extends DokuWikiTest
     public function parameterProviderForNamespaceDepthTesting()
     {
         return [
-            'one' => [1, 'home'],
-            'two' => [2, 'home:home'],
-            'three' => [3, 'home:home:home']
+            'one' => ['home', 'home'],
+            'two' => ['home:home', 'home_home'],
+            'three' => ['home:home:home', 'home_home_home']
         ];
     }
 
     public function test_element_name_is_empty_when_page_has_no_title()
     {
-        $helper = new helper;
-        $helper->savePages(array('test321:test321:test321'));
-        $xml = $helper->getXML();
+        Helper::savePages(array('test321:test321:test321'));
+        $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
         $this->assertEmpty($name, 'Expected name in XML should be empty when page has no title.');

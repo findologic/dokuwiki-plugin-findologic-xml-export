@@ -10,7 +10,7 @@
 // HELPER FUNCTIONS AND CONSTANTS
 //======================================================================
 
-class helper
+class Helper
 {
     /**
      * A page needs to have content. This is the placeholder for this value.
@@ -23,7 +23,7 @@ class helper
      * @param array $ids An array with page ids (eg. start or wiki:syntax)
      * @param string $content Optional content, else the default test value will be set
      */
-    public function savePages($ids, $content = self::PAGE_CONTENT_PLACEHOLDER)
+    static function savePages($ids, $content = self::PAGE_CONTENT_PLACEHOLDER)
     {
         foreach ($ids as $id) {
             saveWikiText($id, $content, '');
@@ -39,7 +39,7 @@ class helper
      * @param array $conf Optional configuration
      * @return SimpleXMLElement Export generated XML
      */
-    public function getXML($start = 0, $count = 20, $conf = array())
+    static function getXML($start = 0, $count = 20, $conf = array())
     {
         $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
         return new SimpleXMLElement($dokuwikiXmlExport->generateXMLExport($start, $count));
@@ -48,13 +48,13 @@ class helper
     /**
      * Remove all DokuWiki pages before each test
      */
-    public function setUp()
+    static function setUp()
     {
         $indexer = new Doku_Indexer();
         $pages = $indexer->getPages();
         foreach ($pages as $page) {
             // Saving a page with empty content will result in removing it.
-            $this->savePages(array($page), '');
+            Helper::savePages(array($page), '');
         }
     }
 }

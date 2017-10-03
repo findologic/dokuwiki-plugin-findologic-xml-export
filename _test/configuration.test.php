@@ -12,14 +12,13 @@
 
 require_once(__DIR__ . '/../DokuwikiXMLExport.php');
 require_once(__DIR__ . '/../admin.php');
-require_once(__DIR__ . '/helper.php');
+require_once(__DIR__ . '/../_test/Helper.php');
 
 class configuration_plugin_findologicxmlexport_test extends DokuWikiTest
 {
     public function setUp()
     {
-        $helper = new helper;
-        $helper->setUp();
+        Helper::setUp();
     }
 
     /**
@@ -29,13 +28,12 @@ class configuration_plugin_findologicxmlexport_test extends DokuWikiTest
      */
     public function test_excluded_pages_are_not_exported_($ids)
     {
-        $helper = new helper;
         $pageIds = array('settingtest1337', 'excludeme1', 'excludeme2');
-        $helper->savePages($pageIds);
+        Helper::savePages($pageIds);
         $conf = array();
         // Set configuration
         $conf['plugin']['findologicxmlexport']['excludePages'] = 'excludeme1, excludeme2';
-        $xml = $helper->getXML(0, 20, $conf);
+        $xml = Helper::getXML(0, 20, $conf);
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
         $items = $xml->xpath('//item');
         $itemCount = count($items);
