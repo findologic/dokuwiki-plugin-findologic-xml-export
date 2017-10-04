@@ -92,12 +92,8 @@ class DokuwikiXMLExport
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription($pages, $i));
+            $summary->setValue($this->getSummary($pages, $i));
             $item->setSummary($summary);
-
-            $description = new Description();
-            $description->setValue($this->getSummaryAndDescription($pages, $i));
-            $item->setDescription($description);
 
             $price = new Price();
             $price->setValue(self::PRICE_PLACEHOLDER);
@@ -156,13 +152,13 @@ class DokuwikiXMLExport
     }
 
     /**
-     * Gets the Summary and Description of the current page.
+     * Gets the Summary of the current page.
      *
      * @param array $pages Contains all namespaces of all DokuWiki pages.
      * @param integer $key The Item ID.
-     * @return string Returns the Summary and Description of the page.
+     * @return string Returns the Summary of the page.
      */
-    private function getSummaryAndDescription($pages, $key)
+    private function getSummary($pages, $key)
     {
         $metadata = p_get_metadata($pages[$key]);
         return $metadata["description"]["abstract"];
