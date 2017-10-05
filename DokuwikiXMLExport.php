@@ -6,7 +6,9 @@
  * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
  */
 
-if (!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
+if (!defined('DOKU_INC')){
+    define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
+}
 
 require_once(DOKU_INC . 'inc/init.php');
 require(__DIR__ . '/vendor/autoload.php');
@@ -57,11 +59,6 @@ class DokuwikiXMLExport
      * @var array $pages All pageIds.
      */
     protected $pages;
-
-    /**
-     * @var int $key Amount of loops.
-     */
-    protected $key;
 
     /**
      * DokuwikiXMLExport constructor.
@@ -129,19 +126,19 @@ class DokuwikiXMLExport
         }
 
         $items = array();
-        for ($this->key = $start; $this->key < $start + $count; $this->key++) {
-            $item = $exporter->createItem($this->key);
+        for ($i = $start; $i < $start + $count; $i++) {
+            $item = $exporter->createItem($i);
 
             $name = new Name();
-            $name->setValue($this->getName());
+            $name->setValue($this->getName($this->pages[$i]));
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription());
+            $summary->setValue($this->getSummaryAndDescription($this->pages[$i]));
             $item->setSummary($summary);
 
             $description = new Description();
-            $description->setValue($this->getSummaryAndDescription());
+            $description->setValue($this->getSummaryAndDescription($this->pages[$i]));
             $item->setDescription($description);
 
             $price = new Price();
@@ -149,17 +146,17 @@ class DokuwikiXMLExport
             $item->setPrice($price);
 
             $Url = new Url();
-            $Url->setValue($this->getUrl());
+            $Url->setValue($this->getUrl($this->pages[$i]));
             $item->setUrl($Url);
 
             $dateAdded = new DateAdded();
-            $dateAdded->setDateValue($this->getDateAdded());
+            $dateAdded->setDateValue($this->getDateAdded($this->pages[$i]));
             $item->setDateAdded($dateAdded);
 
-            $item->addOrdernumber(new Ordernumber($this->getOrdernumber()));
+            $item->addOrdernumber(new Ordernumber($this->getPageId($this->pages[$i])));
             $items[] = $item;
 
-            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory());
+            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($this->pages[$i]));
             $item->addAttribute($attributeCategory);
 
             $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
@@ -173,9 +170,9 @@ class DokuwikiXMLExport
      *
      * @return string Returns the Name/Title of the page.
      */
-    private function getName()
+    private function getName($id)
     {
-        $metadata = p_get_metadata($this->pages[$this->key]);
+        $metadata = p_get_metadata($id);
         return $metadata["title"];
     }
 
@@ -184,9 +181,9 @@ class DokuwikiXMLExport
      *
      * @return string Returns the Summary and Description of the page.
      */
-    private function getSummaryAndDescription()
+    private function getSummaryAndDescription($id)
     {
-        $metadata = p_get_metadata($this->pages[$this->key]);
+        $metadata = p_get_metadata($id);
         return $metadata["description"]["abstract"];
     }
 
@@ -195,9 +192,9 @@ class DokuwikiXMLExport
      *
      * @return string Returns the Url of the page.
      */
-    private function getUrl()
+    private function getUrl($id)
     {
-        $url = wl($this->pages[$this->key], '', true);
+        $url = wl($id, '', true);
         return $url;
     }
 
@@ -206,22 +203,23 @@ class DokuwikiXMLExport
      *
      * @return DateTime Returns the Date formatted in ATOM DateTime of the page.
      */
-    private function getDateAdded()
+    private function getDateAdded($id)
     {
-        $metadata = p_get_metadata($this->pages[$this->key]);
+        $metadata = p_get_metadata($id);
         $date = new DateTime();
         $date->setTimestamp($metadata["date"]["created"]);
         return $date;
     }
 
     /**
-     * Returns the ID / ordernumber.
+     * Returns the id of a given page.
+     * Note: This function is trivial, but is used for legibility reasons.
      *
      * @return string Returns the ordernumber.
      */
-    private function getOrdernumber()
+    private function getPageId($id)
     {
-        return $this->pages[$this->key];
+        return $id;
     }
 
     /**
@@ -234,9 +232,9 @@ class DokuwikiXMLExport
      *
      * @return array Returns the category attribute based on the export scheme.
      */
-    private function getAttributesCategory()
+    private function getAttributesCategory($id)
     {
-        $ordernumber = $this->getOrdernumber($this->key);
+        $ordernumber = $this->getPageId($id);
 
         $attribute = str_replace('_', ' ', $ordernumber);
         $attribute = str_replace(':', '_', $attribute);
