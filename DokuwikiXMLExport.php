@@ -87,9 +87,9 @@ class DokuwikiXMLExport
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
-        $ids = array_values(array_diff($pagesAndDeletedPages, $excludedPages)); // Exclude excludedPages from all pages and sort them
+        $ids = array_diff($pagesAndDeletedPages, $excludedPages);
 
-        return $ids;
+        return array_values($ids);
     }
 
     /**
