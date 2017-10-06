@@ -6,7 +6,7 @@
  * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
  */
 
-if (!defined('DOKU_INC')){
+if (!defined('DOKU_INC')) {
     define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
 }
 
@@ -26,7 +26,6 @@ use FINDOLOGIC\Export\Data\Property;
 
 class DokuwikiXMLExport
 {
-
     /**
      * Default value for a price. DokuWiki pages do not have a price and this is just a placeholder.
      * FINDOLOGIC requires the price attribute, so this is the reason why it is exported.
@@ -168,44 +167,48 @@ class DokuwikiXMLExport
     /**
      * Gets the Name of the current page.
      *
+     * @param $pageId string Id of the DokuWiki page.
      * @return string Returns the Name/Title of the page.
      */
-    private function getName($id)
+    private function getName($pageId)
     {
-        $metadata = p_get_metadata($id);
+        $metadata = p_get_metadata($pageId);
         return $metadata["title"];
     }
 
     /**
      * Gets the Summary and Description of the current page.
      *
+     * @param $pageId string Id of the DokuWiki page.
      * @return string Returns the Summary and Description of the page.
      */
-    private function getSummaryAndDescription($id)
+    private function getSummaryAndDescription($pageId)
     {
-        $metadata = p_get_metadata($id);
+        $metadata = p_get_metadata($pageId);
         return $metadata["description"]["abstract"];
     }
 
     /**
      * Gets the Url of the current page.
      *
+     * @param $pageId string Id of the DokuWiki page.
      * @return string Returns the Url of the page.
      */
-    private function getUrl($id)
+    private function getUrl($pageId)
     {
-        $url = wl($id, '', true);
+        $url = wl($pageId, '', true);
         return $url;
     }
 
     /**
      * Gets the DateTime of the current page.
      *
+     * @param $pageId string Id of the DokuWiki page.
      * @return DateTime Returns the Date formatted in ATOM DateTime of the page.
      */
-    private function getDateAdded($id)
+    private function getDateAdded($pageId)
     {
-        $metadata = p_get_metadata($id);
+        $metadata = p_get_metadata($pageId);
         $date = new DateTime();
         $date->setTimestamp($metadata["date"]["created"]);
         return $date;
@@ -215,11 +218,12 @@ class DokuwikiXMLExport
      * Returns the id of a given page.
      * Note: This function is trivial, but is used for legibility reasons.
      *
-     * @return string Returns the ordernumber.
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the pageId.
      */
-    private function getPageId($id)
+    private function getPageId($pageId)
     {
-        return $id;
+        return $pageId;
     }
 
     /**
@@ -230,11 +234,12 @@ class DokuwikiXMLExport
      * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
      *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
      *
+     * @param $pageId string Id of the DokuWiki page.
      * @return array Returns the category attribute based on the export scheme.
      */
-    private function getAttributesCategory($id)
+    private function getAttributesCategory($pageId)
     {
-        $ordernumber = $this->getPageId($id);
+        $ordernumber = $this->getPageId($pageId);
 
         $attribute = str_replace('_', ' ', $ordernumber);
         $attribute = str_replace(':', '_', $attribute);
