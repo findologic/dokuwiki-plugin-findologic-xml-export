@@ -5,8 +5,9 @@
  * If any bugs occur, please submit a new issue
  * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
  */
+
 if (!defined('DOKU_INC')) {
-    define('DOKU_INC', realpath(dirname(__FILE__) . '/../../../') . '/');
+    define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
 }
 
 require_once(DOKU_INC . 'inc/init.php');
@@ -25,7 +26,6 @@ use FINDOLOGIC\Export\Data\Property;
 
 class DokuwikiXMLExport
 {
-
     /**
      * Default value for a price. DokuWiki pages do not have a price and this is just a placeholder.
      * FINDOLOGIC requires the price attribute, so this is the reason why it is exported.
@@ -50,171 +50,44 @@ class DokuwikiXMLExport
     const PROPERTY_DUMMY_VALUE = array('dummy');
 
     /**
-     * Generate the entire XML Export based on the Dokuwiki metadata.
-     *
-     * @param $start integer Determines the first item (offset) to be exported.
-     * @param $count integer Determines the interval size / number of items to be exported.
-     * @return string Returns the XML.
+     * @var array $conf DokuWiki configuration.
      */
-    public function generateXMLExport($start, $count)
+    protected $conf;
+
+    /**
+     * @var array $pages All pageIds.
+     */
+    protected $pages;
+
+    /**
+     * DokuwikiXMLExport constructor.
+     * @param $conf array DokuWiki configuration array.
+     */
+    public function __construct($conf)
+    {
+        $this->conf = $conf;
+        $this->pages = $this->getPageIds();
+    }
+
+    /**
+     * Returns all pageIds, excluding those who were set in the configuration.
+     *
+     * @return array pageIds.
+     */
+    private function getPageIds()
     {
         $indexer = new Doku_Indexer();
         $pagesAndDeletedPages = $indexer->getPages();
 
+        // Get all pages that do have a description
+        $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
+            return (p_get_metadata($page)['description'] !== '');
+        }, ARRAY_FILTER_USE_BOTH);
+
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
-        $pages = null;
-        foreach ($pagesAndDeletedPages as $page) {
-            if (p_get_metadata($page)['description']) { // Only get pages with content
-                if (!in_array($page, $excludedPages)) { // Exclude pages from config
-                    $pages[] = $page;
-                }
-            }
-        }
-        $exporter = Exporter::create(Exporter::TYPE_XML, $count);
+        $ids = array_diff($pagesAndDeletedPages, $excludedPages);
 
-        $total = count($pages);
-
-        // The count can't be higher then the total number of pages.
-        $count = min($total, $count);
-
-
-        // If count + start is higher then total, then something went totally wrong.
-        if (($count + $start) > $total) {
-            throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
-        }
-
-        $items = array();
-        for ($i = $start; $i < $start + $count; $i++) {
-            $item = $exporter->createItem($i);
-
-            $name = new Name();
-            $name->setValue($this->getName($pages, $i));
-            $item->setName($name);
-
-            $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription($pages, $i));
-            $item->setSummary($summary);
-
-            $description = new Description();
-            $description->setValue($this->getSummaryAndDescription($pages, $i));
-            $item->setDescription($description);
-
-            $price = new Price();
-            $price->setValue(self::PRICE_PLACEHOLDER);
-            $item->setPrice($price);
-
-            $Url = new Url();
-            $Url->setValue($this->getUrl($pages, $i));
-            $item->setUrl($Url);
-
-            $dateAdded = new DateAdded();
-            $dateAdded->setDateValue($this->getDateAdded($pages, $i));
-            $item->setDateAdded($dateAdded);
-
-            $item->addOrdernumber(new Ordernumber($this->getOrdernumber($pages, $i)));
-            $items[] = $item;
-
-            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($pages, $i));
-            $item->addAttribute($attributeCategory);
-
-            $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
-            $item->addProperty($propertyDummy);
-        }
-        return $exporter->serializeItems($items, $start, $total);
-    }
-
-    protected $conf;
-
-    public function __construct($conf)
-    {
-        $this->conf = $conf;
-    }
-
-    /**
-     * Returns the ID / ordernumber.
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return string Returns the ordernumber.
-     */
-    private function getOrdernumber($pages, $key)
-    {
-        return $pages[$key];
-    }
-
-    /**
-     * Gets the Name of the current page.
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return string Returns the Name/Title of the page.
-     */
-    private function getName($pages, $key)
-    {
-        $metadata = p_get_metadata($pages[$key]);
-        return $metadata["title"];
-    }
-
-    /**
-     * Gets the Summary and Description of the current page.
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return string Returns the Summary and Description of the page.
-     */
-    private function getSummaryAndDescription($pages, $key)
-    {
-        $metadata = p_get_metadata($pages[$key]);
-        return $metadata["description"]["abstract"];
-    }
-
-    /**
-     * Gets the Url of the current page.
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return string Returns the Url of the page.
-     */
-    private function getUrl($pages, $key)
-    {
-        $url =  wl($pages[$key], '', true);
-        return $url;
-    }
-
-    /**
-     * Gets the DateTime of the current page.
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return DateTime Returns the Date formatted in ATOM DateTime of the page.
-     */
-    private function getDateAdded($pages, $key)
-    {
-        $metadata = p_get_metadata($pages[$key]);
-        $date = new DateTime();
-        $date->setTimestamp($metadata["date"]["created"]);
-        return $date;
-    }
-
-    /**
-     * Gets the Category Attribute of the current page.
-     *
-     * Formats DokuWiki IDs to categories.
-     *
-     * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
-     *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
-     *
-     * @param array $pages Contains all namespaces of all DokuWiki pages.
-     * @param integer $key The Item ID.
-     * @return array Returns the category attribute based on the export scheme.
-     */
-    private function getAttributesCategory($pages, $key)
-    {
-        $ordernumber = $this->getOrdernumber($pages, $key);
-
-        $attribute = str_replace('_', ' ', $ordernumber);
-        $attribute = str_replace(':', '_', $attribute);
-        return (array($attribute));
+        return array_values($ids);
     }
 
     /**
@@ -225,8 +98,150 @@ class DokuwikiXMLExport
      */
     private function splitConfigToArray($config)
     {
-        $array = explode(',', $config);
-        $trimmedArray = array_map('trim', $array);
-        return $trimmedArray;
+        return preg_split('/\s*,\s*/', $config);
+    }
+
+    /**
+     * Generate the entire XML Export based on the DokuWiki metadata.
+     *
+     * @param $start integer Determines the first item (offset) to be exported.
+     * @param $count integer Determines the interval size / number of items to be exported.
+     * @return string Returns the XML as string.
+     */
+    public function generateXMLExport($start, $count)
+    {
+        $exporter = Exporter::create(Exporter::TYPE_XML, $count);
+
+        $total = count($this->pages);
+        $count = min($total, $count); // The count can't be higher then the total number of pages.
+
+        // If count + start is higher then total, then something went totally wrong.
+        if (($count + $start) > $total) {
+            throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
+        }
+
+        $this->pages = array_slice($this->pages, $start, $count);
+
+        $items = array();
+        foreach ($this->pages as $key => $page) {
+            $item = $exporter->createItem($key);
+
+            $name = new Name();
+            $name->setValue($this->getName($page));
+            $item->setName($name);
+
+            $summary = new Summary();
+            $summary->setValue($this->getSummaryAndDescription($page));
+            $item->setSummary($summary);
+
+            $description = new Description();
+            $description->setValue($this->getSummaryAndDescription($page));
+            $item->setDescription($description);
+
+            $price = new Price();
+            $price->setValue(self::PRICE_PLACEHOLDER);
+            $item->setPrice($price);
+
+            $Url = new Url();
+            $Url->setValue($this->getUrl($page));
+            $item->setUrl($Url);
+
+            $dateAdded = new DateAdded();
+            $dateAdded->setDateValue($this->getDateAdded($page));
+            $item->setDateAdded($dateAdded);
+
+            $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
+
+            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
+            $item->addAttribute($attributeCategory);
+
+            $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
+            $item->addProperty($propertyDummy);
+
+            $items[] = $item;
+        }
+        return $exporter->serializeItems($items, $start, $total);
+    }
+
+    /**
+     * Gets the Name of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the Name/Title of the page.
+     */
+    private function getName($pageId)
+    {
+        $metadata = p_get_metadata($pageId);
+        return $metadata["title"];
+    }
+
+    /**
+     * Gets the Summary and Description of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the Summary and Description of the page.
+     */
+    private function getSummaryAndDescription($pageId)
+    {
+        $metadata = p_get_metadata($pageId);
+        return $metadata["description"]["abstract"];
+    }
+
+    /**
+     * Gets the Url of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the Url of the page.
+     */
+    private function getUrl($pageId)
+    {
+        $url = wl($pageId, '', true);
+        return $url;
+    }
+
+    /**
+     * Gets the DateTime of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return DateTime Returns the Date formatted in ATOM DateTime of the page.
+     */
+    private function getDateAdded($pageId)
+    {
+        $metadata = p_get_metadata($pageId);
+        $date = new DateTime();
+        $date->setTimestamp($metadata["date"]["created"]);
+        return $date;
+    }
+
+    /**
+     * Returns the id of a given page.
+     * Note: This function is trivial, but is used for legibility reasons.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the pageId.
+     */
+    private function getPageId($pageId)
+    {
+        return $pageId;
+    }
+
+    /**
+     * Gets the Category Attribute of the current page.
+     *
+     * Formats DokuWiki IDs to categories.
+     *
+     * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
+     *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return array Returns the category attribute based on the export scheme.
+     */
+    private function getAttributesCategory($pageId)
+    {
+        $ordernumber = $this->getPageId($pageId);
+
+        $attribute = str_replace('_', ' ', $ordernumber);
+        $attribute = str_replace(':', '_', $attribute);
+        return (array($attribute));
     }
 }
