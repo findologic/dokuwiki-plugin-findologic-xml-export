@@ -79,15 +79,15 @@ class DokuwikiXMLExport
         $indexer = new Doku_Indexer();
         $pagesAndDeletedPages = $indexer->getPages();
 
-        $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
-
-        foreach ($pagesAndDeletedPages as $page) {
-            if (p_get_metadata($page)['description']) { // Only get pages with content
-                if (!in_array($page, $excludedPages)) { // Exclude pages from config
-                    $ids[] = $page;
-                }
+        // Get all pages that do have a description
+        $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
+            if (p_get_metadata($page)['description']) {
+                return true;
             }
-        }
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
+        $ids = array_values(array_diff($pagesAndDeletedPages, $excludedPages)); // Exclude excludedPages from all pages and sort them
 
         return $ids;
     }
@@ -100,17 +100,15 @@ class DokuwikiXMLExport
      */
     private function splitConfigToArray($config)
     {
-        $array = explode(',', $config);
-        $trimmedArray = array_map('trim', $array);
-        return $trimmedArray;
+        return preg_split('(\s*,\s*)', $config);
     }
 
     /**
-     * Generate the entire XML Export based on the Dokuwiki metadata.
+     * Generate the entire XML Export based on the DokuWiki metadata.
      *
      * @param $start integer Determines the first item (offset) to be exported.
      * @param $count integer Determines the interval size / number of items to be exported.
-     * @return string Returns the XML.
+     * @return string Returns the XML as string.
      */
     public function generateXMLExport($start, $count)
     {
@@ -124,20 +122,22 @@ class DokuwikiXMLExport
             throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
         }
 
+        $this->pages = array_slice($this->pages, $start, $count);
+
         $items = array();
-        for ($i = $start; $i < $start + $count; $i++) {
-            $item = $exporter->createItem($i);
+        foreach ($this->pages as $key => $page) {
+            $item = $exporter->createItem($key);
 
             $name = new Name();
-            $name->setValue($this->getName($this->pages[$i]));
+            $name->setValue($this->getName($page));
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription($this->pages[$i]));
+            $summary->setValue($this->getSummaryAndDescription($page));
             $item->setSummary($summary);
 
             $description = new Description();
-            $description->setValue($this->getSummaryAndDescription($this->pages[$i]));
+            $description->setValue($this->getSummaryAndDescription($page));
             $item->setDescription($description);
 
             $price = new Price();
@@ -145,21 +145,22 @@ class DokuwikiXMLExport
             $item->setPrice($price);
 
             $Url = new Url();
-            $Url->setValue($this->getUrl($this->pages[$i]));
+            $Url->setValue($this->getUrl($page));
             $item->setUrl($Url);
 
             $dateAdded = new DateAdded();
-            $dateAdded->setDateValue($this->getDateAdded($this->pages[$i]));
+            $dateAdded->setDateValue($this->getDateAdded($page));
             $item->setDateAdded($dateAdded);
 
-            $item->addOrdernumber(new Ordernumber($this->getPageId($this->pages[$i])));
-            $items[] = $item;
+            $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
 
-            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($this->pages[$i]));
+            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
             $item->addAttribute($attributeCategory);
 
             $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
             $item->addProperty($propertyDummy);
+
+            $items[] = $item;
         }
         return $exporter->serializeItems($items, $start, $total);
     }
