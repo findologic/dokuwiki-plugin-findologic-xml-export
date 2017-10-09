@@ -38,6 +38,11 @@ class DokuwikiXMLExport
     const CATEGORY_KEY = 'cat';
 
     /**
+     * Delimiter for category depth.
+     */
+    const CATEGORY_DELIMITER = '_';
+
+    /**
      * This value is the key for a dummy property.
      * Hotfix workaround for a bug @ FINDOLOGIC
      */
@@ -238,10 +243,9 @@ class DokuwikiXMLExport
      */
     private function getAttributesCategory($pageId)
     {
-        $ordernumber = $this->getPageId($pageId);
-
-        $attribute = str_replace('_', ' ', $ordernumber);
-        $attribute = str_replace(':', '_', $attribute);
+        $attribute = str_replace(self::CATEGORY_DELIMITER, ' ', $pageId); // '_' -> ' '
+        $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // ':' -> '_'
+        $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize
         return (array($attribute));
     }
 }

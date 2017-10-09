@@ -107,7 +107,7 @@ class export_response_test extends DokuWikiTest
         $expectedPropertyKey = 'dummy';
         $expectedPropertyValue = 'dummy';
         $expectedAttributeKey = 'cat';
-        $expectedAttributeValue = 'test123_test123_test123';
+        $expectedAttributeValue = 'Test123_Test123_Test123';
         // Format DateTime because the creation date is not known. It can vary.
         $pageMetadata = p_get_metadata($pageId);
         $pageCreated = new DateTime();
@@ -149,9 +149,9 @@ class export_response_test extends DokuWikiTest
     public function parameterProviderForNamespaceDepthTesting()
     {
         return [
-            'one' => ['home', 'home'],
-            'two' => ['home:home', 'home_home'],
-            'three' => ['home:home:home', 'home_home_home']
+            'one' => ['home', 'Home'],
+            'two' => ['home:home', 'Home_Home'],
+            'three' => ['home:home:home', 'Home_Home_Home']
         ];
     }
 
