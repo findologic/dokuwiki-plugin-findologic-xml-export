@@ -151,7 +151,9 @@ class export_response_test extends DokuWikiTest
         return [
             'one' => ['home', 'Home'],
             'two' => ['home:home', 'Home_Home'],
-            'three' => ['home:home:home', 'Home_Home_Home']
+            'three' => ['home:home:home', 'Home_Home_Home'],
+            'ten' => ['one:two:three:four:five:six:seven:eight:nine:ten', 'One_Two_Three_Four_Five_Six_Seven_Eight_Nine_Ten'],
+            'underscore and space' => ['demo_page:deeeemooo:test', 'Demo page_Deeeemooo_Test']
         ];
     }
 
