@@ -136,11 +136,11 @@ class DokuwikiXMLExport
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription($page));
+            $summary->setValue($this->getSummary($page));
             $item->setSummary($summary);
 
             $description = new Description();
-            $description->setValue($this->getSummaryAndDescription($page));
+            $description->setValue($this->getDescription($page));
             $item->setDescription($description);
 
             $price = new Price();
@@ -181,15 +181,26 @@ class DokuwikiXMLExport
     }
 
     /**
-     * Gets the Summary and Description of the current page.
+     * Gets the Summary of the current page.
      *
      * @param $pageId string Id of the DokuWiki page.
-     * @return string Returns the Summary and Description of the page.
+     * @return string Returns the Summary of the page.
      */
-    private function getSummaryAndDescription($pageId)
+    private function getSummary($pageId)
     {
         $metadata = p_get_metadata($pageId);
         return $metadata["description"]["abstract"];
+    }
+
+    /**
+     * Gets the Description of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the Description of the page.
+     */
+    private function getDescription($pageId)
+    {
+        return rawWiki($pageId);
     }
 
     /**

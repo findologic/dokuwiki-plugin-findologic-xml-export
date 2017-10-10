@@ -165,4 +165,39 @@ class export_response_test extends DokuWikiTest
         $name = (string)$names[0];
         $this->assertEmpty($name, 'Expected name in XML should be empty when page has no title.');
     }
+
+    public function test_element_description_is_entire_page_data()
+    {
+        // Generate much text for DokuWiki page
+        $muchContent = '';
+        for ($i=0; $i <= 500; $i++){
+            $muchContent = $muchContent . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        Helper::savePages(array('bigpage:muchcontent'), $muchContent);
+        $xml = Helper::getXML();
+        $descriptions = $xml->xpath('/findologic/items/item/descriptions/description');
+        $description = (string)$descriptions[0];
+        $this->assertEquals($muchContent, $description, 'Expected description in XML should be equal to the *entire* page content.');
+    }
+
+    public function test_element_summary_is_only_a_part_of_page_data()
+    {
+        $pageId = 'bigpage:muchcontent';
+        $muchContent = '';
+        for ($i=0; $i <= 500; $i++){
+            $muchContent = $muchContent . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        Helper::savePages(array($pageId), $muchContent);
+        $xml = Helper::getXML();
+        $summaries = $xml->xpath('/findologic/items/item/summaries/summary');
+        $summary = (string)$summaries[0];
+
+        $metadata = p_get_metadata($pageId);
+        $expectedSummary = $metadata["description"]["abstract"];
+
+        // Make sure that metadata is correct
+        $this->assertEquals($expectedSummary, $summary, 'Expected summary in XML should be only a part of the page content.');
+        // Make sure that it is not the entire content
+        $this->assertNotEquals($muchContent, $summary, 'Expected summary in XML should be only a part of the page content.');
+    }
 }
