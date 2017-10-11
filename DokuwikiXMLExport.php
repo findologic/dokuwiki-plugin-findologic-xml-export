@@ -38,6 +38,11 @@ class DokuwikiXMLExport
     const CATEGORY_KEY = 'cat';
 
     /**
+     * Delimiter for category depth.
+     */
+    const CATEGORY_DELIMITER = '_';
+
+    /**
      * This value is the key for a dummy property.
      * Hotfix workaround for a bug @ FINDOLOGIC
      */
@@ -131,11 +136,11 @@ class DokuwikiXMLExport
             $item->setName($name);
 
             $summary = new Summary();
-            $summary->setValue($this->getSummaryAndDescription($page));
+            $summary->setValue($this->getSummary($page));
             $item->setSummary($summary);
 
             $description = new Description();
-            $description->setValue($this->getSummaryAndDescription($page));
+            $description->setValue($this->getDescription($page));
             $item->setDescription($description);
 
             $price = new Price();
@@ -176,15 +181,26 @@ class DokuwikiXMLExport
     }
 
     /**
-     * Gets the Summary and Description of the current page.
+     * Gets the Summary of the current page.
      *
      * @param $pageId string Id of the DokuWiki page.
-     * @return string Returns the Summary and Description of the page.
+     * @return string Returns the Summary of the page.
      */
-    private function getSummaryAndDescription($pageId)
+    private function getSummary($pageId)
     {
         $metadata = p_get_metadata($pageId);
         return $metadata["description"]["abstract"];
+    }
+
+    /**
+     * Gets the Description of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return string Returns the Description of the page.
+     */
+    private function getDescription($pageId)
+    {
+        return rawWiki($pageId);
     }
 
     /**
@@ -228,20 +244,22 @@ class DokuwikiXMLExport
     /**
      * Gets the Category Attribute of the current page.
      *
-     * Formats DokuWiki IDs to categories.
+     * Formats DokuWiki IDs to categories (FINDOLOGIC scheme).
      *
-     * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
-     *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
+     * Examples:
+     *
+     * "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms" -> "Customer account_Synonyms"
+     * "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
+     * "wiki:syntax" -> "wiki:syntax" -> "wiki_syntax" -> "Wiki_Syntax"
      *
      * @param $pageId string Id of the DokuWiki page.
      * @return array Returns the category attribute based on the export scheme.
      */
     private function getAttributesCategory($pageId)
     {
-        $ordernumber = $this->getPageId($pageId);
-
-        $attribute = str_replace('_', ' ', $ordernumber);
-        $attribute = str_replace(':', '_', $attribute);
+        $attribute = str_replace(self::CATEGORY_DELIMITER, ' ', $pageId); // Replace underscores with spaces
+        $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // Replace colons with underscores
+        $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize each category
         return (array($attribute));
     }
 }

@@ -107,7 +107,7 @@ class export_response_test extends DokuWikiTest
         $expectedPropertyKey = 'dummy';
         $expectedPropertyValue = 'dummy';
         $expectedAttributeKey = 'cat';
-        $expectedAttributeValue = 'test123_test123_test123';
+        $expectedAttributeValue = 'Test123_Test123_Test123';
         // Format DateTime because the creation date is not known. It can vary.
         $pageMetadata = p_get_metadata($pageId);
         $pageCreated = new DateTime();
@@ -149,9 +149,11 @@ class export_response_test extends DokuWikiTest
     public function parameterProviderForNamespaceDepthTesting()
     {
         return [
-            'one' => ['home', 'home'],
-            'two' => ['home:home', 'home_home'],
-            'three' => ['home:home:home', 'home_home_home']
+            'one' => ['home', 'Home'],
+            'two' => ['home:home', 'Home_Home'],
+            'three' => ['home:home:home', 'Home_Home_Home'],
+            'ten' => ['one:two:three:four:five:six:seven:eight:nine:ten', 'One_Two_Three_Four_Five_Six_Seven_Eight_Nine_Ten'],
+            'underscore and space' => ['demo_page:deeeemooo:test', 'Demo page_Deeeemooo_Test']
         ];
     }
 
@@ -162,5 +164,37 @@ class export_response_test extends DokuWikiTest
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
         $this->assertEmpty($name, 'Expected name in XML should be empty when page has no title.');
+    }
+
+    public function test_element_description_is_entire_page_data()
+    {
+        // Generate much text for DokuWiki page
+        $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
+
+        Helper::savePages(array('bigpage:muchcontent'), $muchContent);
+        $xml = Helper::getXML();
+        $descriptions = $xml->xpath('/findologic/items/item/descriptions/description');
+        $description = (string)$descriptions[0];
+        $this->assertEquals($muchContent, $description, 'Expected description in XML should be equal to the *entire* page content.');
+    }
+
+    public function test_element_summary_is_only_a_part_of_page_data()
+    {
+        // Generate much text for DokuWiki page
+        $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
+
+        $pageId = 'bigpage:muchcontent';
+        Helper::savePages(array($pageId), $muchContent);
+        $xml = Helper::getXML();
+        $summaries = $xml->xpath('/findologic/items/item/summaries/summary');
+        $summary = (string)$summaries[0];
+
+        $metadata = p_get_metadata($pageId);
+        $expectedSummary = $metadata["description"]["abstract"];
+
+        // Make sure that metadata is correct
+        $this->assertEquals($expectedSummary, $summary, 'Expected summary in XML should be only a part of the page content.');
+        // Make sure that it is not the entire content
+        $this->assertNotEquals($muchContent, $summary, 'Expected summary in XML should be only a part of the page content.');
     }
 }
