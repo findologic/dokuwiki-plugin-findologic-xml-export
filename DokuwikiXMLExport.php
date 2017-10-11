@@ -244,19 +244,22 @@ class DokuwikiXMLExport
     /**
      * Gets the Category Attribute of the current page.
      *
-     * Formats DokuWiki IDs to categories.
+     * Formats DokuWiki IDs to categories (FINDOLOGIC scheme).
      *
-     * Examples: "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms"
-     *           "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport"
+     * Examples:
+     *
+     * "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms" -> "Customer account_Synonyms"
+     * "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
+     * "wiki:syntax" -> "wiki:syntax" -> "wiki_syntax" -> "Wiki_Syntax"
      *
      * @param $pageId string Id of the DokuWiki page.
      * @return array Returns the category attribute based on the export scheme.
      */
     private function getAttributesCategory($pageId)
     {
-        $attribute = str_replace(self::CATEGORY_DELIMITER, ' ', $pageId); // '_' -> ' '
-        $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // ':' -> '_'
-        $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize
+        $attribute = str_replace(self::CATEGORY_DELIMITER, ' ', $pageId); // Replace underscores with spaces
+        $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // Replace colons with underscores
+        $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize each category
         return (array($attribute));
     }
 }

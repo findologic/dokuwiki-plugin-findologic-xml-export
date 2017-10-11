@@ -169,10 +169,8 @@ class export_response_test extends DokuWikiTest
     public function test_element_description_is_entire_page_data()
     {
         // Generate much text for DokuWiki page
-        $muchContent = '';
-        for ($i=0; $i <= 500; $i++){
-            $muchContent = $muchContent . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        }
+        $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
+
         Helper::savePages(array('bigpage:muchcontent'), $muchContent);
         $xml = Helper::getXML();
         $descriptions = $xml->xpath('/findologic/items/item/descriptions/description');
@@ -182,11 +180,10 @@ class export_response_test extends DokuWikiTest
 
     public function test_element_summary_is_only_a_part_of_page_data()
     {
+        // Generate much text for DokuWiki page
+        $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
+
         $pageId = 'bigpage:muchcontent';
-        $muchContent = '';
-        for ($i=0; $i <= 500; $i++){
-            $muchContent = $muchContent . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        }
         Helper::savePages(array($pageId), $muchContent);
         $xml = Helper::getXML();
         $summaries = $xml->xpath('/findologic/items/item/summaries/summary');
