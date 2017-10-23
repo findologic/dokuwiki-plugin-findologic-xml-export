@@ -18,6 +18,6 @@ $lang['url'] = 'URL';
 $lang['lasteditby'] = 'Last edit by';
 $lang['lastedited'] = 'Last edited';
 $lang['edit'] = 'Edit';
-$lang['thereare'] = 'There is/are ';
+$lang['thereAre'] = 'There is/are ';
 $lang['morePages'] = ' more page(s) that do not have a title.';
 $lang['allPagesHaveATitle'] = 'All pages do have a title set! Nothing needs to be changed.';

@@ -11,7 +11,8 @@ if (!defined('DOKU_INC')) {
     die('Must be run within Dokuwiki!');
 }
 
-require_once (__DIR__ . '/vendor/autoload.php');
+require_once(__DIR__ . '/vendor/autoload.php');
+require_once(__DIR__ . '/PageGetter.php');
 
 class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
 {
@@ -42,6 +43,8 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
      */
     const TEMPLATE_DIR = __DIR__ . '/tpl';
 
+    const TEMPLATE_FILE = 'admin.tpl';
+
     public function getMenuSort()
     {
         return self::MENU_SORT;
@@ -49,7 +52,7 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
 
     /**
      * Admins or higher can access this plugin.
-     * It only has page data that is accessible for admins.
+     *
      * You do not need to be a superuser to access this plugin.
      */
     public function forAdminOnly()
@@ -62,51 +65,35 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
      */
     public function html()
     {
-        $pagesWithoutTitle = $this->getPagesWithoutTitle();
-        $vars = $this->getVariablesForTemplate($pagesWithoutTitle);
-        $translations = $this->getTranslations();
-
-        $variables = array_merge($vars, $translations);
+        global $conf;
+        $pagesWithoutTitle = PageGetter::getPagesWithoutTitle();
+        $variables = $this->getVariablesForTemplate($pagesWithoutTitle);
 
         $loader = new Twig_Loader_Filesystem(self::TEMPLATE_DIR);
         $twig = new Twig_Environment($loader);
 
-        echo $twig->render('admin.tpl', $variables);
+        $initLanguage = $this->getLang('');
+
+        $twig->addGlobal('languageText', $this->lang);
+
+        echo $twig->render(self::TEMPLATE_FILE, $variables);
     }
 
-    /**
-     * @return array all pages that do not have a title set.
-     */
-    private function getPagesWithoutTitle() {
-        $indexer = new Doku_Indexer();
-        $allPages = $indexer->getPages();
-
-        foreach ($allPages as $page) {
-            if (p_get_metadata($page)['description']) { // Only get pages with content
-                if (!p_get_metadata($page)['title']) { // Check for pages without a title
-                    // Set variables that are used for the template
-                    $pagesWithoutTitle[] = $page;
-                }
-            }
-        }
-
-        return $pagesWithoutTitle;
-    }
 
     /**
      * @param $pagesWithoutTitle array of pages without title.
      * @return array variables for twig template.
      */
-    private function getVariablesForTemplate($pagesWithoutTitle) {
+    private function getVariablesForTemplate($pagesWithoutTitle)
+    {
 
         // Generate variables based on page data
         foreach ($pagesWithoutTitle as $key => $page) {
             $metadata[] = p_get_metadata($page);
             $url[] = wl($page, '', true);
 
-            $timeModified = new DateTime('@' . $metadata[$key]['last_change']['date']);
-            $timeModified->add(new DateInterval('PT2H'));
-            $modifiedTimeStamp[] = $timeModified->format(self::TIME_FORMAT) . ' ' . self::TIMEZONE; // Last edit
+            // Make new DateTime Object and Format it
+            $modifiedTimeStamp[] = $this->formatTime($metadata[$key]['last_change']['date']);
         }
 
         // Put variables to array
@@ -116,32 +103,21 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
             'urls' => $url,
             'timestamp' => $modifiedTimeStamp,
             'imageUrl' => self::EDIT_IMAGE_URL,
-            );
+        );
 
         return $variables;
     }
 
-    private function getTranslations() {
+    /**
+     * @param $unixTime int from now.
+     * @return string Time as Formatted string with timezone.
+     */
 
-        // Get translations from DokuWiki
-        $translations = array(
-            'menu' => $this->getLang('menu'),
-            'youCan' => $this->getLang('youCan'),
-            'callExport' => $this->getLang('callExport'),
-            'noTitleWarning' => $this->getLang("noTitleWarning"),
-            'noTitleWarningMore' => $this->getLang("noTitleWarningMoreInformation"),
-            'pagesWithoutTitleText' => $this->getLang("pagesWithoutTitle"),
-            'namespace' => $this->getLang("namespace"),
-            'url' => $this->getLang("url"),
-            'lasteditby' => $this->getLang("lasteditby"),
-            'lastedited' => $this->getLang("lastedited"),
-            'edit' => $this->getLang("edit"),
-            'thereAre' => $this->getLang("thereare"),
-            'morePagesText' => $this->getLang("morePages"),
-            'allPagesHaveATitle' => $this->getLang("allPagesHaveATitle")
-        );
-
-        return $translations;
+    private function formatTime($unixTime) {
+        $time = new DateTime('@' . $unixTime);
+        $timeInCest = $time->add(new DateInterval('PT2H'));
+        $timeFormatted = $timeInCest->format(self::TIME_FORMAT) . ' ' . self::TIMEZONE; // Last edit
+        return $timeFormatted;
     }
 
     /**
