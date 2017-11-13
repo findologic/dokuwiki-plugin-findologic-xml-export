@@ -39,7 +39,7 @@ class Helper
      * @param array $conf Optional configuration
      * @return SimpleXMLElement Export generated XML
      */
-    static function getXML($start = 0, $count = 20, $conf = array())
+    static function getXML($start = 0, $count = 20, $conf = [])
     {
         $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
         return new SimpleXMLElement($dokuwikiXmlExport->generateXMLExport($start, $count));

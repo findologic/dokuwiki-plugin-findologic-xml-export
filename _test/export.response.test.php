@@ -24,7 +24,7 @@ class export_response_test extends DokuWikiTest
     /**
      * @dataProvider parameterProviderForXMLResponse
      */
-    public function test_parameters_start_count_and_total_are_valid_for_($ids = array(), $expectedCount, $expectedTotal)
+    public function test_parameters_start_count_and_total_are_valid_for_($ids = [], $expectedCount, $expectedTotal)
     {
         // If there are no pages, no pages can be saved.
         Helper::savePages($ids);
@@ -54,7 +54,7 @@ class export_response_test extends DokuWikiTest
 
     public function test_parameters_start_count_and_total_are_valid_when_calling_export_with_count_greater_than_total()
     {
-        $pageId = array();
+        $pageId = [];
         for ($i = 1; $i <= 9; $i++) {
             $pageId[$i] = 'demopage0' . $i;
         }
@@ -76,10 +76,10 @@ class export_response_test extends DokuWikiTest
     public function test_all_elements_are_set_according_to_page_data()
     {
         $pageId = 'test123:test123:test123';
-        Helper::savePages(array($pageId));
+        Helper::savePages([$pageId]);
         // Set title manually because you can't save it with the saveWikiText function.
         $pageTitle = 'test123';
-        $pageMetaTitle = array('title' => $pageTitle);
+        $pageMetaTitle = ['title' => $pageTitle];
         p_set_metadata($pageId, $pageMetaTitle);
         $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
@@ -130,7 +130,7 @@ class export_response_test extends DokuWikiTest
      */
     public function test_elements_ordernumber_and_category_are_set_according_to_page_data_when_namespace_depth_is_($id, $expectedAttributeValue)
     {
-        Helper::savePages(array($id));
+        Helper::savePages([$id]);
         $xml = Helper::getXML();
         $ordernumbers = $xml->xpath('/findologic/items/item/allOrdernumbers/ordernumbers/ordernumber');
         $ordernumber = $ordernumbers[0];
@@ -159,7 +159,7 @@ class export_response_test extends DokuWikiTest
 
     public function test_element_name_is_empty_when_page_has_no_title()
     {
-        Helper::savePages(array('test321:test321:test321'));
+        Helper::savePages(['test321:test321:test321']);
         $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
@@ -171,7 +171,7 @@ class export_response_test extends DokuWikiTest
         // Generate much text for DokuWiki page
         $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
 
-        Helper::savePages(array('bigpage:muchcontent'), $muchContent);
+        Helper::savePages(['bigpage:muchcontent'], $muchContent);
         $xml = Helper::getXML();
         $descriptions = $xml->xpath('/findologic/items/item/descriptions/description');
         $description = (string)$descriptions[0];
@@ -184,7 +184,7 @@ class export_response_test extends DokuWikiTest
         $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
 
         $pageId = 'bigpage:muchcontent';
-        Helper::savePages(array($pageId), $muchContent);
+        Helper::savePages([$pageId], $muchContent);
         $xml = Helper::getXML();
         $summaries = $xml->xpath('/findologic/items/item/summaries/summary');
         $summary = (string)$summaries[0];

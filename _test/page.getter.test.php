@@ -21,7 +21,7 @@ class page_getter_test extends DokuWikiTest
         $pageHasNoTitle = 'ihavenotitle';
         $allPages = [$pageHasNoTitle, $pageHasTitle];
         Helper::savePages($allPages);
-        $pageMetaTitle = array('title' => $pageHasTitle);
+        $pageMetaTitle = ['title' => $pageHasTitle];
         p_set_metadata($pageHasTitle, $pageMetaTitle);
 
         // Get all pages that do have no title set

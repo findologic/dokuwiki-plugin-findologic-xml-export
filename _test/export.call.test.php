@@ -33,7 +33,7 @@ class export_call_test extends DokuWikiTest
     public function test_exception_is_thrown_when_calling_export_with_wrong_params($start, $count, $message)
     {
         try {
-            Helper::savePages(array('demopage1'));
+            Helper::savePages(['demopage1']);
             $xml = Helper::getXML($start, $count);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
