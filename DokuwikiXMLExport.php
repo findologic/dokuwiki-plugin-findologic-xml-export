@@ -129,7 +129,7 @@ class DokuwikiXMLExport
 
         $items = array();
         foreach ($this->pages as $key => $page) {
-            $item = $exporter->createItem($key);
+            $item = $exporter->createItem($start + $key);
 
             $name = new Name();
             $name->setValue($this->getName($page));
