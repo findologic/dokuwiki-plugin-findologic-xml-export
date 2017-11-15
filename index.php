@@ -1,9 +1,10 @@
 <?php
 
 /**
- * This is the Dokuwiki export made by Dominik Brader for FINDOLOGIC.
+ * This is the Dokuwiki export for FINDOLOGIC.
  * If any bugs occur, please submit a new issue
  * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
+ * @author Dominik Brader <support@findologic.com>
  */
 
 if(!defined('DOKU_INC')) {

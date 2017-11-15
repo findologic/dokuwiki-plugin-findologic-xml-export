@@ -197,4 +197,34 @@ class export_response_test extends DokuWikiTest
         // Make sure that it is not the entire content
         $this->assertNotEquals($muchContent, $summary, 'Expected summary in XML should be only a part of the page content.');
     }
+
+    /**
+     * Checks that each article has an unique ID even for multiple calls.
+     *
+     * Example:
+     *
+     * When making the calls
+     * * start=0&count=1
+     * * start=1&count=1
+     *
+     * the ID of the first item should be unique for each article.
+     *
+     * This means the result for those two calls would be
+     * * id=0
+     * * id=1
+     */
+    public function test_element_item_id_is_unique_for_multible_calls() {
+        Helper::savePages(['page01', 'page02']);
+        $firstXmlCall = Helper::getXML(0, 1);
+        $secondXmlCall = Helper::getXML(1, 1);
+
+        $idFirstXmlCall = implode('', ($firstXmlCall->xpath('/findologic/items/item/@id')));
+        $idSecondXmlCall = implode('', ($secondXmlCall->xpath('/findologic/items/item/@id')));
+
+        $expectedIdFirstXmlCall = 0;
+        $expectedIdSecondXmlCall = 1;
+
+        $this->assertEquals($expectedIdFirstXmlCall, $idFirstXmlCall, 'The first call of the first item ID in the XML should always be zero when using two calls for requesting different articles.');
+        $this->assertEquals($expectedIdSecondXmlCall, $idSecondXmlCall, 'Expected item ID in XML should be unique when using two calls for requesting different articles.');
+    }
 }
