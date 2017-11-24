@@ -9,27 +9,36 @@
 
 class PageGetter
 {
+
     /**
-     * @return array all pages that do not have a title set.
+     * Get all pages that do not have specified a title.
+     * Pages that do not have a description are deleted pages.
+     *
+     * @return array All pages that do not have a title set.
      */
     static function getPagesWithoutTitle()
     {
         $indexer = new Doku_Indexer();
         $allPages = $indexer->getPages();
 
-        foreach ($allPages as $page) {
-            if (p_get_metadata($page)['description']) { // Only get pages with content
-                if (!p_get_metadata($page)['title']) { // Check for pages without a title
-                    // Set variables that are used for the template
-                    $pagesWithoutTitle[] = $page;
-                }
-            }
+        // Get all pages that do have a description, because pages that don't, are deleted pages.
+        // And only get pages that do not have a title set.
+        $allPagesWithoutTitle = array_filter($allPages, function ($page, $k) {
+            return (p_get_metadata($page)['description'] !== '' && !p_get_metadata($page)['title']);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        // Amount of pages and edit button image url.
+        $pagesData['amount'] = count($allPagesWithoutTitle);
+
+        $sortedPages = array_values($allPagesWithoutTitle); // Sort pages so they start with array key [0]
+
+        foreach ($sortedPages as $key => $sortedPage) {
+            $dokuWikiPage = new DokuwikiPage($sortedPage);
+            $pagesData[$key] = get_object_vars($dokuWikiPage);
         }
-        if ($pagesWithoutTitle) {
-            return $pagesWithoutTitle;
-        }
-        else {
-            return [];
-        }
+
+        return $pagesData;
     }
+
+
 }

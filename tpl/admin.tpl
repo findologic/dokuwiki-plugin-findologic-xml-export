@@ -1,84 +1,77 @@
 {# findologicxmlexport/tpl/admin.tpl for findologicxmlexport plugin #}
-
-<div class="plugin-findologicxmlexport">
-    <h1>{{languageText['menu']}}</h1>
+{% set totalPages = var['amount'] %}
+<link rel="stylesheet" type="text/css" href="{{var['stylesheetUrl']}}">
+<div id="fl-plugin-findologicxmlexport">
+    <h1 id="fl-headline">{{languageText['menu']}}</h1>
     <p>
-        {{languageText['youCan']}}<a href="lib/plugins/findologicxmlexport">{{languageText['callExport']}}</a>.
+        {{languageText['youCan']}}<a id="fl-exportlink" href="{{var['exportUrl']}}">{{languageText['callExport']}}</a>.
     </p>
-    <fieldset style="margin-top: 5em;">
-        {% if pagesWithoutTitle %}
-        <div class="notify">
+    <fieldset>
+        {% if totalPages > 0 %}
+        <div id="fl-notify-warning" class="notify">
             {{languageText['noTitleWarning']}} <br/> {{languageText['noTitleWarningMoreInformation']}}
         </div>
         {% else %}
-        <div class="success">
+        <div id="fl-success" class="success">
             {{languageText['allPagesHaveATitle']}}
         </div>
         {% endif %}
-        <legend>{{languageText['pagesWithoutTitle']}} ({{pagesWithoutTitle|length}})</legend>
-        <div class="table">
-            {% if pagesWithoutTitle %}
-            <table class="table table-condensed">
-                <tbody>
-                <tr>
-                    <th>
+        <legend id="fl-legend">{{languageText['pagesWithoutTitle']}} ({{totalPages}})</legend>
+        <div id="div-table" class="table">
+            {% if totalPages > 0 %}
+            <table id="table" class="table table-condensed">
+                <tbody id="table-body">
+                <tr id="header-table-row">
+                    <th class="header-page-id">
                         {{languageText['namespace']}}
                     </th>
-                    <th>
+                    <th class="header-page-url">
                         {{languageText['url']}}
                     </th>
-                    <th>
+                    <th class="header-page-author">
                         {{languageText['lasteditby']}}
                     </th>
-                    <th>
+                    <th class="header-page-last-edited">
                         {{languageText['lastedited']}}
                     </th>
-                    <th>
+                    <th class="header-page-edit-link">
                         {{languageText['edit']}}
                     </th>
                 </tr>
-                {% set amount = 0 %}
-                {% set morePages = 0 %}
-                {% for pageWithoutTitle in pagesWithoutTitle %}
-                {% if amount < 5 %}
+                {% for page in page..4 %} {# 5 pages are shown #}
+                {% if page < 5 %}
                 <tr>
-                    <td>
+                    <td class="page-id">
                         {# namespace #}
-                        {{pageWithoutTitle}}
+                        {{var[page]['id']}}
                     </td>
-                    <td>
+                    <td class="page-url">
                         {# url #}
-                        <a target="_blank" href="{{urls[amount]}}">{{urls[amount]}}</a>
+                        <a target="_blank" href="{{var[page]['url']}}">{{var[page]['url']}}</a>
                     </td>
-                    <td>
+                    <td class="page-author">
                         {# lasteditby #}
-                        {{metadata[amount]['last_change']['user']}}
+                        {{var[page]['author']}}
                     </td>
-                    <td>
+                    <td class="page-last-edited">
                         {# lastedited #}
-                        {{timestamp[amount]}}
+                        {{var[page]['lastEdit']}}
                     </td>
-                    <td>
+                    <td class="page-edit-link">
                         {# edit #}
-                        <a target="_blank" class='editpage' style="color: transparent;" href="{{urls[amount]}}&do=edit">
-                            <div class='editpage'
-                                 style='background-image:url("{{imageUrl}}");background-repeat: no-repeat;background-size:25px;width: 25px;height: 25px;color: transparent; font-size: 20px;'>
-                            </div>
+                        <a target="_blank" class='page-edit-link-a' href="{{var[page]['url']}}&do=edit">
+                            <div class='page-edit-link-div' style='background-image:url("{{var['editImageUrl']}}");'></div>
                         </a>
                     </td>
-                    {% set amount = amount + 1 %}
-                    {% else %}
-                    {% set morePages = morePages + 1 %}
-                    {% endif %}
-                    {% endfor %}
                 </tr>
+                {% elseif page == 4 %}
+                <div id="fl-notify-morepages" class="notify">
+                    {{languageText['thereAre']}} {{totalPages-5}} {{languageText['morePages']}}
+                </div>
+                {% endif %}
+                {% endfor %}
                 </tbody>
             </table>
-            {% endif %}
-            {% if morePages > 0 %}
-            <div class="notify">
-                {{languageText['thereAre']}} {{morePages}} {{languageText['morePages']}}
-            </div>
             {% endif %}
         </div>
     </fieldset>

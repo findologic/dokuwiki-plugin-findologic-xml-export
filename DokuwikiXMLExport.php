@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This is the Dokuwiki export for FINDOLOGIC.
  * If any bugs occur, please submit a new issue
@@ -12,6 +11,7 @@ if (!defined('DOKU_INC')) {
 }
 
 require_once(DOKU_INC . 'inc/init.php');
+require_once(__DIR__ . '/PageGetter.php');
 require(__DIR__ . '/vendor/autoload.php');
 
 use FINDOLOGIC\Export\Exporter;
