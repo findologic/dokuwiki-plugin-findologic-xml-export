@@ -1,10 +1,9 @@
 {# findologicxmlexport/tpl/admin.tpl for findologicxmlexport plugin #}
-{% set totalPages = var['amount'] %}
-<link rel="stylesheet" type="text/css" href="{{var['stylesheetUrl']}}">
+<link rel="stylesheet" type="text/css" href="{{stylesheetUrl}}">
 <div id="fl-plugin-findologicxmlexport">
     <h1 id="fl-headline">{{languageText['menu']}}</h1>
     <p>
-        {{languageText['youCan']}}<a id="fl-exportlink" href="{{var['exportUrl']}}">{{languageText['callExport']}}</a>.
+        {{languageText['youCan']}}<a id="fl-exportlink" href="{{exportUrl}}">{{languageText['callExport']}}</a>.
     </p>
     <fieldset>
         {% if totalPages > 0 %}
@@ -38,38 +37,39 @@
                         {{languageText['edit']}}
                     </th>
                 </tr>
-                {% for page in page..4 %} {# 5 pages are shown #}
-                {% if page < 5 %}
+                {% for key, page in page..maxPages-1 %}
+                {% if key < totalPages %}
                 <tr>
                     <td class="page-id">
                         {# namespace #}
-                        {{var[page]['id']}}
+                        {{pages[page].id}}
                     </td>
                     <td class="page-url">
                         {# url #}
-                        <a target="_blank" href="{{var[page]['url']}}">{{var[page]['url']}}</a>
+                        <a target="_blank" href="{{pages[page].url}}">{{pages[page].url}}</a>
                     </td>
                     <td class="page-author">
                         {# lasteditby #}
-                        {{var[page]['author']}}
+                        {{pages[page].author}}
                     </td>
                     <td class="page-last-edited">
                         {# lastedited #}
-                        {{var[page]['lastEdit']}}
+                        {{pages[page].lastEdit}}
                     </td>
                     <td class="page-edit-link">
                         {# edit #}
-                        <a target="_blank" class='page-edit-link-a' href="{{var[page]['url']}}&do=edit">
-                            <div class='page-edit-link-div' style='background-image:url("{{var['editImageUrl']}}");'></div>
+                        <a target="_blank" class='page-edit-link-a' href="{{pages[page].url}}&do=edit">
+                            <div class='page-edit-link-div' style='background-image:url("{{editImageUrl}}");'></div>
                         </a>
                     </td>
                 </tr>
-                {% elseif page == 4 %}
-                <div id="fl-notify-morepages" class="notify">
-                    {{languageText['thereAre']}} {{totalPages-5}} {{languageText['morePages']}}
-                </div>
                 {% endif %}
                 {% endfor %}
+                {% if pagesSkipped > 0 %}
+                <div id="fl-notify-morepages" class="fl-notify notify">
+                    {{languageText['thereAre']}}{{pagesSkipped}}{{languageText['morePages']}}
+                </div>
+                {% endif %}
                 </tbody>
             </table>
             {% endif %}

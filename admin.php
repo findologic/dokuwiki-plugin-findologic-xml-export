@@ -18,13 +18,30 @@ require_once(__DIR__ . '/DokuwikiPage.php');
 class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
 {
 
-    /**
-     * SVG image URL for the edit button.
-     */
-    const EDIT_IMAGE_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/edit.svg';
+    // Names
+    const EDIT_IMAGE_URL_NAME = 'editImageUrl';
+    const PAGES_NAME = 'pages';
+    const EXPORT_URL_NAME = 'exportUrl';
+    const STYLESHEET_URL_NAME = 'stylesheetUrl';
+    const MAX_PAGES_NAME = 'maxPages';
+    const TOTAL_PAGES_NAME = 'totalPages';
+    const LANGUAGE_NAME = 'languageText';
+    const PAGES_SKIPPED_NAME = 'pagesSkipped';
 
+    // Values
+    const EDIT_IMAGE_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/edit.svg';
     const EXPORT_URL = DOKU_URL . 'lib/plugins/findologicxmlexport';
     const STYLESHEET_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/style.css';
+    /**
+     * Maximum amount of pages being displayed in the configuration.
+     */
+    const MAX_PAGES = 5;
+
+    /**
+     * * **true** => You do not to be superuser to access this plugin.
+     * * **false** => You do need to be superuser to access this plugin.
+     */
+    const ADMINS_ONLY = true;
 
     /**
      * Sort plugin in the DokuWiki admin interface.
@@ -43,12 +60,6 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
     const TEMPLATE_FILE = 'admin.tpl';
 
     /**
-     * Variable name for translations set in the DokuWiki.
-     * It is used for the template.
-     */
-    const LANGUAGE_VARIABLE_NAME = 'languageText';
-
-    /**
      * @return int sorting of the plugin in the plugin manager.
      */
     public function getMenuSort()
@@ -57,13 +68,15 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
     }
 
     /**
-     * Admins or higher can access this plugin.
+     * * **true** => You do not to be superuser to access this plugin.
+     * * **false** => You do need to be superuser to access this plugin.
      *
-     * You do not need to be a superuser to access this plugin.
+     * @return bool See method description.
+     *
      */
     public function forAdminOnly()
     {
-        return true;
+        return self::ADMINS_ONLY;
     }
 
     /**
@@ -71,61 +84,29 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
      */
     public function html()
     {
-        $pagesWithoutTitle = PageGetter::getPagesWithoutTitle();
+        // Needs to be called once to initialize $this->lang
+        // Else the $this->lang variable results in an empty array []
+        $this->getLang('');
 
-        $urls = [
-            'editImageUrl' => self::EDIT_IMAGE_URL,
-            'exportUrl' => self::EXPORT_URL,
-            'stylesheetUrl' => self::STYLESHEET_URL
+        $pagesWithoutTitle = [self::PAGES_NAME => PageGetter::getPagesWithoutTitle()];
+        $totalPages = count($pagesWithoutTitle[self::PAGES_NAME]);
+
+        $variables = [
+            self::EDIT_IMAGE_URL_NAME => self::EDIT_IMAGE_URL,
+            self::EXPORT_URL_NAME => self::EXPORT_URL,
+            self::STYLESHEET_URL_NAME => self::STYLESHEET_URL,
+            self::MAX_PAGES_NAME => self::MAX_PAGES,
+            self::TOTAL_PAGES_NAME => $totalPages,
+            self::LANGUAGE_NAME => $this->lang,
+            self::PAGES_SKIPPED_NAME => $totalPages - self::MAX_PAGES
         ];
 
-        $variablesForTemplate = ['var' => array_merge($pagesWithoutTitle, $urls)];
+        $variablesForTemplate = array_merge($pagesWithoutTitle, $variables);
 
         // Set up loader and environment for twig.
         $loader = new Twig_Loader_Filesystem(self::TEMPLATE_DIR);
         $twig = new Twig_Environment($loader);
 
-        $initLanguage = $this->getLang(''); // Loads the translations set in the plugin translation.
-
-        // Add globals because this is the only way to add variables without declaring them directly in the template.
-        $twig->addGlobal(self::LANGUAGE_VARIABLE_NAME, $this->lang);
-
         echo $twig->render(self::TEMPLATE_FILE, $variablesForTemplate);
-    }
-
-    /**
-     * Ignore;
-     * This method is not used, but required, or a warning will get thrown.
-     */
-    public function handle()
-    {
-    }
-
-    /**
-     * @param $pagesWithoutTitle array of pages without title.
-     * @return array variables for twig template.
-     */
-    private function getVariablesForTemplate($pagesWithoutTitle)
-    {
-
-        // Generate variables based on page data
-        foreach ($pagesWithoutTitle as $key => $page) {
-            $metadata[] = p_get_metadata($page);
-            $url[] = wl($page, '', true);
-
-            // Make new DateTime Object and Format it
-            $modifiedTimeStamp[] = $this->formatTime($metadata[$key]['last_change']['date']);
-        }
-
-        // Put variables to array
-        $variables = array(
-            'pagesWithoutTitle' => $pagesWithoutTitle,
-            'metadata' => $metadata,
-            'urls' => $url,
-            'timestamp' => $modifiedTimeStamp,
-            'imageUrl' => self::EDIT_IMAGE_URL
-        );
-
-        return $variables;
     }
 }

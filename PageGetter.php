@@ -27,18 +27,18 @@ class PageGetter
             return (p_get_metadata($page)['description'] !== '' && !p_get_metadata($page)['title']);
         }, ARRAY_FILTER_USE_BOTH);
 
-        // Amount of pages and edit button image url.
-        $pagesData['amount'] = count($allPagesWithoutTitle);
-
         $sortedPages = array_values($allPagesWithoutTitle); // Sort pages so they start with array key [0]
 
         foreach ($sortedPages as $key => $sortedPage) {
-            $dokuWikiPage = new DokuwikiPage($sortedPage);
-            $pagesData[$key] = get_object_vars($dokuWikiPage);
+            $pagesData[] = new DokuwikiPage($sortedPage);
         }
 
-        return $pagesData;
+        if ($pagesData) {
+            return $pagesData;
+        }
+        else {
+            return [];
+        }
     }
-
 
 }
