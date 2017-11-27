@@ -15,20 +15,33 @@ class DokuwikiPage
      */
     const TIME_FORMAT = '%d.%B %Y (%H:%M)';
 
+    /**
+     * @var string ID of the DokuWiki page.
+     */
     public $id;
+
+    /**
+     * @var string URL of the DokuWiki page (absolute).
+     */
     public $url;
+
+    /**
+     * @var string Author of the last change that was made to the DokuWiki page.
+     */
     public $author;
+
+    /**
+     * @var string Formatted timestamp of last edited timestamp.
+     */
     public $lastEdit;
+
+    /**
+     * @var array Entire metadata of the page.
+     */
     public $metadata;
 
     /**
-     * Gets DokuWiki page data.
-     *
-     * * **id** - ID.
-     * * **url** - URL of the page (absolute).
-     * * **author** - The author of the last change that was made (not the creator of the page!).
-     * * **lastEdit** - Formatted timestamp.
-     * * **metadata** - Entire metadata.
+     * Gets DokuWiki page data based on page ID.
      *
      * @param $page string page ID.
      */
