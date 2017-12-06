@@ -13,7 +13,7 @@ $lang['callExport'] = 'FINDOLOGIC XML Export manuell aufrufen';
 $lang['noTitleWarning'] = 'Diese Seiten scheinen keinen Titel zu haben.';
 $lang['noTitleWarningMoreInformation'] = 'Bitte stellen Sie sicher, dass jede Seite einen Titel gesetzt hat.';
 $lang['pagesWithoutTitle'] = 'Seiten ohne Titel';
-$lang['namespace'] = 'Namensraum';
+$lang['wikipage'] = 'Wikiseite';
 $lang['url'] = 'URL';
 $lang['lasteditby'] = 'Zuletzt editiert von';
 $lang['lastedited'] = 'Zuletzt editiert';
@@ -21,3 +21,5 @@ $lang['edit'] = 'Editieren';
 $lang['thereAre'] = 'Es gibt ';
 $lang['morePages'] = ' weitere Seite(n), die keinen Titel gesetzt hat/haben.';
 $lang['allPagesHaveATitle'] = 'Alle Seiten haben einen Titel gesetzt! Es muss nichts angepasst werden.';
+$lang['noTitleTooltip'] = 'Sollten Seiten keinen Titel gesetzt haben, kann man diese in der Suche nur über die Kategorien finden. Außerdem haben Seiten die keinen Titel haben auch in der Suchresultatsseite keinen gesetzten Namen. ';
+

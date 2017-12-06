@@ -43,7 +43,7 @@ class template_response_test extends DokuWikiTest
         $expectedHeader = 'FINDOLOGIC XML Export Plugin';
 
         $legend = $dom->getElementsByTagName('legend')[0];
-        $legend = $legend->nodeValue;
+        $legend = trim($legend->nodeValue);
         $expectedLegend = 'Pages without title (0)';
 
         $this->assertEquals($expectedHeader, $header, 'Expected header should be equal to the translation set in the english translation file.');
@@ -74,7 +74,7 @@ class template_response_test extends DokuWikiTest
         $expectedHeader = 'FINDOLOGIC XML Export Plugin';
 
         $legend = $dom->getElementsByTagName('legend')[0];
-        $legend = $legend->nodeValue;
+        $legend = trim($legend->nodeValue);
 
         $expectedLegend = 'Pages without title (1)';
 
@@ -105,7 +105,7 @@ class template_response_test extends DokuWikiTest
         $expectedHeader = 'FINDOLOGIC XML Export Plugin';
 
         $legend = $dom->getElementsByTagName('legend')[0];
-        $legend = $legend->nodeValue;
+        $legend = trim($legend->nodeValue);
 
         $expectedLegend = 'Pages without title (2)';
 
@@ -113,13 +113,15 @@ class template_response_test extends DokuWikiTest
         $this->assertEquals($expectedLegend, $legend, 'Expected legend should be equal to the translation set in the english translation file and should contain one item when one page has no title set.');
     }
 
-    public function test_response_have_multible_elements_when_six_or_more_pages_has_no_title_set()
+    public function test_response_have_multiple_elements_when_six_or_more_pages_has_no_title_set()
     {
-        $pageHasNoTitle = ['noootitle0', 'noootitle1', 'noootitle2', 'noootitle3', 'noootitle4', 'noootitle5'];
-        Helper::savePages($pageHasNoTitle);
+        // Save pages
+        $pagesHaveNoTitle = ['noootitle324', 'noootitle1784', 'noootitle1203', 'noootitle356', 'noootitle1337', 'noootitle1338'];
+        foreach ($pagesHaveNoTitle as $pageHasNoTitle) {
+            Helper::savePages([$pageHasNoTitle]);
+        }
 
         ob_start();
-
         $adminPlugin = new admin_plugin_findologicxmlexport();
         $adminPlugin->html();
         $output = ob_get_clean();
@@ -139,29 +141,39 @@ class template_response_test extends DokuWikiTest
 
             for ($i = 0; $i < 5; $i++) {
                 $pageWithoutTitle[$pageField][] = trim($nodes->item($i)->nodeValue);
+                sort($pageWithoutTitle[$pageField]);
             }
         }
 
         // page-id
-        $expectedPageWithoutTitle['page-id'][0] = 'noootitle0';
-        $expectedPageWithoutTitle['page-id'][1] = 'noootitle1';
-        $expectedPageWithoutTitle['page-id'][2] = 'noootitle2';
-        $expectedPageWithoutTitle['page-id'][3] = 'noootitle3';
-        $expectedPageWithoutTitle['page-id'][4] = 'noootitle4';
+        $expectedPageWithoutTitle['page-id'] = [
+            'noootitle1338',
+            'noootitle1337',
+            'noootitle356',
+            'noootitle1203',
+            'noootitle1784'
+        ];
+        sort($expectedPageWithoutTitle['page-id']);
 
         // page-url
-        $expectedPageWithoutTitle['page-url'][0] = 'http://wiki.example.com/./doku.php?id=noootitle0';
-        $expectedPageWithoutTitle['page-url'][1] = 'http://wiki.example.com/./doku.php?id=noootitle1';
-        $expectedPageWithoutTitle['page-url'][2] = 'http://wiki.example.com/./doku.php?id=noootitle2';
-        $expectedPageWithoutTitle['page-url'][3] = 'http://wiki.example.com/./doku.php?id=noootitle3';
-        $expectedPageWithoutTitle['page-url'][4] = 'http://wiki.example.com/./doku.php?id=noootitle4';
+        $expectedPageWithoutTitle['page-url'] = [
+            'http://wiki.example.com/./doku.php?id=noootitle1338',
+            'http://wiki.example.com/./doku.php?id=noootitle1337',
+            'http://wiki.example.com/./doku.php?id=noootitle356',
+            'http://wiki.example.com/./doku.php?id=noootitle1203',
+            'http://wiki.example.com/./doku.php?id=noootitle1784'
+        ];
+        sort($expectedPageWithoutTitle['page-url']);
 
         // page-author
-        $expectedPageWithoutTitle['page-author'][0] = '(external edit)';
-        $expectedPageWithoutTitle['page-author'][1] = '(external edit)';
-        $expectedPageWithoutTitle['page-author'][2] = '(external edit)';
-        $expectedPageWithoutTitle['page-author'][3] = '(external edit)';
-        $expectedPageWithoutTitle['page-author'][4] = '(external edit)';
+        $expectedPageWithoutTitle['page-author'] = [
+            '(external edit)',
+            '(external edit)',
+            '(external edit)',
+            '(external edit)',
+            '(external edit)'
+        ];
+        sort($expectedPageWithoutTitle['page-author']);
 
         // page-last-edited
         // Can't be tested due to timing issues.
@@ -172,7 +184,7 @@ class template_response_test extends DokuWikiTest
         $expectedHeader = 'FINDOLOGIC XML Export Plugin';
 
         $legend = $dom->getElementsByTagName('legend')[0];
-        $legend = $legend->nodeValue;
+        $legend = trim($legend->nodeValue);
 
         $expectedLegend = 'Pages without title (6)';
 
@@ -183,26 +195,11 @@ class template_response_test extends DokuWikiTest
 
         $this->assertEquals($expectedHeader, $header, 'Expected header should be equal to the translation set in the english translation file.');
         $this->assertEquals($expectedLegend, $legend, 'Expected legend should be equal to the translation set in the english translation file and should contain one item when one page has no title set.');
+        $this->assertEquals($expectedNotifyMorePages, $notifyMorePages, 'Expected Notification message when pages are higher then the maximum amount of pages does not match the translation or the amount of returned pages.');
 
-        $this->assertEquals($expectedPageWithoutTitle['page-id'][0], $pageWithoutTitle['page-id'][0], 'Expected page-id does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-id'][1], $pageWithoutTitle['page-id'][1], 'Expected page-id does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-id'][2], $pageWithoutTitle['page-id'][2], 'Expected page-id does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-id'][3], $pageWithoutTitle['page-id'][3], 'Expected page-id does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-id'][4], $pageWithoutTitle['page-id'][4], 'Expected page-id does not match the template response.');
-
-        $this->assertEquals($expectedPageWithoutTitle['page-url'][0], $pageWithoutTitle['page-url'][0], 'Expected page-url does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-url'][1], $pageWithoutTitle['page-url'][1], 'Expected page-url does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-url'][2], $pageWithoutTitle['page-url'][2], 'Expected page-url does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-url'][3], $pageWithoutTitle['page-url'][3], 'Expected page-url does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-url'][4], $pageWithoutTitle['page-url'][4], 'Expected page-url does not match the template response.');
-
-        $this->assertEquals($expectedPageWithoutTitle['page-author'][0], $pageWithoutTitle['page-author'][0], 'Expected page-author does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-author'][1], $pageWithoutTitle['page-author'][1], 'Expected page-author does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-author'][2], $pageWithoutTitle['page-author'][2], 'Expected page-author does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-author'][3], $pageWithoutTitle['page-author'][3], 'Expected page-author does not match the template response.');
-        $this->assertEquals($expectedPageWithoutTitle['page-author'][4], $pageWithoutTitle['page-author'][4], 'Expected page-author does not match the template response.');
-
-        $this->assertEquals($expectedNotifyMorePages, $notifyMorePages, 'Expected Notification message when pages are higher then the maximum amount of pages does not match.');
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-id'], $pageWithoutTitle['page-id'], 'Expected page-id does not match the template response.');
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-url'], $pageWithoutTitle['page-url'], 'Expected page-url does not match the template response.');
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-author'], $pageWithoutTitle['page-author'], 'Expected page-author does not match the template response.');
     }
 
     public function test_response_has_no_notify_message_when_five_or_less_pages_have_no_title_set() {
@@ -229,6 +226,69 @@ class template_response_test extends DokuWikiTest
 
     }
 
+    public function test_response_with_multiple_pages_saved_in_different_times()
+    {
+        Helper::savePages(['times13213', 'times24124']);
+
+        ob_start();
+
+        $adminPlugin = new admin_plugin_findologicxmlexport();
+        $adminPlugin->html();
+        $output = ob_get_clean();
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+
+        $internalErrors = libxml_use_internal_errors(true);
+        $dom->loadHTML($output);
+        libxml_use_internal_errors($internalErrors);
+
+        $finder = new DomXPath($dom);
+
+        $pageFields = ['page-id', 'page-url', 'page-author', 'page-last-edited'];
+
+        foreach ($pageFields as $key => $pageField) {
+
+            $nodes = $finder->query("//td[contains(@class, '$pageField')]");
+
+            for ($i = 0; $i < 5; $i++) {
+                $pageWithoutTitle[$pageField][] = trim($nodes->item($i)->nodeValue);
+                sort($pageWithoutTitle[$pageField]);
+            }
+        }
+
+        // page-id
+        $expectedPageWithoutTitle['page-id'] = [
+            'times13213',
+            'times24124'
+        ];
+        sort($expectedPageWithoutTitle['page-id']);
+
+        // page-url
+        $expectedPageWithoutTitle['page-url'] = [
+            'http://wiki.example.com/./doku.php?id=times13213',
+            'http://wiki.example.com/./doku.php?id=times24124'
+        ];
+        sort($expectedPageWithoutTitle['page-url']);
+
+        // page-author
+        $expectedPageWithoutTitle['page-author'] = [
+            '(external edit)',
+            '(external edit)'
+        ];
+        sort($expectedPageWithoutTitle['page-author']);
+
+        $legend = $dom->getElementsByTagName('legend')[0];
+        $legend = trim($legend->nodeValue);
+
+        $expectedLegend = 'Pages without title (2)';
+
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-id'], $pageWithoutTitle['page-id'], 'Expected page-id does not match the template response.');
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-url'], $pageWithoutTitle['page-url'], 'Expected page-url does not match the template response.');
+        $this->assertEqualsArrays($expectedPageWithoutTitle['page-author'], $pageWithoutTitle['page-author'], 'Expected page-author does not match the template response.');
+
+        $this->assertEquals($expectedLegend, $legend, 'Expected legend should be equal to the translation set in the english translation file and should contain two items when two pages have no title set.');
+
+    }
+
     public function test_response_has_notify_message_when_five_hundred_pages_have_no_title() {
         for ($i = 0; $i < 500; $i++){
             Helper::savePages(['fivehundredpages' . $i]);
@@ -252,6 +312,17 @@ class template_response_test extends DokuWikiTest
         $expectedNotifyMorePages = 'There is/are 495 more page(s) that do not have a title.';
 
         $this->assertEquals($expectedNotifyMorePages, $notifyMorePages, 'Expected Notification message when pages are higher then the maximum amount of pages does not match.');
+    }
+
+    /**
+     * Asserts that two arrays are equal.
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    protected function assertEqualsArrays($expected, $actual, $message) {
+        $this->assertTrue(count($expected) == count(array_intersect($expected, $actual)), $message);
     }
 
 }

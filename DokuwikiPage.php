@@ -9,11 +9,6 @@
 
 class DokuwikiPage
 {
-    /**
-     * This is the time format as it gets outputted to the template.
-     * DAY.MONTH YEAR (HOUR:MINUTE)
-     */
-    const TIME_FORMAT = '%d.%B %Y (%H:%M)';
 
     /**
      * @var string ID of the DokuWiki page.
@@ -31,7 +26,7 @@ class DokuwikiPage
     public $author;
 
     /**
-     * @var string Formatted timestamp of last edited timestamp.
+     * @var DateTime DateTime object of last edited date.
      */
     public $lastEdit;
 
@@ -50,24 +45,13 @@ class DokuwikiPage
         $this->id = $page;
         $this->url = wl($page, '', true);
         $this->author = p_get_metadata($page)['last_change']['user'];
-        $this->lastEdit = $this->formatTime(p_get_metadata($page)['last_change']['date']);
+        $date = new DateTime();
+        $this->lastEdit = $date->setTimestamp(p_get_metadata($page)['last_change']['date']);
         $this->metadata = p_get_metadata($page);
         // If no user was logged in, then no author is saved.
         // DokuWiki uses '(external edit)' as value, so we use it too.
         if (empty($this->author)) {
             $this->author = '(external edit)';
         }
-    }
-
-    /**
-     * Returns Localized and proper formatted string.
-     *
-     * @param $unixTimestamp int Unix timestamp.
-     * @return string Time as formatted string.
-     */
-    private function formatTime($unixTimestamp)
-    {
-        $timeFormatted = strftime(self::TIME_FORMAT, $unixTimestamp);
-        return $timeFormatted;
     }
 }

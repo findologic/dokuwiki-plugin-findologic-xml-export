@@ -1,9 +1,10 @@
 {# findologicxmlexport/tpl/admin.tpl for findologicxmlexport plugin #}
+<!-- findologicxmlexport plugin START -->
 <link rel="stylesheet" type="text/css" href="{{stylesheetUrl}}">
 <div id="fl-plugin-findologicxmlexport">
     <h1 id="fl-headline">{{languageText['menu']}}</h1>
     <p>
-        {{languageText['youCan']}}<a id="fl-exportlink" href="{{exportUrl}}">{{languageText['callExport']}}</a>.
+        {{languageText['youCan']}}<a id="fl-exportlink" target="_blank" href="{{exportUrl}}">{{languageText['callExport']}}</a>.
     </p>
     <fieldset>
         {% if totalPages > 0 %}
@@ -15,14 +16,17 @@
             {{languageText['allPagesHaveATitle']}}
         </div>
         {% endif %}
-        <legend id="fl-legend">{{languageText['pagesWithoutTitle']}} ({{totalPages}})</legend>
+        <legend id="fl-legend-all">
+            <span id="fl-legend-all">{{languageText['pagesWithoutTitle']}} ({{totalPages}}) </span>
+            <img src="{{informationImageUrl}}" title="{{languageText['noTitleTooltip']}}" class="info_hover">
+        </legend>
         <div id="div-table" class="table">
             {% if totalPages > 0 %}
             <table id="table" class="table table-condensed">
                 <tbody id="table-body">
                 <tr id="header-table-row">
                     <th class="header-page-id">
-                        {{languageText['namespace']}}
+                        {{languageText['wikipage']}}
                     </th>
                     <th class="header-page-url">
                         {{languageText['url']}}
@@ -41,7 +45,7 @@
                 {% if key < totalPages %}
                 <tr>
                     <td class="page-id">
-                        {# namespace #}
+                        {# wikipage #}
                         {{pages[page].id}}
                     </td>
                     <td class="page-url">
@@ -54,7 +58,7 @@
                     </td>
                     <td class="page-last-edited">
                         {# lastedited #}
-                        {{pages[page].lastEdit}}
+                        {{pages[page].lastEdit|localizeddate('long', 'medium', locale)}}
                     </td>
                     <td class="page-edit-link">
                         {# edit #}
@@ -76,3 +80,5 @@
         </div>
     </fieldset>
 </div>
+<script src="{{scriptUrl}}"></script>
+<!-- findologicxmlexport plugin END -->

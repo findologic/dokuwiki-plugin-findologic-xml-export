@@ -23,15 +23,20 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
     const PAGES_NAME = 'pages';
     const EXPORT_URL_NAME = 'exportUrl';
     const STYLESHEET_URL_NAME = 'stylesheetUrl';
+    const SCRIPT_URL_NAME = 'scriptUrl';
     const MAX_PAGES_NAME = 'maxPages';
     const TOTAL_PAGES_NAME = 'totalPages';
     const LANGUAGE_NAME = 'languageText';
     const PAGES_SKIPPED_NAME = 'pagesSkipped';
+    const INFORMATION_IMAGE_URL_NAME = 'informationImageUrl';
+    const DOKUWIKI_LANG_NAME = 'lang';
 
     // Values
     const EDIT_IMAGE_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/edit.svg';
     const EXPORT_URL = DOKU_URL . 'lib/plugins/findologicxmlexport';
     const STYLESHEET_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/style.css';
+    const SCRIPT_URL = DOKU_URL . 'lib/plugins/findologicxmlexport/resources/script.js';
+    const INFORMATION_IMAGE_URL = DOKU_URL . 'lib/styles/../images/info.png';
     /**
      * Maximum amount of pages being displayed in the configuration.
      */
@@ -49,9 +54,6 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
      */
     const MENU_SORT = 1;
 
-    /**
-     * Template folder directory.
-     */
     const TEMPLATE_DIR = __DIR__ . '/tpl';
 
     /**
@@ -95,17 +97,25 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
             self::EDIT_IMAGE_URL_NAME => self::EDIT_IMAGE_URL,
             self::EXPORT_URL_NAME => self::EXPORT_URL,
             self::STYLESHEET_URL_NAME => self::STYLESHEET_URL,
+            self::SCRIPT_URL_NAME => self::SCRIPT_URL,
+            self::INFORMATION_IMAGE_URL_NAME => self::INFORMATION_IMAGE_URL,
             self::MAX_PAGES_NAME => self::MAX_PAGES,
             self::TOTAL_PAGES_NAME => $totalPages,
             self::LANGUAGE_NAME => $this->lang,
-            self::PAGES_SKIPPED_NAME => $totalPages - self::MAX_PAGES
+            self::PAGES_SKIPPED_NAME => ($totalPages - self::MAX_PAGES)
         ];
 
         $variablesForTemplate = array_merge($pagesWithoutTitle, $variables);
 
+        // Set locale according to DokuWiki configuration
+        global $conf;
+        Locale::setDefault($conf[self::DOKUWIKI_LANG_NAME]);
+
         // Set up loader and environment for twig.
         $loader = new Twig_Loader_Filesystem(self::TEMPLATE_DIR);
         $twig = new Twig_Environment($loader);
+
+        $twig->addExtension(new Twig_Extensions_Extension_Intl());
 
         echo $twig->render(self::TEMPLATE_FILE, $variablesForTemplate);
     }
