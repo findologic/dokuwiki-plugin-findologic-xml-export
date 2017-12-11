@@ -27,19 +27,18 @@ class PageGetter
             return (p_get_metadata($page)['description'] !== '' && !p_get_metadata($page)['title']);
         }, ARRAY_FILTER_USE_BOTH);
 
+        // Create DokuWikiPage objects
+        $pagesData = [];
         foreach ($allPagesWithoutTitle as $key => $sortedPage) {
             $pagesData[] = new DokuwikiPage($sortedPage);
         }
 
-        if ($pagesData) {
-            usort($pagesData, function($object1, $object2){
-                return ($object1->lastEdit < $object2->lastEdit) ? 1 : -1;
-            });
-            return $pagesData;
-        }
-        else {
-            return [];
-        }
+        // Sort pages by lastEdit
+        usort($pagesData, function($object1, $object2){
+            return ($object1->lastEdit < $object2->lastEdit) ? 1 : -1;
+        });
+
+        return $pagesData;
     }
 
 }
