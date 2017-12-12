@@ -21,4 +21,4 @@ $lang['edit'] = 'Edit';
 $lang['thereAre'] = 'There is/are ';
 $lang['morePages'] = ' more page(s) that do not have a title.';
 $lang['allPagesHaveATitle'] = 'All pages do have a title set! Nothing needs to be changed.';
-$lang['noTitleTooltip'] = 'If pages do not have a title set, they can only be found via categories. Please note that pages that do not have a title set, have no title set in the search results as well.';
+$lang['noTitleTooltip'] = 'Pages, that do not have a title set, won\'t be exported and therefor won\'t be found in the search results.';

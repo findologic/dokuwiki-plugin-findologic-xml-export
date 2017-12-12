@@ -113,6 +113,7 @@ class export_response_test extends DokuWikiTest
         $pageCreated = new DateTime();
         $pageCreated->setTimestamp($pageMetadata["date"]["created"]);
         $expectedDateAdded = (string)$pageCreated->format(\DateTime::ATOM);
+
         $this->assertEquals($expectedName, $name, 'Expected name in XML should match the pages first title.');
         $this->assertEquals($expectedSummary, $summary, 'Expected summary in XML should match the pages content.');
         $this->assertEquals($expectedDescription, $description, 'Expected description in XML should match the pages content.');
@@ -159,7 +160,7 @@ class export_response_test extends DokuWikiTest
 
     public function test_element_name_is_empty_when_page_has_no_title()
     {
-        Helper::savePages(['test321:test321:test321']);
+        Helper::savePages(['test321:test321:test321'], false);
         $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = (string)$names[0];
@@ -171,7 +172,7 @@ class export_response_test extends DokuWikiTest
         // Generate much text for DokuWiki page
         $muchContent = str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 500);
 
-        Helper::savePages(['bigpage:muchcontent'], $muchContent);
+        Helper::savePages(['bigpage:muchcontent'], true, $muchContent);
         $xml = Helper::getXML();
         $descriptions = $xml->xpath('/findologic/items/item/descriptions/description');
         $description = (string)$descriptions[0];

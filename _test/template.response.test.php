@@ -54,7 +54,7 @@ class template_response_test extends DokuWikiTest
     public function test_response_has_one_element_when_one_page_has_no_title_set()
     {
         $pageHasNoTitle = ['ihavenotitle'];
-        Helper::savePages($pageHasNoTitle);
+        Helper::savePages($pageHasNoTitle, false);
 
         ob_start();
 
@@ -85,7 +85,7 @@ class template_response_test extends DokuWikiTest
     public function test_response_has_one_element_when_two_pages_has_no_title_set()
     {
         $pageHasNoTitle = ['ihavenotitle1', 'ihavenotitle2'];
-        Helper::savePages($pageHasNoTitle);
+        Helper::savePages($pageHasNoTitle, false);
 
         ob_start();
 
@@ -118,7 +118,7 @@ class template_response_test extends DokuWikiTest
         // Save pages
         $pagesHaveNoTitle = ['noootitle324', 'noootitle1784', 'noootitle1203', 'noootitle356', 'noootitle1337', 'noootitle1338'];
         foreach ($pagesHaveNoTitle as $pageHasNoTitle) {
-            Helper::savePages([$pageHasNoTitle]);
+            Helper::savePages([$pageHasNoTitle], false);
         }
 
         ob_start();
@@ -228,7 +228,7 @@ class template_response_test extends DokuWikiTest
 
     public function test_response_with_multiple_pages_saved_in_different_times()
     {
-        Helper::savePages(['times13213', 'times24124']);
+        Helper::savePages(['times13213', 'times24124'], false);
 
         ob_start();
 
@@ -291,7 +291,7 @@ class template_response_test extends DokuWikiTest
 
     public function test_response_has_notify_message_when_five_hundred_pages_have_no_title() {
         for ($i = 0; $i < 500; $i++){
-            Helper::savePages(['fivehundredpages' . $i]);
+            Helper::savePages(['fivehundredpages' . $i], false);
         }
         ob_start();
 

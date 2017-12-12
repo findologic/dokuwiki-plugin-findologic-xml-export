@@ -20,20 +20,11 @@ class page_getter_test extends DokuWikiTest
      */
     public function test_get_pages_without_title_only_gets_pages_without_title()
     {
-        //TODO TESTS:
-        //TODO 0: Empty Wiki; Wiki where all pages have a title.
-        //TODO 1: The test covers this already.
-        //TODO Multiple: Multiple pages without a title.
-        //TODO A lot: What if you have 10.000.000 pages without a title? Does this work? How does your UI handle this?
-
-
         // Create one page that has a title and one that doesn't
         $pageHasTitle = 'ihaveatitle';
+        Helper::savePages([$pageHasTitle]);
         $pageHasNoTitle = 'ihavenotitle';
-        $allPages = [$pageHasNoTitle, $pageHasTitle];
-        Helper::savePages($allPages);
-        $pageMetaTitle = ['title' => $pageHasTitle];
-        p_set_metadata($pageHasTitle, $pageMetaTitle);
+        Helper::savePages([$pageHasNoTitle], false);
 
         // Get all pages that do have no title set
         $allPagesWithoutTitle = PageGetter::getPagesWithoutTitle();
@@ -54,11 +45,9 @@ class page_getter_test extends DokuWikiTest
 
     public function test_get_pages_without_title_gets_pages_sorted_by_time()
     {
-        //TODO: Make foreach
-
         $pagesHaveNoTitle = ['page0', 'page1', 'page2'];
         foreach ($pagesHaveNoTitle as $pageHasNoTitle) {
-            Helper::savePages([$pageHasNoTitle]);
+            Helper::savePages([$pageHasNoTitle], false);
             sleep(60);
         }
 

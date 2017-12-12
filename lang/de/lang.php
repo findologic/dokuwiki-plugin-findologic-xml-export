@@ -21,5 +21,5 @@ $lang['edit'] = 'Editieren';
 $lang['thereAre'] = 'Es gibt ';
 $lang['morePages'] = ' weitere Seite(n), die keinen Titel gesetzt hat/haben.';
 $lang['allPagesHaveATitle'] = 'Alle Seiten haben einen Titel gesetzt! Es muss nichts angepasst werden.';
-$lang['noTitleTooltip'] = 'Sollten Seiten keinen Titel gesetzt haben, kann man diese in der Suche nur über die Kategorien finden. Außerdem haben Seiten die keinen Titel haben auch in der Suchresultatsseite keinen gesetzten Namen. ';
+$lang['noTitleTooltip'] = 'Seiten, die keinen Titel gesetzt haben, werden nicht exportiert und sind somit in der Suche nicht auffindbar. ';
 
