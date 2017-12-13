@@ -7,37 +7,69 @@
  * @author Dominik Brader <support@findologic.com>
  */
 
-if(!defined('DOKU_INC')) {
-    define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
-}
-// Get $conf from DokuWiki for constructor
-global $conf;
+require_once(__DIR__ . '/DokuwikiXMLExport.php');
 
-// Get URL parameters start and count
-if (isset($_GET["count"])) {
-    $count = htmlspecialchars($_GET["count"]);
+const DOKUWIKI_INC = 'DOKU_INC';
+const COUNT_NAME = 'count';
+const START_NAME = 'start';
+const EXPORT_HEADER = 'Content-type: text/xml';
+
+const DEFAULT_COUNT_VALUE = 20;
+const DEFAULT_START_VALUE = 0;
+
+const ERROR_CODE_TEXT = 'Status: 400 Bad Request';
+const ERROR_MESSAGE = 'start and count values are not valid';
+const ERROR_CODE_VALUE = 400;
+
+$start = getUrlParam(START_NAME, DEFAULT_START_VALUE);
+$count = getUrlParam(COUNT_NAME, DEFAULT_COUNT_VALUE);
+
+if (paramsValid($start, $count)) {
+    header(EXPORT_HEADER);
+    echo getXml($start, $count);
 } else {
-    $count = 20;
+    header(ERROR_CODE_TEXT, true, ERROR_CODE_VALUE);
+    die(ERROR_MESSAGE);
 }
 
-
-if (isset($_GET["start"])) {
-    $start = htmlspecialchars($_GET["start"]);
-} else {
-    $start = 0;
+/**
+ * Validates count and start values
+ *
+ * @param $start int start value
+ * @param $count int count value
+ * @return bool true if parameters are valid, else false
+ */
+function paramsValid($start, $count)
+{
+    return (is_numeric($count) && is_numeric($start) && $start >= 0 && $count > 0);
 }
 
-// Check if parameters are valid.
-if (!is_numeric($count) || !is_numeric($start) || $start < 0 || $count < 1) {
-    echo 'Error count/start value(s) is/are not valid.';
-    return false;
+/**
+ * Gets the value of _GET param, or the default value if _GET param was not set
+ *
+ * @param $paramName string Name of the URL parameter
+ * @param $defaultValue string Default value if _GET parameter is not set
+ * @return string _GET parameter or default value of _GET parameter is not set
+ */
+function getUrlParam($paramName, $defaultValue)
+{
+    if (isset($_GET[$paramName])) {
+        return htmlspecialchars($_GET[$paramName]);
+    } else {
+        return $defaultValue;
+    }
 }
 
-require_once('DokuwikiXMLExport.php');
-$DokuwikiXMLExport = new DokuwikiXMLExport($conf);
-
-$export = $DokuwikiXMLExport->generateXMLExport($start, $count);
-if ($export == true) {
-    Header('Content-type: text/xml');
+/**
+ * Returns generated XML from export
+ *
+ * @param $start int start value
+ * @param $count int count value
+ * @return string Generated XML
+ */
+function getXml($start, $count)
+{
+    global $conf;
+    $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
+    return $dokuwikiXmlExport->generateXMLExport($start, $count);
 }
-echo($export);
