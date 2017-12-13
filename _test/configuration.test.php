@@ -28,9 +28,9 @@ class configuration_plugin_findologicxmlexport_test extends DokuWikiTest
      */
     public function test_excluded_pages_are_not_exported_($ids)
     {
-        $pageIds = array('settingtest1337', 'excludeme1', 'excludeme2');
+        $pageIds = ['settingtest1337', 'excludeme1', 'excludeme2'];
         Helper::savePages($pageIds);
-        $conf = array();
+        $conf = [];
         // Set configuration
         $conf['plugin']['findologicxmlexport']['excludePages'] = 'excludeme1, excludeme2';
         $xml = Helper::getXML(0, 20, $conf);

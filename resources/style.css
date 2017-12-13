@@ -1,0 +1,29 @@
+/**
+Stylesheet for findologicxmlexport plugin
+ */
+.fl-plugin-findologicxmlexport-fieldset {
+    margin-top: 5em;
+}
+.page-edit-link-a {
+    color: transparent;
+}
+.page-edit-link-div {
+    background-repeat: no-repeat;
+    background-size:25px;
+    width: 25px;
+    height: 25px;
+    color: transparent;
+    font-size: 20px;
+    padding: 16px;
+    background-position: 16px;
+}
+div#fl-plugin-findologicxmlexport fieldset {
+    width: auto;
+}
+img.info_hover {
+    cursor: help;
+}
+/* Please remove this styling if it overrides your tooltips settings */
+.ui-widget-shadow {
+    box-shadow: 1px 1px 1px #aaa;
+}

@@ -1,9 +1,9 @@
 <?php
-
 /**
- * This is the Dokuwiki export made by Dominik Brader for FINDOLOGIC.
+ * This is the Dokuwiki export for FINDOLOGIC.
  * If any bugs occur, please submit a new issue
  * @see https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/issues/new
+ * @author Dominik Brader <support@findologic.com>
  */
 
 if (!defined('DOKU_INC')) {
@@ -11,6 +11,7 @@ if (!defined('DOKU_INC')) {
 }
 
 require_once(DOKU_INC . 'inc/init.php');
+require_once(__DIR__ . '/PageGetter.php');
 require(__DIR__ . '/vendor/autoload.php');
 
 use FINDOLOGIC\Export\Exporter;
@@ -86,7 +87,7 @@ class DokuwikiXMLExport
 
         // Get all pages that do have a description
         $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
-            return (p_get_metadata($page)['description'] !== '');
+            return (p_get_metadata($page)['description'] !== '' && p_get_metadata($page)['title'] !== '');
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
@@ -127,9 +128,9 @@ class DokuwikiXMLExport
 
         $this->pages = array_slice($this->pages, $start, $count);
 
-        $items = array();
+        $items = [];
         foreach ($this->pages as $key => $page) {
-            $item = $exporter->createItem($key);
+            $item = $exporter->createItem($start + $key);
 
             $name = new Name();
             $name->setValue($this->getName($page));

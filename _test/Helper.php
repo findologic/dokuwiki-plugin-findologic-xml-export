@@ -17,17 +17,24 @@ class Helper
      */
     const PAGE_CONTENT_PLACEHOLDER = 'This page is for test purposes.';
 
+    const DEFAULT_TITLE = 'title';
+
     /**
      * Helper function to save a page.
      *
      * @param array $ids An array with page ids (eg. start or wiki:syntax)
+     * @param bool $defaultTitle Should a default title be set?
      * @param string $content Optional content, else the default test value will be set
      */
-    static function savePages($ids, $content = self::PAGE_CONTENT_PLACEHOLDER)
+    static function savePages($ids, $defaultTitle = true, $content = self::PAGE_CONTENT_PLACEHOLDER)
     {
         foreach ($ids as $id) {
             saveWikiText($id, $content, '');
             idx_addPage($id);
+            if ($defaultTitle === true) {
+                $pageMetaTitle = [self::DEFAULT_TITLE => self::DEFAULT_TITLE . $id]; // Title array
+                p_set_metadata($id, $pageMetaTitle); // Set title
+            }
         }
     }
 
@@ -39,7 +46,7 @@ class Helper
      * @param array $conf Optional configuration
      * @return SimpleXMLElement Export generated XML
      */
-    static function getXML($start = 0, $count = 20, $conf = array())
+    static function getXML($start = 0, $count = 20, $conf = [])
     {
         $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
         return new SimpleXMLElement($dokuwikiXmlExport->generateXMLExport($start, $count));
@@ -52,6 +59,6 @@ class Helper
     {
         $indexer = new Doku_Indexer();
         $pages = $indexer->getPages();
-        self::savePages($pages, ''); // Saving a page with empty content will result in removing it.
+        self::savePages($pages, false, ''); // Saving a page with empty content will result in removing it.
     }
 }

@@ -10,6 +10,8 @@
         "phpunit/phpunit": "^5.7"
     },
     "require":{
-        "findologic/libflexport": "^0.0.4"
+        "findologic/libflexport": "^0.0.4",
+        "twig/twig": "~1.0",
+        "twig/extensions": "^1.5"
     }
 }
