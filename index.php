@@ -7,69 +7,19 @@
  * @author Dominik Brader <support@findologic.com>
  */
 
-require_once(__DIR__ . '/DokuwikiXMLExport.php');
+require_once(__DIR__ . '/OutputXMLHelper.php');
 
-const DOKUWIKI_INC = 'DOKU_INC';
-const COUNT_NAME = 'count';
-const START_NAME = 'start';
-const EXPORT_HEADER = 'Content-type: text/xml';
+$outputXmlHelper = new OutputXMLHelper();
 
-const DEFAULT_COUNT_VALUE = 20;
-const DEFAULT_START_VALUE = 0;
+// Get URL params
+$start = $outputXmlHelper->getUrlParam($outputXmlHelper::START_NAME, $outputXmlHelper::DEFAULT_START_VALUE);
+$count = $outputXmlHelper->getUrlParam($outputXmlHelper::COUNT_NAME, $outputXmlHelper::DEFAULT_COUNT_VALUE);
 
-const ERROR_CODE_TEXT = 'Status: 400 Bad Request';
-const ERROR_MESSAGE = 'start and count values are not valid';
-const ERROR_CODE_VALUE = 400;
-
-$start = getUrlParam(START_NAME, DEFAULT_START_VALUE);
-$count = getUrlParam(COUNT_NAME, DEFAULT_COUNT_VALUE);
-
-if (paramsValid($start, $count)) {
-    header(EXPORT_HEADER);
-    echo getXml($start, $count);
+// Check if params are valid and return the XML with the corresponding header
+if ($outputXmlHelper->paramsValid($start, $count)) {
+    header($outputXmlHelper::EXPORT_HEADER);
+    echo $outputXmlHelper->getXml($start, $count);
 } else {
-    header(ERROR_CODE_TEXT, true, ERROR_CODE_VALUE);
-    die(ERROR_MESSAGE);
-}
-
-/**
- * Validates count and start values
- *
- * @param $start int start value
- * @param $count int count value
- * @return bool true if parameters are valid, else false
- */
-function paramsValid($start, $count)
-{
-    return (is_numeric($count) && is_numeric($start) && $start >= 0 && $count > 0);
-}
-
-/**
- * Gets the value of _GET param, or the default value if _GET param was not set
- *
- * @param $paramName string Name of the URL parameter
- * @param $defaultValue string Default value if _GET parameter is not set
- * @return string _GET parameter or default value of _GET parameter is not set
- */
-function getUrlParam($paramName, $defaultValue)
-{
-    if (isset($_GET[$paramName])) {
-        return htmlspecialchars($_GET[$paramName]);
-    } else {
-        return $defaultValue;
-    }
-}
-
-/**
- * Returns generated XML from export
- *
- * @param $start int start value
- * @param $count int count value
- * @return string Generated XML
- */
-function getXml($start, $count)
-{
-    global $conf;
-    $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
-    return $dokuwikiXmlExport->generateXMLExport($start, $count);
+    header($outputXmlHelper::EXPORT_ERROR_HEADER, true, $outputXmlHelper::EXPORT_ERROR_CODE);
+    die($outputXmlHelper::EXPORT_ERROR_MESSAGE);
 }

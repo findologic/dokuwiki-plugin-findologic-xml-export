@@ -87,7 +87,9 @@ class DokuwikiXMLExport
 
         // Get all pages that do have a description and a title set
         $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
-            return (p_get_metadata($page)['description'] !== '' && !empty(p_get_metadata($page)['title']));
+            $pageDescription = p_get_metadata($page)['description'];
+            $pageTitle = p_get_metadata($page)['title'];
+            return !empty(($pageDescription) && !empty($pageTitle));
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
