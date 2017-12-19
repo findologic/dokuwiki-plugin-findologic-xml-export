@@ -48,7 +48,7 @@ class page_getter_test extends DokuWikiTest
         $pagesHaveNoTitle = ['page0', 'page1', 'page2'];
         foreach ($pagesHaveNoTitle as $pageHasNoTitle) {
             Helper::savePages([$pageHasNoTitle], false);
-            sleep(1);
+            sleep(60);
         }
 
         $allPagesWithoutTitle = PageGetter::getPagesWithoutTitle();
