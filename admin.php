@@ -59,7 +59,7 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
     /**
      * Template file name. Directory is set in constant TEMPLATE_DIR.
      */
-    const TEMPLATE_FILE = 'admin.tpl';
+    const TEMPLATE_FILE = 'admin.twig';
 
     /**
      * @return int sorting of the plugin in the plugin manager.
