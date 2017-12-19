@@ -85,9 +85,11 @@ class DokuwikiXMLExport
         $indexer = new Doku_Indexer();
         $pagesAndDeletedPages = $indexer->getPages();
 
-        // Get all pages that do have a description
+        // Get all pages that do have a description and a title set
         $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
-            return (p_get_metadata($page)['description'] !== '' && p_get_metadata($page)['title'] !== '');
+            $pageDescription = p_get_metadata($page)['description'];
+            $pageTitle = p_get_metadata($page)['title'];
+            return !empty(($pageDescription) && !empty($pageTitle));
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
@@ -119,12 +121,8 @@ class DokuwikiXMLExport
         $exporter = Exporter::create(Exporter::TYPE_XML, $count);
 
         $total = count($this->pages);
+        $submittedCount = $count;
         $count = min($total, $count); // The count can't be higher then the total number of pages.
-
-        // If count + start is higher then total, then something went totally wrong.
-        if (($count + $start) > $total) {
-            throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
-        }
 
         $this->pages = array_slice($this->pages, $start, $count);
 
@@ -166,7 +164,7 @@ class DokuwikiXMLExport
 
             $items[] = $item;
         }
-        return $exporter->serializeItems($items, $start, $total);
+        return $exporter->serializeItems($items, $start, $submittedCount, $total);
     }
 
     /**
@@ -178,7 +176,7 @@ class DokuwikiXMLExport
     private function getName($pageId)
     {
         $metadata = p_get_metadata($pageId);
-        return $metadata["title"];
+        return $metadata['title'];
     }
 
     /**
@@ -190,7 +188,7 @@ class DokuwikiXMLExport
     private function getSummary($pageId)
     {
         $metadata = p_get_metadata($pageId);
-        return $metadata["description"]["abstract"];
+        return $metadata['description']['abstract'];
     }
 
     /**
@@ -226,7 +224,7 @@ class DokuwikiXMLExport
     {
         $metadata = p_get_metadata($pageId);
         $date = new DateTime();
-        $date->setTimestamp($metadata["date"]["created"]);
+        $date->setTimestamp($metadata['date']['created']);
         return $date;
     }
 
