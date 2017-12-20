@@ -87,9 +87,9 @@ class DokuwikiXMLExport
 
         // Get all pages that do have a description and a title set
         $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
-            $pageDescription = p_get_metadata($page)['description'];
-            $pageTitle = p_get_metadata($page)['title'];
-            return !empty(($pageDescription) && !empty($pageTitle));
+            $pageDescriptionIsNotEmpty = !empty(p_get_metadata($page)['description']);
+            $pageTitleIsNotEmpty = !empty(p_get_metadata($page)['title']);
+            return $pageDescriptionIsNotEmpty && $pageTitleIsNotEmpty;
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
@@ -113,16 +113,15 @@ class DokuwikiXMLExport
      * Generate the entire XML Export based on the DokuWiki metadata.
      *
      * @param $start integer Determines the first item (offset) to be exported.
-     * @param $count integer Determines the interval size / number of items to be exported.
+     * @param $submittedCount integer Determines the interval size / number of items to be exported.
      * @return string Returns the XML as string.
      */
-    public function generateXMLExport($start, $count)
+    public function generateXMLExport($start, $submittedCount)
     {
-        $exporter = Exporter::create(Exporter::TYPE_XML, $count);
+        $exporter = Exporter::create(Exporter::TYPE_XML, $submittedCount);
 
         $total = count($this->pages);
-        $submittedCount = $count;
-        $count = min($total, $count); // The count can't be higher then the total number of pages.
+        $count = min($total, $submittedCount); // The count can't be higher then the total number of pages.
 
         $this->pages = array_slice($this->pages, $start, $count);
 
