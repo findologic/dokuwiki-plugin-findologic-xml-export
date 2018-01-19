@@ -34,7 +34,7 @@ class export_call_test extends DokuWikiTest
     {
         try {
             Helper::savePages(['demopage1']);
-            $xml = Helper::getXML($start, $count);
+            Helper::getXML($start, $count);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
         }

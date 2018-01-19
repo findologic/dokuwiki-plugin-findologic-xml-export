@@ -66,12 +66,13 @@ class OutputXMLHelper
      *
      * @param $paramName string Name of the URL parameter
      * @param $defaultValue string Default value if _GET parameter is not set
+     * @param $getParam array _GET param
      * @return string value of the _GET parameter or default value if _GET parameter is not set
      */
-    public function getUrlParam($paramName, $defaultValue)
+    public function getUrlParam($paramName, $defaultValue, $getParam)
     {
-        if (isset($_GET[$paramName])) {
-            return htmlspecialchars($_GET[$paramName]);
+        if (isset($getParam[$paramName])) {
+            return htmlspecialchars($getParam[$paramName]);
         } else {
             return $defaultValue;
         }
