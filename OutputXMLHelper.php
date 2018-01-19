@@ -58,7 +58,7 @@ class OutputXMLHelper
      */
     public function paramsValid($start, $count)
     {
-        return (is_numeric($count) && is_numeric($start) && $start >= 0 && $count > 0);
+        return (is_int($count) && is_int($start) && $start >= 0 && $count > 0);
     }
 
     /**
