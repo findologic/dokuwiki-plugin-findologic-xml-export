@@ -44,12 +44,11 @@ class outputxmlhelper_test extends DokuWikiTest
     function test_export_call_works_when_calling_export_with_invalid_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
         try {
-            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be not valid.');
+            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be invalid.');
             $outputXmlHelper->getXml($start, $count);
             $this->fail('Invalid params should be recognized as invalid.');
         } catch (\InvalidArgumentException $e) {
         }
-
     }
 
     public function parameterProviderForXMLCallWithInvalidParams()
@@ -63,7 +62,7 @@ class outputxmlhelper_test extends DokuWikiTest
     }
 
     /**
-     * Test to ensure that parameters are correctly handled when calling the Helper method with invalid parameters.
+     * Test to ensure that parameters are correctly handled when calling the Helper method with float parameters.
      *
      * @param integer $start Start value for Export call
      * @param integer $count Count value for Export call
@@ -71,17 +70,17 @@ class outputxmlhelper_test extends DokuWikiTest
      */
     function test_export_call_works_when_calling_export_with_float_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
-        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be recognized as invalid.');
+        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected float params should be invalid.');
     }
 
     public function parameterProviderForXMLCallWithFloatParams()
     {
         return [
-            'invalid start = 13.37 and count = 1' => [13.37, 1.2],
-            'invalid start = 0 and count = 0' => [22.5, 01.22],
-            'invalid start = 1 and count = 0' => [55.2, 2],
-            'invalid start = 0 and count = -1' => [22.4, 300],
-            'invalid start = -1 and count = 0' => [1.1, 02.00]
+            'invalid start = 13.37 and count = 1.2' => [13.37, 1.2],
+            'invalid start = 22.5 and count = 01.22' => [22.5, 01.22],
+            'invalid start = 55.2 and count = 2' => [55.2, 2],
+            'invalid start = 22.4 and count = 300' => [22.4, 300],
+            'invalid start = 1.1 and count = 02.00' => [1.1, 02.00]
         ];
     }
 }
