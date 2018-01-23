@@ -82,6 +82,9 @@ class export_response_test extends DokuWikiTest
         $pageTitle = 'test123';
         $pageMetaTitle = ['title' => $pageTitle];
         p_set_metadata($pageId, $pageMetaTitle);
+        $pageMetaKeyword = ['subject' => ['keyword123', 'keyword321']];
+        p_set_metadata($pageId, $pageMetaKeyword);
+        $a = p_get_metadata($pageId);
         $xml = Helper::getXML();
         $names = $xml->xpath('/findologic/items/item/names/name');
         $name = $names[0];

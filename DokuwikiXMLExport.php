@@ -24,6 +24,7 @@ use FINDOLOGIC\Export\Data\Ordernumber;
 use FINDOLOGIC\Export\Data\DateAdded;
 use FINDOLOGIC\Export\Data\Attribute;
 use FINDOLOGIC\Export\Data\Property;
+use FINDOLOGIC\Export\Data\Keyword;
 
 class DokuwikiXMLExport
 {
@@ -42,6 +43,23 @@ class DokuwikiXMLExport
      * Delimiter for category depth.
      */
     const CATEGORY_DELIMITER = '_';
+
+    /**
+     * In the DokuWiki, the Keyword seperator is a space.
+     * To be able to have tags for multiple words, add an '_'
+     */
+    const KEYWORD_SPACE = '_';
+
+    /**
+     * DokuWiki saves keywords/tags in the subject of the page.
+     * The subject is an array with all keywords/tags from the page in it.
+     */
+    const KEYWORD_KEY = 'subject';
+
+    /**
+     * The default usergroup is an empty string.
+     */
+    const DEFAULT_USERGROUP = '';
 
     /**
      * This value is the key for a dummy property.
@@ -155,6 +173,13 @@ class DokuwikiXMLExport
 
             $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
 
+            $keywordsData = $this->getKeywords($page);
+            foreach ($keywordsData as $usergroup => $keywords) {
+                foreach ($keywords as $keyword) {
+                    $item->addKeyword(new Keyword($keyword, $usergroup));
+                }
+            }
+
             $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
             $item->addAttribute($attributeCategory);
 
@@ -259,5 +284,26 @@ class DokuwikiXMLExport
         $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // Replace colons with underscores
         $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize each category
         return (array($attribute));
+    }
+
+    /**
+     * Gets the Keywords of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return array Returns all Keywords for the given page.
+     */
+    private function getKeywords($pageId)
+    {
+        $metadata = p_get_metadata($pageId);
+        $keywords = $metadata[self::KEYWORD_KEY];
+        if (empty($keywords)) {
+            return [];
+        }
+
+        foreach ($keywords as $key => $keyword) {
+            $keywords[$key] = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
+        }
+        $keywords = [self::DEFAULT_USERGROUP => $keywords];
+        return $keywords;
     }
 }
