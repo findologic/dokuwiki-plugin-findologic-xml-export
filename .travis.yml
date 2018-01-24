@@ -11,3 +11,20 @@ install:
   - composer install
   - sh travis.sh
 script: cd _test && phpunit --stderr --group plugin_findologicxmlexport
+
+before_deploy:
+  # Set up git user name and tag this commit
+  - composer install
+  - git config --local user.name "TheKeymaster"
+  - git config --local user.email "d.brader@findologic.com"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: d1f316fd3a236854722181b5992029aa
+  file: "demo"
+  skip_cleanup: true
+  on:
+    tags: true
+
