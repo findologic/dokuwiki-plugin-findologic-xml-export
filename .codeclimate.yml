@@ -2,3 +2,4 @@ exclude_patterns:
 - "_test/*.php"
 - "lang/en/*.php"
 - "lang/de/*.php"
+- "DokuwikiXMLExport.php" #Excluded because method generateXMLExport can't be made shorter
