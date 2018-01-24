@@ -89,7 +89,8 @@ class outputxmlhelper_test extends DokuWikiTest
             'invalid start = 22.5 and count = 01.22' => [22.5, 01.22],
             'invalid start = 55.2 and count = 2' => [55.2, 2],
             'invalid start = 22.4 and count = 300' => [22.4, 300],
-            'invalid start = 1.1 and count = 02.00' => [1.1, 02.00]
+            'invalid start = 1.1 and count = 02.00' => [1.1, 02.00],
+            'start = "1" and count = "10"' => ['1', '10']
         ];
     }
 }
