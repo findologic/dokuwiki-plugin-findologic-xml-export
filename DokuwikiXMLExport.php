@@ -85,9 +85,11 @@ class DokuwikiXMLExport
         $indexer = new Doku_Indexer();
         $pagesAndDeletedPages = $indexer->getPages();
 
-        // Get all pages that do have a description
+        // Get all pages that do have a description and a title set
         $pagesAndDeletedPages = array_filter($pagesAndDeletedPages, function ($page, $k) {
-            return (p_get_metadata($page)['description'] !== '' && p_get_metadata($page)['title'] !== '');
+            $pageDescriptionIsNotEmpty = !empty(p_get_metadata($page)['description']);
+            $pageTitleIsNotEmpty = !empty(p_get_metadata($page)['title']);
+            return $pageDescriptionIsNotEmpty && $pageTitleIsNotEmpty;
         }, ARRAY_FILTER_USE_BOTH);
 
         $excludedPages = $this->splitConfigToArray($this->conf['plugin']['findologicxmlexport']['excludePages']);
@@ -111,20 +113,15 @@ class DokuwikiXMLExport
      * Generate the entire XML Export based on the DokuWiki metadata.
      *
      * @param $start integer Determines the first item (offset) to be exported.
-     * @param $count integer Determines the interval size / number of items to be exported.
+     * @param $submittedCount integer Determines the interval size / number of items to be exported.
      * @return string Returns the XML as string.
      */
-    public function generateXMLExport($start, $count)
+    public function generateXMLExport($start, $submittedCount)
     {
-        $exporter = Exporter::create(Exporter::TYPE_XML, $count);
+        $exporter = Exporter::create(Exporter::TYPE_XML, $submittedCount);
 
         $total = count($this->pages);
-        $count = min($total, $count); // The count can't be higher then the total number of pages.
-
-        // If count + start is higher then total, then something went totally wrong.
-        if (($count + $start) > $total) {
-            throw new \InvalidArgumentException("Error: Failed while trying to validate start and count values");
-        }
+        $count = min($total, $submittedCount); // The count can't be higher then the total number of pages.
 
         $this->pages = array_slice($this->pages, $start, $count);
 
@@ -166,7 +163,7 @@ class DokuwikiXMLExport
 
             $items[] = $item;
         }
-        return $exporter->serializeItems($items, $start, $total);
+        return $exporter->serializeItems($items, $start, $submittedCount, $total);
     }
 
     /**
@@ -178,7 +175,7 @@ class DokuwikiXMLExport
     private function getName($pageId)
     {
         $metadata = p_get_metadata($pageId);
-        return $metadata["title"];
+        return $metadata['title'];
     }
 
     /**
@@ -190,7 +187,7 @@ class DokuwikiXMLExport
     private function getSummary($pageId)
     {
         $metadata = p_get_metadata($pageId);
-        return $metadata["description"]["abstract"];
+        return $metadata['description']['abstract'];
     }
 
     /**
@@ -226,7 +223,7 @@ class DokuwikiXMLExport
     {
         $metadata = p_get_metadata($pageId);
         $date = new DateTime();
-        $date->setTimestamp($metadata["date"]["created"]);
+        $date->setTimestamp($metadata['date']['created']);
         return $date;
     }
 
