@@ -1,2 +1,4 @@
 exclude_patterns:
 - "_test/*.php"
+- "lang/en/*.php"
+- "lang/de/*.php"
