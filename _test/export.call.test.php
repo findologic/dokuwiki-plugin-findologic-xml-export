@@ -34,7 +34,7 @@ class export_call_test extends DokuWikiTest
     {
         try {
             Helper::savePages(['demopage1']);
-            $xml = Helper::getXML($start, $count);
+            Helper::getXML($start, $count);
             $this->fail($message);
         } catch (\InvalidArgumentException $e) {
         }
@@ -43,8 +43,6 @@ class export_call_test extends DokuWikiTest
     public function parameterProviderForXMLCall()
     {
         return [
-            'test start = 1 and count = 1' => [1, 1, 'An exception should be thrown, because you can\'t get the second page if there is none.'],
-            'test start = 2 and count = 1' => [2, 1, 'An exception should be thrown, because you can\'t get the third page if there is none.'],
             'test start = 0 and count = 0' => [0, 0, 'An exception should be thrown, because you can\'t get a page with no count.'],
             'test start = 1 and count = 0' => [1, 0, 'An exception should be thrown, because you can\'t get the second page with no count and does not even exist.'],
             'test start = 0 and count = -1' => [0, -1, 'An exception should be thrown, because you can\'t get a page with a negative count value.'],

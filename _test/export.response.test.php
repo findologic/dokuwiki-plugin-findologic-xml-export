@@ -45,10 +45,10 @@ class export_response_test extends DokuWikiTest
     {
         return [
             // name => [[ids], count, total]
-            'no pages' => [[''], 0, 0], // Empty DokuWiki
-            'one page' => [['home'], 1, 1],
-            'two pages' => [['home1', 'home2'], 2, 2],
-            'ten pages' => [['page_1', 'page_2', 'page_3', 'page_4', 'page_5', 'page_6', 'page_7', 'page_8', 'page_9', 'page_10'], 10, 10]
+            'no pages' => [[''], 20, 0], // Empty DokuWiki
+            'one page' => [['home'], 20, 1],
+            'two pages' => [['home1', 'home2'], 20, 2],
+            'ten pages' => [['page_1', 'page_2', 'page_3', 'page_4', 'page_5', 'page_6', 'page_7', 'page_8', 'page_9', 'page_10'], 20, 10]
         ];
     }
 
@@ -64,7 +64,8 @@ class export_response_test extends DokuWikiTest
         $count = implode('', ($xml->xpath('/findologic/items/@count')));
         $total = implode('', ($xml->xpath('/findologic/items/@total')));
         $expectedStart = 0;
-        $expectedCount = $expectedTotal = 9;
+        $expectedCount = 20;
+        $expectedTotal = 9;
         $this->assertEquals($expectedStart, $start, 'Expected start value should match the requested start value.');
         $this->assertEquals($expectedCount, $count, 'Expected count value should match the requested count value.');
         $this->assertEquals($expectedTotal, $total, 'Expected total value should match the amount of total pages.');
