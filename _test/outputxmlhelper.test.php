@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../OutputXMLHelper.php');
+require_once(__DIR__ . '/../admin.php');
 require_once(__DIR__ . '/../_test/Helper.php');
 
 class outputxmlhelper_test extends DokuWikiTest
