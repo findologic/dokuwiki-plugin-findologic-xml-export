@@ -174,11 +174,7 @@ class DokuwikiXMLExport
             $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
 
             $keywordsData = $this->getKeywords($page);
-            foreach ($keywordsData as $usergroup => $keywords) {
-                foreach ($keywords as $keyword) {
-                    $item->addKeyword(new Keyword($keyword, $usergroup));
-                }
-            }
+            $item->setAllKeywords($keywordsData);
 
             $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
             $item->addAttribute($attributeCategory);
@@ -302,6 +298,7 @@ class DokuwikiXMLExport
 
         foreach ($keywords as $key => $keyword) {
             $keywords[$key] = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
+            $keywords[$key] = new Keyword($keywords[$key]);
         }
         $keywords = [self::DEFAULT_USERGROUP => $keywords];
         return $keywords;
