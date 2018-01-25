@@ -1,10 +1,11 @@
 <?php
 
+require_once(__DIR__ . '/../DokuwikiXMLExport.php');
 require_once(__DIR__ . '/../OutputXMLHelper.php');
 require_once(__DIR__ . '/../admin.php');
 require_once(__DIR__ . '/../_test/Helper.php');
 
-class outputxmlhelper_test extends DokuWikiTest
+class output_xmlhelper_test extends DokuWikiTest
 {
     public function setUp()
     {
