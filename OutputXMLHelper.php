@@ -100,7 +100,8 @@ class OutputXMLHelper
      */
     public function throwError() {
         header(self::EXPORT_ERROR_HEADER, true, self::EXPORT_ERROR_CODE);
-        die(self::EXPORT_ERROR_MESSAGE);
+        msg(self::EXPORT_ERROR_MESSAGE, -1);
+        html_msgarea();
     }
 
     /**
