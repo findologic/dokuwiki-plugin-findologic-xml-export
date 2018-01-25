@@ -67,10 +67,14 @@ class OutputXMLHelper
      * @param $paramName string Name of the URL parameter
      * @param $defaultValue string Default value if _GET parameter is not set
      * @param $getParam array _GET param
+     * @param $type int ID of the type to check.
      * @return string value of the _GET parameter or default value if _GET parameter is not set
      */
-    public function getUrlParam($paramName, $defaultValue, $getParam)
+    public function getUrlParam($paramName, $defaultValue, $getParam, $type)
     {
+        if (filter_var($getParam[$paramName], $type) === false) {
+            $this->throwError();
+        }
         if (isset($getParam[$paramName])) {
             return htmlspecialchars($getParam[$paramName]);
         } else {
@@ -90,5 +94,24 @@ class OutputXMLHelper
         global $conf;
         $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
         return $dokuwikiXmlExport->generateXMLExport($start, $count);
+    }
+
+    /**
+     * Sets the export error header and prints an error message
+     */
+    public function throwError() {
+        header(self::EXPORT_ERROR_HEADER, true, self::EXPORT_ERROR_CODE);
+        die(self::EXPORT_ERROR_MESSAGE);
+    }
+
+    /**
+     * Sets export header and prints the XML.
+     *
+     * @param $start int start value
+     * @param $count int count value
+     */
+    public function printXml($start, $count) {
+        header(self::EXPORT_HEADER);
+        echo $this->getXml($start, $count);
     }
 }

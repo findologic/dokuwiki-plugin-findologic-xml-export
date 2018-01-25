@@ -8,13 +8,11 @@
 require_once(__DIR__ . '/OutputXMLHelper.php');
 $outputXmlHelper = new OutputXMLHelper();
 // Get URL params
-$start = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::START_NAME, $outputXmlHelper::DEFAULT_START_VALUE, $_GET);
-$count = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::COUNT_NAME, $outputXmlHelper::DEFAULT_COUNT_VALUE, $_GET);
+$start = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::START_NAME, $outputXmlHelper::DEFAULT_START_VALUE, $_GET, FILTER_VALIDATE_INT);
+$count = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::COUNT_NAME, $outputXmlHelper::DEFAULT_COUNT_VALUE, $_GET, FILTER_VALIDATE_INT);
 // Check if params are valid and return the XML with the corresponding header
 if ($outputXmlHelper->paramsValid($start, $count)) {
-    header($outputXmlHelper::EXPORT_HEADER);
-    echo $outputXmlHelper->getXml($start, $count);
+    $outputXmlHelper->printXml($start, $count);
 } else {
-    header($outputXmlHelper::EXPORT_ERROR_HEADER, true, $outputXmlHelper::EXPORT_ERROR_CODE);
-    die($outputXmlHelper::EXPORT_ERROR_MESSAGE);
+    $outputXmlHelper->throwError();
 }
