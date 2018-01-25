@@ -50,6 +50,11 @@ class OutputXMLHelper
     const EXPORT_ERROR_CODE = 400;
 
     /**
+     * Error level for DokuWiki functions.
+     */
+    const ERROR_LEVEL = -1;
+
+    /**
      * Validates count and start values
      *
      * @param $start int start value
@@ -100,7 +105,7 @@ class OutputXMLHelper
      */
     public function throwError() {
         header(self::EXPORT_ERROR_HEADER, true, self::EXPORT_ERROR_CODE);
-        msg(self::EXPORT_ERROR_MESSAGE, -1);
+        msg(self::EXPORT_ERROR_MESSAGE, self::ERROR_LEVEL);
         html_msgarea();
     }
 
