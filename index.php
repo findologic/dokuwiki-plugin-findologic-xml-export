@@ -8,10 +8,10 @@
 require_once(__DIR__ . '/OutputXMLHelper.php');
 $outputXmlHelper = new OutputXMLHelper();
 // Get URL params
-$start = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::START_NAME, $outputXmlHelper::DEFAULT_START_VALUE, $_GET, FILTER_VALIDATE_INT);
-$count = (int)$outputXmlHelper->getUrlParam($outputXmlHelper::COUNT_NAME, $outputXmlHelper::DEFAULT_COUNT_VALUE, $_GET, FILTER_VALIDATE_INT);
+$start = $outputXmlHelper->getUrlParam($outputXmlHelper::START_NAME, $outputXmlHelper::DEFAULT_START_VALUE, $_GET);
+$count = $outputXmlHelper->getUrlParam($outputXmlHelper::COUNT_NAME, $outputXmlHelper::DEFAULT_COUNT_VALUE, $_GET);
 // Check if params are valid and return the XML with the corresponding header
-if ($outputXmlHelper->paramsValid($start, $count)) {
+if ($outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT)) {
     $outputXmlHelper->printXml($start, $count);
 } else {
     $outputXmlHelper->throwError();

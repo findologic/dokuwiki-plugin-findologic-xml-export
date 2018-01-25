@@ -54,10 +54,13 @@ class OutputXMLHelper
      *
      * @param $start int start value
      * @param $count int count value
+     * @param $type int ID of the type to check.
      * @return bool true if parameters are valid, else false
      */
-    public function paramsValid($start, $count)
+    public function paramsValid($start, $count, $type)
     {
+        $start = filter_var($start, $type);
+        $count = filter_var($count, $type);
         return (is_int($count) && is_int($start) && $start >= 0 && $count > 0);
     }
 
@@ -67,14 +70,10 @@ class OutputXMLHelper
      * @param $paramName string Name of the URL parameter
      * @param $defaultValue string Default value if _GET parameter is not set
      * @param $getParam array _GET param
-     * @param $type int ID of the type to check.
      * @return string value of the _GET parameter or default value if _GET parameter is not set
      */
-    public function getUrlParam($paramName, $defaultValue, $getParam, $type)
+    public function getUrlParam($paramName, $defaultValue, $getParam)
     {
-        if (filter_var($getParam[$paramName], $type) === false) {
-            $this->throwError();
-        }
         if (isset($getParam[$paramName])) {
             return htmlspecialchars($getParam[$paramName]);
         } else {
