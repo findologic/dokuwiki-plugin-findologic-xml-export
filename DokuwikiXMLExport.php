@@ -233,7 +233,7 @@ class DokuwikiXMLExport
      * Examples:
      *
      * "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms" -> "Customer account_Synonyms"
-     * "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
+     * "plugin:dokuwiki-plugin-findologic-xml-export" -> "plugin:dokuwiki-plugin-findologic-xml-export" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
      * "wiki:syntax" -> "wiki:syntax" -> "wiki_syntax" -> "Wiki_Syntax"
      *
      * @param $pageId string Id of the DokuWiki page.
