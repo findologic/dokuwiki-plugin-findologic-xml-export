@@ -50,14 +50,22 @@ class OutputXMLHelper
     const EXPORT_ERROR_CODE = 400;
 
     /**
+     * Error level for DokuWiki functions.
+     */
+    const ERROR_LEVEL = -1;
+
+    /**
      * Validates count and start values
      *
      * @param $start int start value
      * @param $count int count value
+     * @param $type int ID of the type to check.
      * @return bool true if parameters are valid, else false
      */
-    public function paramsValid($start, $count)
+    public function paramsValid($start, $count, $type)
     {
+        $start = filter_var($start, $type);
+        $count = filter_var($count, $type);
         return (is_int($count) && is_int($start) && $start >= 0 && $count > 0);
     }
 
@@ -90,5 +98,25 @@ class OutputXMLHelper
         global $conf;
         $dokuwikiXmlExport = new DokuwikiXMLExport($conf);
         return $dokuwikiXmlExport->generateXMLExport($start, $count);
+    }
+
+    /**
+     * Sets the export error header and prints an error message
+     */
+    public function throwError() {
+        header(self::EXPORT_ERROR_HEADER, true, self::EXPORT_ERROR_CODE);
+        msg(self::EXPORT_ERROR_MESSAGE, self::ERROR_LEVEL);
+        html_msgarea();
+    }
+
+    /**
+     * Sets export header and prints the XML.
+     *
+     * @param $start int start value
+     * @param $count int count value
+     */
+    public function printXml($start, $count) {
+        header(self::EXPORT_HEADER);
+        echo $this->getXml($start, $count);
     }
 }

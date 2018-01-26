@@ -1,6 +1,14 @@
 <?php
+/**
+ * General tests for the findologicxmlexport plugin
+ *
+ * @group plugin_findologicxmlexport
+ * @group plugins
+ */
 
+require_once(__DIR__ . '/../DokuwikiXMLExport.php');
 require_once(__DIR__ . '/../OutputXMLHelper.php');
+require_once(__DIR__ . '/../admin.php');
 require_once(__DIR__ . '/../_test/Helper.php');
 
 class outputxmlhelper_test extends DokuWikiTest
@@ -19,7 +27,7 @@ class outputxmlhelper_test extends DokuWikiTest
      */
     function test_export_call_with_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
-        $this->assertEquals(true, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be valid.');
+        $this->assertEquals(true, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected params should be valid.');
         $outputXmlHelper->getXml($start, $count);
     }
 
@@ -30,7 +38,8 @@ class outputxmlhelper_test extends DokuWikiTest
             'start = 1 and count = 1' => [1, 1],
             'start = 10 and count = 1' => [10, 1],
             'start = 1 and count = 2' => [1, 2],
-            'start = 1 and count = 10' => [1, 10]
+            'start = 1 and count = 10' => [1, 10],
+            'start = "1" and count = "10"' => ['1', '10']
         ];
     }
 
@@ -44,7 +53,7 @@ class outputxmlhelper_test extends DokuWikiTest
     function test_export_call_works_when_calling_export_with_invalid_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
         try {
-            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be invalid.');
+            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected params should be invalid.');
             $outputXmlHelper->getXml($start, $count);
             $this->fail('Invalid params should be recognized as invalid.');
         } catch (\InvalidArgumentException $e) {
@@ -66,14 +75,14 @@ class outputxmlhelper_test extends DokuWikiTest
      *
      * @param integer $start Start value for Export call
      * @param integer $count Count value for Export call
-     * @dataProvider parameterProviderForXMLCallWithFloatParams
+     * @dataProvider parameterProviderForXMLCallWithFloatOrStringParams
      */
-    function test_export_call_works_when_calling_export_with_float_params($start, $count) {
+    function test_export_call_works_when_calling_export_with_float_or_string_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
-        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected float params should be invalid.');
+        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected float params should be invalid.');
     }
 
-    public function parameterProviderForXMLCallWithFloatParams()
+    public function parameterProviderForXMLCallWithFloatOrStringParams()
     {
         return [
             'invalid start = 13.37 and count = 1.2' => [13.37, 1.2],
