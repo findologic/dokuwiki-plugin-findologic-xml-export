@@ -27,7 +27,7 @@ class outputxmlhelper_test extends DokuWikiTest
      */
     function test_export_call_with_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
-        $this->assertEquals(true, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected params should be valid.');
+        $this->assertEquals(true, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be valid.');
         $outputXmlHelper->getXml($start, $count);
     }
 
@@ -53,7 +53,7 @@ class outputxmlhelper_test extends DokuWikiTest
     function test_export_call_works_when_calling_export_with_invalid_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
         try {
-            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected params should be invalid.');
+            $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected params should be invalid.');
             $outputXmlHelper->getXml($start, $count);
             $this->fail('Invalid params should be recognized as invalid.');
         } catch (\InvalidArgumentException $e) {
@@ -79,7 +79,7 @@ class outputxmlhelper_test extends DokuWikiTest
      */
     function test_export_call_works_when_calling_export_with_float_or_string_params($start, $count) {
         $outputXmlHelper = new OutputXMLHelper();
-        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count, FILTER_VALIDATE_INT), 'Expected float params should be invalid.');
+        $this->assertEquals(false, $outputXmlHelper->paramsValid($start, $count), 'Expected float params should be invalid.');
     }
 
     public function parameterProviderForXMLCallWithFloatOrStringParams()
