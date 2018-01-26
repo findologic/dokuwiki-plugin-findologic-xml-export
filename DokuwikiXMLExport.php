@@ -146,42 +146,7 @@ class DokuwikiXMLExport
         $items = [];
         foreach ($this->pages as $key => $page) {
             $item = $exporter->createItem($start + $key);
-
-            $name = new Name();
-            $name->setValue($this->getName($page));
-            $item->setName($name);
-
-            $summary = new Summary();
-            $summary->setValue($this->getSummary($page));
-            $item->setSummary($summary);
-
-            $description = new Description();
-            $description->setValue($this->getDescription($page));
-            $item->setDescription($description);
-
-            $price = new Price();
-            $price->setValue(self::PRICE_PLACEHOLDER);
-            $item->setPrice($price);
-
-            $Url = new Url();
-            $Url->setValue($this->getUrl($page));
-            $item->setUrl($Url);
-
-            $dateAdded = new DateAdded();
-            $dateAdded->setDateValue($this->getDateAdded($page));
-            $item->setDateAdded($dateAdded);
-
-            $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
-
-            $keywordsData = $this->getKeywords($page);
-            $item->setAllKeywords($keywordsData);
-
-            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
-            $item->addAttribute($attributeCategory);
-
-            $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
-            $item->addProperty($propertyDummy);
-
+            $this->fillDataToItem($page, $item);
             $items[] = $item;
         }
         return $exporter->serializeItems($items, $start, $submittedCount, $total);
@@ -302,5 +267,51 @@ class DokuwikiXMLExport
         }
         $keywords = [self::DEFAULT_USERGROUP => $keywords];
         return $keywords;
+    }
+
+    /**
+     * @param $page int Page number.
+     * @param $item FINDOLOGIC\Export\Data\Item Item without data.
+     *
+     * @return FINDOLOGIC\Export\Data\Item Item with data.
+     */
+    public function fillDataToItem($page, $item)
+    {
+        $name = new Name();
+        $name->setValue($this->getName($page));
+        $item->setName($name);
+
+        $summary = new Summary();
+        $summary->setValue($this->getSummary($page));
+        $item->setSummary($summary);
+
+        $description = new Description();
+        $description->setValue($this->getDescription($page));
+        $item->setDescription($description);
+
+        $price = new Price();
+        $price->setValue(self::PRICE_PLACEHOLDER);
+        $item->setPrice($price);
+
+        $Url = new Url();
+        $Url->setValue($this->getUrl($page));
+        $item->setUrl($Url);
+
+        $dateAdded = new DateAdded();
+        $dateAdded->setDateValue($this->getDateAdded($page));
+        $item->setDateAdded($dateAdded);
+
+        $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
+
+        $keywordsData = $this->getKeywords($page);
+        $item->setAllKeywords($keywordsData);
+
+        $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
+        $item->addAttribute($attributeCategory);
+
+        $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
+        $item->addProperty($propertyDummy);
+
+        return $item;
     }
 }
