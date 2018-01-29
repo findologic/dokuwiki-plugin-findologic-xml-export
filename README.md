@@ -9,6 +9,10 @@ It uses the library [findologic/libflexport](https://github.com/findologic/libfl
 
 For any other dependencies please refer to the [composer.json](https://raw.githubusercontent.com/findologic/dokuwiki-plugin-findologic-xml-export/master/composer.json) file.
 
+### Before install
+
+ * Requires **php** `>= 5.6`, older versions are not supported
+
 ### Install
 
  - Open your extension manager and install the Plugin via **Search and Install**
@@ -19,6 +23,7 @@ For any other dependencies please refer to the [composer.json](https://raw.githu
  1. Download this repository
  2. Go into your DokuWiki folder and open the directory `/lib/plugins/`
  3. Create a folder in this directory named `findologicxmlexport` and copy the downloaded files in it
+ 4. Download all dependencies via `composer install`
   
 ### Usage
 

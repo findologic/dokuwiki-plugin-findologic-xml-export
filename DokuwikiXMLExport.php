@@ -277,29 +277,17 @@ class DokuwikiXMLExport
      */
     public function fillDataToItem($page, $item)
     {
-        $name = new Name();
-        $name->setValue($this->getName($page));
-        $item->setName($name);
+        $item->addName($this->getName($page));
 
-        $summary = new Summary();
-        $summary->setValue($this->getSummary($page));
-        $item->setSummary($summary);
+        $item->addSummary($this->getSummary($page));
 
-        $description = new Description();
-        $description->setValue($this->getDescription($page));
-        $item->setDescription($description);
+        $item->addDescription($this->getDescription($page));
 
-        $price = new Price();
-        $price->setValue(self::PRICE_PLACEHOLDER);
-        $item->setPrice($price);
+        $item->addPrice(self::PRICE_PLACEHOLDER);
 
-        $Url = new Url();
-        $Url->setValue($this->getUrl($page));
-        $item->setUrl($Url);
+        $item->addUrl($this->getUrl($page));
 
-        $dateAdded = new DateAdded();
-        $dateAdded->setDateValue($this->getDateAdded($page));
-        $item->setDateAdded($dateAdded);
+        $item->addDateAdded($this->getDateAdded($page));
 
         $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
 
