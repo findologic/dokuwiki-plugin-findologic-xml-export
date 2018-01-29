@@ -19,7 +19,7 @@ For any other dependencies please refer to the [composer.json](https://raw.githu
  1. Download this repository
  2. Go into your DokuWiki folder and open the directory `/lib/plugins/`
  3. Create a folder in this directory named `findologicxmlexport` and copy the downloaded files in it
- 
+  
 ### Usage
 
  - Open your DokuWiki Admin page and there you will see the newly installed Plugin
