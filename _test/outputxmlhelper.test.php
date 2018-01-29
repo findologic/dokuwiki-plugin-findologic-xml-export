@@ -92,4 +92,71 @@ class outputxmlhelper_test extends DokuWikiTest
             'invalid start = 1.1 and count = 02.00' => [1.1, 02.00]
         ];
     }
+
+    /**
+     * Test to ensure that the getUrlParam method gets the correct url params set in the url
+     * and formats them as integers, and not as strings.
+     */
+    public function test_geturlparam_returns_set_url_parameters()
+    {
+        $startName = 'start';
+        $countName = 'count';
+        $defaultStart = 0;
+        $defaultCount = 20;
+
+        $expectedStartValue = 1;
+        $expectedCountValue = 5000;
+
+        $getParamWithRandomParams = ['asd' => 'hehe', 'demo' => 'eeeeh', 'start' => '1', 'count' => '5000'];
+        $outputXmlHelper = new OutputXMLHelper();
+        $start = $outputXmlHelper->getUrlParam($startName, $defaultStart, $getParamWithRandomParams);
+        $count = $outputXmlHelper->getUrlParam($countName, $defaultCount, $getParamWithRandomParams);
+
+        $this->assertEquals($expectedStartValue, $start, 'Expected parameter start value does not match the given _GET parameter');
+        $this->assertEquals($expectedCountValue, $count, 'Expected parameter count value does not match the given _GET parameter');
+    }
+
+    /**
+     * Test to ensure that the getUrlParam method gets the default params if _GET param is not set.
+     */
+    public function test_geturlparam_returns_default_if_not_specified()
+    {
+        $startName = 'start';
+        $countName = 'count';
+        $defaultStart = 0;
+        $defaultCount = 20;
+
+        $getParamWithRandomParams = ['asd' => 'hehe', 'demo' => 'eeeeh'];
+        $outputXmlHelper = new OutputXMLHelper();
+        $start = $outputXmlHelper->getUrlParam($startName, $defaultStart, $getParamWithRandomParams);
+        $count = $outputXmlHelper->getUrlParam($countName, $defaultCount, $getParamWithRandomParams);
+
+        $this->assertEquals($defaultStart, $start, 'Expected parameter start value does not match the given _GET parameter');
+        $this->assertEquals($defaultCount, $count, 'Expected parameter count value does not match the given _GET parameter');
+    }
+
+    public function test_error_should_be_thrown_when_calling_throwerror()
+    {
+        $outputXmlHelper = new OutputXMLHelper();
+        $expectedErrorMessage = '<div class="error">start and count values are not valid</div>';
+
+        ob_start();
+        $outputXmlHelper->throwError();
+        $error = ob_get_clean();
+
+        $this->assertEquals($expectedErrorMessage, $error);
+    }
+
+    public function test_xml_will_be_printed_when_calling_printxml()
+    {
+        $outputXmlHelper = new OutputXMLHelper();
+        $expectedErrorMessage = '<?xml version="1.0" encoding="utf-8"?>
+<findologic version="1.0"><items start="0" count="20" total="0"/></findologic>';
+
+        ob_start();
+        $outputXmlHelper->printXml(0, 20);
+        $error = ob_get_clean();
+
+        $this->assertEquals($expectedErrorMessage, trim($error));
+    }
 }

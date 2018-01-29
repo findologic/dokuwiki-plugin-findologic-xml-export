@@ -257,11 +257,13 @@ class DokuwikiXMLExport
     {
         $metadata = p_get_metadata($pageId);
         $keywords = $metadata[self::KEYWORD_KEY];
-        if (empty($keywords)) {
+        if (empty($keywords)) { // If no keywords are set for this page, return an empty array
             return [];
         }
 
         foreach ($keywords as $key => $keyword) {
+            // Keywords with multiple words are separated by an underscore.
+            // To export them correctly, those underscores will be replaced by spaces.
             $keywords[$key] = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
             $keywords[$key] = new Keyword($keywords[$key]);
         }
