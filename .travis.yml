@@ -14,7 +14,7 @@ script:
   - cd _test
   - rm phpunit.xml
   - wget https://raw.githubusercontent.com/thekeymaster/xmlexport-phpunit-tests/master/phpunit.xml
-  - phpunit --coverage-clover=coverage.xml --stderr --group plugin_findologicxmlexport
+  - phpunit --coverage-clover=coverage.xml --coverage-text --stderr --group plugin_findologicxmlexport
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
