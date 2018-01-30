@@ -150,13 +150,13 @@ class outputxmlhelper_test extends DokuWikiTest
     public function test_xml_will_be_printed_when_calling_printxml()
     {
         $outputXmlHelper = new OutputXMLHelper();
-        $expectedErrorMessage = '<?xml version="1.0" encoding="utf-8"?>
+        $expectedXml = '<?xml version="1.0" encoding="utf-8"?>
 <findologic version="1.0"><items start="0" count="20" total="0"/></findologic>';
 
         ob_start();
         $outputXmlHelper->printXml(0, 20);
-        $error = ob_get_clean();
+        $xml = ob_get_clean();
 
-        $this->assertEquals($expectedErrorMessage, trim($error));
+        $this->assertEquals($expectedXml, trim($xml));
     }
 }
