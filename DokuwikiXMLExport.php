@@ -252,6 +252,10 @@ class DokuwikiXMLExport
         $metadata = p_get_metadata($pageId);
         $allKeywords = $metadata[self::KEYWORD_KEY];
 
+        if (empty($allKeywords)) {
+            return [];
+        }
+
         $keywords = [];
         foreach ($allKeywords as $key => $keyword) {
             // Keywords with multiple words are separated by an underscore.
@@ -259,7 +263,6 @@ class DokuwikiXMLExport
             $keyword = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
             $keywords[] = new Keyword($keyword);
         }
-        $keywords = [self::DEFAULT_USERGROUP => $keywords];
         return $keywords;
     }
 
