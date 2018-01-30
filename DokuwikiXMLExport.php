@@ -15,13 +15,7 @@ require_once(__DIR__ . '/PageGetter.php');
 require(__DIR__ . '/vendor/autoload.php');
 
 use FINDOLOGIC\Export\Exporter;
-use FINDOLOGIC\Export\Data\Name;
-use FINDOLOGIC\Export\Data\Summary;
-use FINDOLOGIC\Export\Data\Description;
-use FINDOLOGIC\Export\Data\Price;
-use FINDOLOGIC\Export\Data\Url;
 use FINDOLOGIC\Export\Data\Ordernumber;
-use FINDOLOGIC\Export\Data\DateAdded;
 use FINDOLOGIC\Export\Data\Attribute;
 use FINDOLOGIC\Export\Data\Property;
 use FINDOLOGIC\Export\Data\Keyword;
@@ -256,16 +250,14 @@ class DokuwikiXMLExport
     private function getKeywords($pageId)
     {
         $metadata = p_get_metadata($pageId);
-        $keywords = $metadata[self::KEYWORD_KEY];
-        if (empty($keywords)) { // If no keywords are set for this page, return an empty array
-            return [];
-        }
+        $allKeywords = $metadata[self::KEYWORD_KEY];
 
-        foreach ($keywords as $key => $keyword) {
+        $keywords = [];
+        foreach ($allKeywords as $key => $keyword) {
             // Keywords with multiple words are separated by an underscore.
             // To export them correctly, those underscores will be replaced by spaces.
-            $keywords[$key] = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
-            $keywords[$key] = new Keyword($keywords[$key]);
+            $keyword = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
+            $keywords[] = new Keyword($keyword);
         }
         $keywords = [self::DEFAULT_USERGROUP => $keywords];
         return $keywords;
@@ -275,7 +267,7 @@ class DokuwikiXMLExport
      * @param $page int Page number.
      * @param $item FINDOLOGIC\Export\Data\Item Item without data.
      *
-     * @return FINDOLOGIC\Export\Data\Item Item with data.
+     * @return FINDOLOGIC\Export\Data\Item Item with filled data.
      */
     public function fillDataToItem($page, $item)
     {
