@@ -104,6 +104,8 @@ class export_response_test extends DokuWikiTest
         $attributeValue = (string)$attributes[0]->values[0]->value[0];
         $dateAddeds = $xml->xpath('/findologic/items/item/dateAddeds');
         $dateAdded = (string)$dateAddeds[0]->dateAdded[0];
+        $keywords = $xml->xpath('/findologic/items/item/allKeywords/keywords');
+        $keyword = (string)$keywords[0]->keyword[0];
         $expectedName = $pageTitle;
         $expectedSummary = $expectedDescription = Helper::PAGE_CONTENT_PLACEHOLDER;
         $expectedOrdernumber = $pageId;
@@ -112,6 +114,7 @@ class export_response_test extends DokuWikiTest
         $expectedPropertyValue = 'dummy';
         $expectedAttributeKey = 'cat';
         $expectedAttributeValue = 'Test123_Test123_Test123';
+        $expectedKeyword = 'keyword123';
         // Format DateTime because the creation date is not known. It can vary.
         $pageMetadata = p_get_metadata($pageId);
         $pageCreated = new DateTime();
@@ -128,6 +131,7 @@ class export_response_test extends DokuWikiTest
         $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should match the category value.');
         $this->assertEquals($expectedAttributeValue, $attributeValue, 'Expected attribute value in XML should match the namespace formatted in a FINDOLOGIC proper format.');
         $this->assertEquals($expectedDateAdded, $dateAdded, 'Expected dateAdded value in XML should match the created date of the page. Value can vary.');
+        $this->assertEquals($expectedKeyword, $keyword, 'Expected keyword value in XML should match the tags that were set in the configuration of the DokuWiki page.');
     }
 
     /**

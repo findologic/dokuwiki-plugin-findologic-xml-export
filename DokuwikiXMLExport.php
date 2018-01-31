@@ -263,6 +263,9 @@ class DokuwikiXMLExport
             $keyword = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
             $keywords[] = new Keyword($keyword);
         }
+
+        $keywords = [self::DEFAULT_USERGROUP => $keywords];
+
         return $keywords;
     }
 
