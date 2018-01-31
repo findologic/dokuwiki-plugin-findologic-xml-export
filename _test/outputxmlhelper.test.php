@@ -107,7 +107,7 @@ class outputxmlhelper_test extends DokuWikiTest
         $expectedStartValue = 1;
         $expectedCountValue = 5000;
 
-        $getParamWithRandomParams = ['asd' => 'hehe', 'demo' => 'eeeeh', 'start' => '1', 'count' => '5000'];
+        $getParamWithRandomParams = ['asd' => 'hehe', 'demo' => 'eeeeh', 'start' => "$expectedStartValue", 'count' => "$expectedCountValue"];
         $outputXmlHelper = new OutputXMLHelper();
         $start = $outputXmlHelper->getUrlParam($startName, $defaultStart, $getParamWithRandomParams);
         $count = $outputXmlHelper->getUrlParam($countName, $defaultCount, $getParamWithRandomParams);
