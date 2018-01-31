@@ -10,4 +10,11 @@ before_install: wget https://raw.github.com/splitbrain/dokuwiki-travis/master/tr
 install:
   - composer install
   - sh travis.sh
-script: cd _test && phpunit --stderr --group plugin_findologicxmlexport
+script:
+  - cd _test
+  - rm phpunit.xml
+  - wget https://raw.githubusercontent.com/findologic/dokuwiki-plugin-findologic-xml-export/master/phpunit.xml
+  - phpunit --coverage-clover=coverage.xml --coverage-text --stderr --group plugin_findologicxmlexport
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

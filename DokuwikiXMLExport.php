@@ -15,15 +15,10 @@ require_once(__DIR__ . '/PageGetter.php');
 require(__DIR__ . '/vendor/autoload.php');
 
 use FINDOLOGIC\Export\Exporter;
-use FINDOLOGIC\Export\Data\Name;
-use FINDOLOGIC\Export\Data\Summary;
-use FINDOLOGIC\Export\Data\Description;
-use FINDOLOGIC\Export\Data\Price;
-use FINDOLOGIC\Export\Data\Url;
 use FINDOLOGIC\Export\Data\Ordernumber;
-use FINDOLOGIC\Export\Data\DateAdded;
 use FINDOLOGIC\Export\Data\Attribute;
 use FINDOLOGIC\Export\Data\Property;
+use FINDOLOGIC\Export\Data\Keyword;
 
 class DokuwikiXMLExport
 {
@@ -42,6 +37,23 @@ class DokuwikiXMLExport
      * Delimiter for category depth.
      */
     const CATEGORY_DELIMITER = '_';
+
+    /**
+     * In the DokuWiki, the Keyword seperator is a space.
+     * To be able to have tags for multiple words, add an '_'
+     */
+    const KEYWORD_SPACE = '_';
+
+    /**
+     * DokuWiki saves keywords/tags in the subject of the page.
+     * The subject is an array with all keywords/tags from the page in it.
+     */
+    const KEYWORD_KEY = 'subject';
+
+    /**
+     * The default usergroup is an empty string.
+     */
+    const DEFAULT_USERGROUP = '';
 
     /**
      * This value is the key for a dummy property.
@@ -128,39 +140,7 @@ class DokuwikiXMLExport
         $items = [];
         foreach ($this->pages as $key => $page) {
             $item = $exporter->createItem($start + $key);
-
-            $name = new Name();
-            $name->setValue($this->getName($page));
-            $item->setName($name);
-
-            $summary = new Summary();
-            $summary->setValue($this->getSummary($page));
-            $item->setSummary($summary);
-
-            $description = new Description();
-            $description->setValue($this->getDescription($page));
-            $item->setDescription($description);
-
-            $price = new Price();
-            $price->setValue(self::PRICE_PLACEHOLDER);
-            $item->setPrice($price);
-
-            $Url = new Url();
-            $Url->setValue($this->getUrl($page));
-            $item->setUrl($Url);
-
-            $dateAdded = new DateAdded();
-            $dateAdded->setDateValue($this->getDateAdded($page));
-            $item->setDateAdded($dateAdded);
-
-            $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
-
-            $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
-            $item->addAttribute($attributeCategory);
-
-            $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
-            $item->addProperty($propertyDummy);
-
+            $this->fillDataToItem($page, $item);
             $items[] = $item;
         }
         return $exporter->serializeItems($items, $start, $submittedCount, $total);
@@ -247,7 +227,7 @@ class DokuwikiXMLExport
      * Examples:
      *
      * "customer_account:synonyms" -> "customer account:synonyms" -> "customer account_synonyms" -> "Customer account_Synonyms"
-     * "plugin:findologicxmlexport" -> "plugin:findologicxmlexport" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
+     * "plugin:dokuwiki-plugin-findologic-xml-export" -> "plugin:dokuwiki-plugin-findologic-xml-export" -> "plugin_findologicxmlexport" -> "Plugin_Findologicxmlexport"
      * "wiki:syntax" -> "wiki:syntax" -> "wiki_syntax" -> "Wiki_Syntax"
      *
      * @param $pageId string Id of the DokuWiki page.
@@ -259,5 +239,67 @@ class DokuwikiXMLExport
         $attribute = str_replace(':', self::CATEGORY_DELIMITER, $attribute); // Replace colons with underscores
         $attribute = ucwords($attribute, self::CATEGORY_DELIMITER); // Capitalize each category
         return (array($attribute));
+    }
+
+    /**
+     * Gets the Keywords of the current page.
+     *
+     * @param $pageId string Id of the DokuWiki page.
+     * @return array Returns all Keywords for the given page.
+     */
+    private function getKeywords($pageId)
+    {
+        $metadata = p_get_metadata($pageId);
+        $allKeywords = $metadata[self::KEYWORD_KEY];
+
+        if (empty($allKeywords)) {
+            return [];
+        }
+
+        $keywords = [];
+        foreach ($allKeywords as $key => $keyword) {
+            // Keywords with multiple words are separated by an underscore.
+            // To export them correctly, those underscores will be replaced by spaces.
+            $keyword = str_replace(self::KEYWORD_SPACE, ' ', $keyword);
+            $keywords[] = new Keyword($keyword);
+        }
+
+        $keywords = [self::DEFAULT_USERGROUP => $keywords];
+
+        return $keywords;
+    }
+
+    /**
+     * @param $page int Page number.
+     * @param $item FINDOLOGIC\Export\Data\Item Item without data.
+     *
+     * @return FINDOLOGIC\Export\Data\Item Item with filled data.
+     */
+    public function fillDataToItem($page, $item)
+    {
+        $item->addName($this->getName($page));
+
+        $item->addSummary($this->getSummary($page));
+
+        $item->addDescription($this->getDescription($page));
+
+        $item->addPrice(self::PRICE_PLACEHOLDER);
+
+        $item->addUrl($this->getUrl($page));
+
+        $item->addDateAdded($this->getDateAdded($page));
+
+        $item->addOrdernumber(new Ordernumber($this->getPageId($page)));
+
+        $keywordsData = $this->getKeywords($page);
+        $item->setAllKeywords($keywordsData);
+
+        $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
+        $item->addAttribute($attributeCategory);
+
+        $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
+        $item->addProperty($propertyDummy);
+
+        return $item;
     }
 }
