@@ -13,7 +13,7 @@ install:
 script:
   - cd _test
   - rm phpunit.xml
-  - wget https://raw.githubusercontent.com/thekeymaster/xmlexport-phpunit-tests/master/phpunit.xml
+  - wget https://raw.githubusercontent.com/findologic/dokuwiki-plugin-findologic-xml-export/master/phpunit.xml
   - phpunit --coverage-clover=coverage.xml --coverage-text --stderr --group plugin_findologicxmlexport
 
 after_success:
