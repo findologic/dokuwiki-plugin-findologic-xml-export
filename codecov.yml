@@ -1,2 +1,2 @@
 fixes:
-  - "::after/lib/plugins/findologicxmlexport/"         # move root   e.g., "path/" => "after/path/"
+  - "::lib/plugins/findologicxmlexport/"         # move root   e.g., "path/" => "after/path/"
