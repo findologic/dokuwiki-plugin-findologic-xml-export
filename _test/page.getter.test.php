@@ -1,4 +1,11 @@
 <?php
+/**
+ * General tests for the findologicxmlexport plugin
+ *
+ * @group plugin_findologicxmlexport
+ * @group plugins
+ */
+
 //======================================================================
 // PAGEGETTER TESTS
 //======================================================================
