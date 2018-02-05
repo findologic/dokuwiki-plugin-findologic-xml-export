@@ -3,4 +3,4 @@ exclude_patterns:
 - "lang/en/*.php"
 - "lang/de/*.php"
 fixes:
-  - "_test/::lib/plugins/findologicxmlexport/_test"  # move path   e.g., "before/path" => "after/path"
+  - "//::lib/plugins/findologicxmlexport/"  # move path   e.g., "before/path" => "after/path"
