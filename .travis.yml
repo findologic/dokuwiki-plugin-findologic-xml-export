@@ -16,5 +16,4 @@ script:
   - wget https://raw.githubusercontent.com/findologic/dokuwiki-plugin-findologic-xml-export/master/phpunit.xml
   - phpunit --coverage-clover=coverage.xml --coverage-text --stderr --group plugin_findologicxmlexport
 
-after_success:
-    - bash <(curl -s https://codecov.io/bash)
+after_success: curl -s https://codecov.io/bash | bash -s -- -R "../lib/plugins/findologicxmlexport" -s .
