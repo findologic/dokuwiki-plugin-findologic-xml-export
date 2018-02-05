@@ -29,6 +29,7 @@
             <directory suffix=".php">../lib/plugins/findologicxmlexport</directory>
             <exclude>
                 <directory suffix=".php">../lib/plugins/findologicxmlexport/vendor</directory>
+                <directory suffix=".php">../lib/plugins/findologicxmlexport/_test</directory>
             </exclude>
         </whitelist>
     </filter>
