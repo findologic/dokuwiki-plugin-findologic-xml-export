@@ -1,0 +1,2 @@
+fixes:
+  - "_test/::lib/plugins/findologicxmlexport/_test"  # move path   e.g., "before/path" => "after/path"
