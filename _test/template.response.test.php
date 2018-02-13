@@ -329,8 +329,7 @@ class template_response_test extends DokuWikiTest
 
     public function test_plugin_not_requires_to_be_superuser() {
         $adminPlugin = new admin_plugin_findologicxmlexport();
-        $adminCanAccessAswell = true;
-        $this->assertEquals($adminCanAccessAswell, $adminPlugin->forAdminOnly());
+        $this->assertTrue($adminPlugin->forAdminOnly());
     }
 
     /**
