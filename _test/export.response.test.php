@@ -110,8 +110,6 @@ class export_response_test extends DokuWikiTest
         $expectedSummary = $expectedDescription = Helper::PAGE_CONTENT_PLACEHOLDER;
         $expectedOrdernumber = $pageId;
         $expectedUrl = 'http://wiki.example.com/./doku.php?id=' . $pageId;
-        $expectedPropertyKey = 'dummy';
-        $expectedPropertyValue = 'dummy';
         $expectedAttributeKey = 'cat';
         $expectedAttributeValue = 'Test123_Test123_Test123';
         $expectedKeyword = 'keyword123';
@@ -126,8 +124,6 @@ class export_response_test extends DokuWikiTest
         $this->assertEquals($expectedDescription, $description, 'Expected description in XML should match the pages content.');
         $this->assertEquals($expectedOrdernumber, $ordernumber, 'Expected ordernumber in XML should match the pages namespace.');
         $this->assertEquals($expectedUrl, $url, 'Expected url in XML should match the DokuWiki-URL and the pages namespace.');
-        $this->assertEquals($expectedPropertyKey, $propertyKey, 'Expected property key in XML should match the dummy value.');
-        $this->assertEquals($expectedPropertyValue, $propertyValue, 'Expected property value in XML should match the dummy value.');
         $this->assertEquals($expectedAttributeKey, $attributeKey, 'Expected attribute key in XML should match the category value.');
         $this->assertEquals($expectedAttributeValue, $attributeValue, 'Expected attribute value in XML should match the namespace formatted in a FINDOLOGIC proper format.');
         $this->assertEquals($expectedDateAdded, $dateAdded, 'Expected dateAdded value in XML should match the created date of the page. Value can vary.');
