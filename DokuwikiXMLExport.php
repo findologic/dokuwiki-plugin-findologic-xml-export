@@ -17,7 +17,6 @@ require(__DIR__ . '/vendor/autoload.php');
 use FINDOLOGIC\Export\Exporter;
 use FINDOLOGIC\Export\Data\Ordernumber;
 use FINDOLOGIC\Export\Data\Attribute;
-use FINDOLOGIC\Export\Data\Property;
 use FINDOLOGIC\Export\Data\Keyword;
 
 class DokuwikiXMLExport
@@ -54,18 +53,6 @@ class DokuwikiXMLExport
      * The default usergroup is an empty string.
      */
     const DEFAULT_USERGROUP = '';
-
-    /**
-     * This value is the key for a dummy property.
-     * Hotfix workaround for a bug @ FINDOLOGIC
-     */
-    const PROPERTY_DUMMY_KEY = 'dummy';
-
-    /**
-     * This value is the value for a dummy property.
-     * Hotfix workaround for a bug @ FINDOLOGIC
-     */
-    const PROPERTY_DUMMY_VALUE = array('dummy');
 
     /**
      * @var array $conf DokuWiki configuration.
@@ -296,9 +283,6 @@ class DokuwikiXMLExport
 
         $attributeCategory = new Attribute(self::CATEGORY_KEY, $this->getAttributesCategory($page));
         $item->addAttribute($attributeCategory);
-
-        $propertyDummy = new Property(self::PROPERTY_DUMMY_KEY, self::PROPERTY_DUMMY_VALUE);
-        $item->addProperty($propertyDummy);
 
         return $item;
     }
