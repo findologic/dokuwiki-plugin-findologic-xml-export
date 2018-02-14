@@ -1,4 +1,11 @@
 <?php
+/**
+ * General tests for the findologicxmlexport plugin
+ *
+ * @group plugin_findologicxmlexport
+ * @group plugins
+ */
+
 //======================================================================
 // TEMPLATE RESPONSE TESTS
 //======================================================================
@@ -312,6 +319,17 @@ class template_response_test extends DokuWikiTest
         $expectedNotifyMorePages = 'There is/are 495 more page(s) that do not have a title.';
 
         $this->assertEquals($expectedNotifyMorePages, $notifyMorePages, 'Expected Notification message when pages are higher then the maximum amount of pages does not match.');
+    }
+
+    public function test_plugin_is_sorted_at_the_top() {
+        $adminPlugin = new admin_plugin_findologicxmlexport();
+        $expectedSortValue = 1;
+        $this->assertEquals($expectedSortValue, $adminPlugin->getMenuSort());
+    }
+
+    public function test_plugin_not_requires_to_be_superuser() {
+        $adminPlugin = new admin_plugin_findologicxmlexport();
+        $this->assertTrue($adminPlugin->forAdminOnly());
     }
 
     /**
