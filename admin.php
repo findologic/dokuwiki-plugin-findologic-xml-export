@@ -86,9 +86,8 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
      */
     public function html()
     {
-        // Needs to be called once to initialize $this->lang
-        // Else the $this->lang variable results in an empty array []
-        $this->getLang('');
+        // Needs to be called once to initialize $this->lang.
+        $this->setupLocale();
 
         $pagesWithoutTitle = [self::PAGES_NAME => PageGetter::getPagesWithoutTitle()];
         $totalPages = count($pagesWithoutTitle[self::PAGES_NAME]);
