@@ -119,4 +119,9 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
 
         echo $twig->render(self::TEMPLATE_FILE, $variablesForTemplate);
     }
+    
+    public function handle()
+    {
+        // Implements the function. Nothing to do here.
+    }
 }
