@@ -119,6 +119,11 @@ class admin_plugin_findologicxmlexport extends DokuWiki_Admin_Plugin
         echo $twig->render(self::TEMPLATE_FILE, $variablesForTemplate);
     }
     
+    
+    /**
+     * @codeCoverageIgnore Ignored since this method is implemented, but does
+     * nothing.
+     */
     public function handle()
     {
         // Implements the function. Nothing to do here.
