@@ -11,7 +11,8 @@ For any other dependencies please refer to the [composer.json](https://raw.githu
 
 ### Before install
 
- * Requires **php** `>= 5.6`, older versions are not supported
+ * Requires **php** `>= 7.0`, older versions are not supported
+ * PHP extension `intl` is also required.
 
 ### Install
 

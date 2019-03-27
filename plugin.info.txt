@@ -1,7 +1,7 @@
 base   findologicxmlexport
 author Dominik Brader
 email  support@findologic.com
-date   2017-12-08
+date   2019-03-08
 name   findologicxmlexport plugin
 desc   Generates an XML based on the DokuWiki pages according to the FINDOLOGIC XML Scheme.
 url    https://github.com/findologic/dokuwiki-plugin-findologic-xml-export/
